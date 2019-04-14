@@ -2,7 +2,7 @@ package com.wkclz.core.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wkclz.core.enums.DateRangeType;
+import com.wkclz.core.pojo.enums.DateRangeType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;

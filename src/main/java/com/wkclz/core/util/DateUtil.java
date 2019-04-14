@@ -2,7 +2,7 @@ package com.wkclz.core.util;
 
 
 import com.wkclz.core.base.BaseModel;
-import com.wkclz.core.enums.DateRangeType;
+import com.wkclz.core.pojo.enums.DateRangeType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

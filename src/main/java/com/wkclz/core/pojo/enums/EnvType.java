@@ -1,4 +1,4 @@
-package com.wkclz.core.enums;
+package com.wkclz.core.pojo.enums;
 
 import com.wkclz.core.base.annotation.Desc;
 

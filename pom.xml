@@ -287,11 +287,11 @@
         <repository>
             <id>nexus</id>
             <name>nexus</name>
-            <url>file:${user.home}/project/code/mvn-repository</url>
+            <url>file:${user.home}/project/lz/mvn-repository</url>
         </repository>
         <snapshotRepository>
             <id>Nexus Snapshot</id>
-            <url>file:${user.home}/project/code/mvn-repository</url>
+            <url>file:${user.home}/project/lz/mvn-repository</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

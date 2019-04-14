@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.wkclz.core.enums.EnvType;
+import com.wkclz.core.pojo.enums.EnvType;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

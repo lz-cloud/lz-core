@@ -3,8 +3,7 @@ package com.wkclz.core.helper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.enums.EnvType;
-import org.apache.commons.lang3.StringUtils;
+import com.wkclz.core.pojo.enums.EnvType;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

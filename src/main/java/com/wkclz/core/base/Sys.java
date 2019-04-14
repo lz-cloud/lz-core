@@ -1,6 +1,6 @@
 package com.wkclz.core.base;
 
-import com.wkclz.core.enums.EnvType;
+import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.util.DateUtil;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;

@@ -3,7 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.enums.EnvType;
+import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.util.RegularUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

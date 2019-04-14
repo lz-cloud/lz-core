@@ -3,7 +3,7 @@ package com.wkclz.core.util;
 
 import com.sun.mail.util.MailSSLSocketFactory;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.enums.EnvType;
+import com.wkclz.core.pojo.enums.EnvType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
