@@ -275,7 +275,7 @@ public class BaseRepoHandler {
 
     /**
      * 注入风险检测。默认只作用在 orderBy 上。不能用于其他地方的注入检测
-     * 注入内陷：
+     * 注入风险：
      * 1、orderBy 中使用 ${}。可用此方法进行检测，不可使用其他字段传入
      * 2、MBG 的 noValue，singleValue，betweenValue，listValue 注入风险：Example 的 Criteria 产生，无注入风险
      * 3、MBG 的 like 注入风险：like 前的由 Example 控制，后的为 #{}, 无注入风险
