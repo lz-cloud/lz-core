@@ -27,8 +27,8 @@ public class Result {
     public static final String[] TOKEN_ILLEGAL_LENGTH = {"10004", "非法长度的 token！"};
 
     public static final String[] CLIENT_CHANGE = {"20001", "用户登录环境改变！"};
-    public static final String[] API_CROS = {"20002", "api url can not be cors"};
-    public static final String[] ORIGIN_CROS = {"20003", "origin url can not be cors"};
+    public static final String[] API_CORS = {"20002", "api url can not be cors"};
+    public static final String[] ORIGIN_CORS = {"20003", "origin url can not be cors"};
 
     public static final String[] USERNAME_PASSWORD_ERROR = {"30001", "登录名或密码错误"};
     public static final String[] CAPTCHA_ERROR = {"30002", "图片验证码错误"};
