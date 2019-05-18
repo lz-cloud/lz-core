@@ -33,13 +33,13 @@ public class OrgDomainHelper extends BaseHelper {
      * redis 的缓存主动更新，java 的缓存被动更新
      */
     private static Long JAVA_LAST_ACTIVE_TIME = null;
-    private static Map<String, Integer> ORG_DOMAINS = null;
+    private static Map<String, Long> ORG_DOMAINS = null;
 
     /**
      * 初始化 ORG_DOMAINS
      * @param orgDomains
      */
-    public void setOrgDomains(Map<String, Integer> orgDomains){
+    public void setOrgDomains(Map<String, Long> orgDomains){
         if (orgDomains == null || orgDomains.size() == 0){
             throw new RuntimeException("orgDomains can not be null or empty!");
         }
@@ -47,7 +47,7 @@ public class OrgDomainHelper extends BaseHelper {
         ORG_DOMAINS = orgDomains;
     }
 
-    private synchronized Map<String, Integer> getOrgDomains(){
+    private synchronized Map<String, Long> getOrgDomains(){
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
         if (JAVA_LAST_ACTIVE_TIME != null && ORG_DOMAINS != null ){
@@ -65,7 +65,7 @@ public class OrgDomainHelper extends BaseHelper {
         return ORG_DOMAINS;
     }
 
-    public Integer getOrgId(HttpServletRequest req){
+    public Long getOrgId(HttpServletRequest req){
 
         if (req == null){
             return null;
@@ -77,13 +77,13 @@ public class OrgDomainHelper extends BaseHelper {
             throw new RuntimeException("Can not get Origin from the request！");
         }
 
-        Map<String, Integer> orgDomains = getOrgDomains();
+        Map<String, Long> orgDomains = getOrgDomains();
         return orgDomains.get(origin);
 
     }
 
     public boolean checkOrgDomains(HttpServletRequest req, HttpServletResponse rep) {
-        Map<String, Integer> orgDomains = getOrgDomains();
+        Map<String, Long> orgDomains = getOrgDomains();
         if (orgDomains == null || orgDomains.size() == 0) {
             throw new RuntimeException("orgDomains must be init after system start up!");
         }

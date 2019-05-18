@@ -15,7 +15,7 @@ public interface BaseRepo<Model> {
      * @param id 数据主键
      * @return Model
      */
-    Model get(Integer id);
+    Model get(Long id);
 
     /**
      * 条件查询数据对象
@@ -42,7 +42,7 @@ public interface BaseRepo<Model> {
      * @param req   请求
      * @return 数据ID
      */
-    Integer insert(Model model, HttpServletRequest req);
+    Long insert(Model model, HttpServletRequest req);
 
     /**
      * 插入批量数据
@@ -86,7 +86,7 @@ public interface BaseRepo<Model> {
      * @param req 请求
      * @return 删除状态
      */
-    Integer del(Integer id, HttpServletRequest req);
+    Integer del(Long id, HttpServletRequest req);
 
     /**
      * 使用主键【字符串】删除数据
@@ -104,7 +104,7 @@ public interface BaseRepo<Model> {
      * @param req 请求
      * @return 删除状态
      */
-    Integer del(List<Integer> ids, HttpServletRequest req);
+    Integer del(List<Long> ids, HttpServletRequest req);
 
     /**
      * 查询所有数据【不分页，慎用】

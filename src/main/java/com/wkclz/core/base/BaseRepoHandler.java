@@ -23,7 +23,7 @@ public class BaseRepoHandler {
 
     protected static final int INSERT_SIZE = 1200;
 
-    private static Integer getUserId(HttpServletRequest req) {
+    private static Long getUserId(HttpServletRequest req) {
         if (req == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class BaseRepoHandler {
      */
     protected static <T extends BaseModel> T setBaseInfo(T model, HttpServletRequest req) {
 
-        Integer userId = getUserId(req);
+        Long userId = getUserId(req);
         if (userId != null) {
             model.setLastUpdateBy(userId);
             if (model.getId() == null && model.getCreateBy() == null) {

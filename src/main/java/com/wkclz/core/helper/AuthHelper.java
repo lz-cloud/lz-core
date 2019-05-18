@@ -156,11 +156,11 @@ public class AuthHelper extends BaseHelper {
     }
 
 
-    public Integer getOrgId(HttpServletRequest req){
+    public Long getOrgId(HttpServletRequest req){
         if (req == null){
             throw new RuntimeException("Request is null, can not get any information of the organization!");
         }
-        Integer orgId = orgDomainHelper.getOrgId(req);
+        Long orgId = orgDomainHelper.getOrgId(req);
         if (orgId == null || orgId < 1){
             throw new RuntimeException("Can not get any information of the organization, domain is not definition!, url is " +
                 OrgDomainHelper.getOrigin(req) + req.getRequestURI()
@@ -169,7 +169,7 @@ public class AuthHelper extends BaseHelper {
         return orgId;
     }
 
-    public Integer getOrgIdIfNotNull(HttpServletRequest req){
+    public Long getOrgIdIfNotNull(HttpServletRequest req){
         return orgDomainHelper.getOrgId(req);
     }
 
@@ -315,7 +315,7 @@ public class AuthHelper extends BaseHelper {
 
         // 管理后台
         String origin = req.getHeader("Origin");
-        Integer orgId = getOrgIdIfNotNull(req);
+        Long orgId = getOrgIdIfNotNull(req);
         if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")){
             List<Integer> adminIds = user.getAdminIds();
             if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)){

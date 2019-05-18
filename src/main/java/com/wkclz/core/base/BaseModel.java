@@ -21,13 +21,13 @@ public class BaseModel {
 
     protected static final String DEFAULE_ORDER_BY = "sort, id desc";
 
-    private Integer id;
-    private Integer orgId;
+    private Long id;
+    private Long orgId;
     private String mobile;
     private String email;
     private String code;
 
-    private Integer userId;
+    private Long userId;
     private Integer sort;
 
     private String comments;
@@ -39,7 +39,7 @@ public class BaseModel {
     private Integer pageSize;
 
     private String orderBy;
-    private List<Integer> ids;
+    private List<Long> ids;
 
     private String keyword;
 
@@ -53,11 +53,11 @@ public class BaseModel {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
-    private Integer createBy;
+    private Long createBy;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastUpdateTime;
-    private Integer lastUpdateBy;
+    private Long lastUpdateBy;
 
     private DateRangeType dateRangeType;
 

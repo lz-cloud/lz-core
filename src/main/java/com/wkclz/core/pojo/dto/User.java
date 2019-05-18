@@ -18,8 +18,8 @@ public class User<CmsUser, CmsUserAuth> {
 
     private String token;
     private String ip;
-    private Integer userId;
-    private Integer authId;
+    private Long userId;
+    private Long authId;
     private String username;
     private Integer loginTimes;
     private Integer point;
@@ -28,7 +28,7 @@ public class User<CmsUser, CmsUserAuth> {
     private CmsUserAuth userAuth;
     private Map<String, Object> userProperties;
 
-    private List<Integer> adminIds;
+    private List<Long> adminIds;
     private List<String> roles;
 
 }

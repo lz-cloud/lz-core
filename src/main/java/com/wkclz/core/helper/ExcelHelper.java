@@ -35,9 +35,7 @@ public class ExcelHelper {
                 fops.write(bytes, 0, len);
             }
             fops.flush();
-            response.flushBuffer();
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
+            fops.close();
 
         } catch (Exception e) {
             e.printStackTrace();

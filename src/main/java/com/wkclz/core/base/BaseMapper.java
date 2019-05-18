@@ -21,9 +21,9 @@ public interface BaseMapper<Model, Example> {
      * 不建议使用
      */
     @Deprecated
-    int insert(Model record);
+    Long insert(Model record);
 
-    int insertSelective(Model record);
+    Long insertSelective(Model record);
 
     /**
      * only can be use when table with BLOBs
@@ -36,7 +36,7 @@ public interface BaseMapper<Model, Example> {
 
     List<Model> selectByExample(Example example);
 
-    Model selectByPrimaryKey(Integer id);
+    Model selectByPrimaryKey(Long id);
 
     /**
      * not recommended to use

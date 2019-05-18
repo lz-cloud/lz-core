@@ -28,8 +28,8 @@ public class BaseHelper {
     private static final Integer JAVA_CACHE_LIVE_TIME_PROD = 1800;
 
 
-    public static List<Integer> getIdsFromBaseModel(BaseModel model) {
-        List<Integer> ids = model.getIds();
+    public static List<Long> getIdsFromBaseModel(BaseModel model) {
+        List<Long> ids = model.getIds();
         if (model.getIds() == null) {
             ids = new ArrayList<>();
         }
@@ -42,7 +42,7 @@ public class BaseHelper {
 
     public static Result removeCheck(BaseModel model) {
         Result result = new Result();
-        List<Integer> ids = getIdsFromBaseModel(model);
+        List<Long> ids = getIdsFromBaseModel(model);
         if (ids.isEmpty()) {
             result.setError("id or ids can not be null at the same time");
         }

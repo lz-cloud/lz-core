@@ -20,7 +20,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
     // 用于在 Model 为 null 时的实例化
     protected Class modelClazz;
 
-    public Model get(Integer id){
+    public Model get(Long id){
         if (id == null){
             throw new RuntimeException("id is null");
         }
@@ -74,7 +74,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         return mapper.updateByPrimaryKeySelective(target);
     }
 
-    public Integer insert(Model model, HttpServletRequest req){
+    public Long insert(Model model, HttpServletRequest req){
         model = setBaseInfo(model, req);
         mapper.insertSelective(model);
         return model.getId();
@@ -114,15 +114,15 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         return countByExample(model);
     }
 
-    public Integer del(Integer id, HttpServletRequest req){
+    public Integer del(Long id, HttpServletRequest req){
         return del(Arrays.asList(id), req);
     }
 
     public Integer del(String ids, HttpServletRequest req){
-        return del(IntegerUtil.str2IntegerList(ids), req);
+        return del(IntegerUtil.str2LongList(ids), req);
     }
 
-    public Integer del(List<Integer> ids, HttpServletRequest req){
+    public Integer del(List<Long> ids, HttpServletRequest req){
         if (ids == null || ids.size() == 0) {return 0;}
 
         Model model = getNewInstance(modelClazz);
