@@ -1,7 +1,10 @@
-package com.wkclz.core.util;
+package com.wkclz.gen.util;
 
 import com.sun.javafx.binding.StringFormatter;
 import com.wkclz.core.base.annotation.Desc;
+import com.wkclz.core.util.ClassUtil;
+import com.wkclz.core.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -18,11 +21,11 @@ public class ControllerUtil {
      * 获取所有 uri
      * @return
      */
-    public static List<String> getApis(String backPackagePath, Class routerClazz) {
+    public static List<String> getApis(String backPackagePath, Class routerClazz, String module) {
 
         // 获取路由
         Map<String, String> routers = getRouters(routerClazz);
-        Map<String, String> controllerMappings = getController(backPackagePath);
+        Map<String, String> controllerMappings = getController(backPackagePath, module);
 
         List<String> controllers = new ArrayList<>();
 
@@ -43,9 +46,14 @@ public class ControllerUtil {
      * @param backPackagePath
      * @return
      */
-    public static Map<String, String> getController(String backPackagePath) {
+    public static Map<String, String> getController(String backPackagePath, String module) {
         Set<Class<?>> classes = ClassUtil.getClasses(backPackagePath);
         Map<String, String> funs = new HashMap<>();
+
+        if (StringUtils.isBlank(module)){
+            module = "";
+        }
+
         for (Class clazz : classes) {
             // 判断类上是否有次注解
             boolean anno = clazz.isAnnotationPresent(RestController.class);
@@ -99,9 +107,9 @@ public class ControllerUtil {
                         funName = funName.replaceAll("/","_");
                         funName = StringUtil.underlineToCamel(funName);
                         if (requestMethod == RequestMethod.GET){
-                            requestFun = StringFormatter.format("export function %s(params) { return request({ url: '%s', method: 'get', params: params }) }", funName, uri).getValue();
+                            requestFun = StringFormatter.format("export function %s(params) { return request({ url: '%s', method: 'get', params: params }) }", funName, module + uri).getValue();
                         } else {
-                            requestFun = StringFormatter.format("export function %s(data) { return request({ url: '%s', method: 'post', data: data }) }",funName, uri).getValue();
+                            requestFun = StringFormatter.format("export function %s(data) { return request({ url: '%s', method: 'post', data: data }) }",funName, module + uri).getValue();
                         }
                         funs.put(uri, requestFun);
                     }
