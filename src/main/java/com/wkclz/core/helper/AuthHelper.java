@@ -39,6 +39,10 @@ public class AuthHelper extends BaseHelper {
      */
     public Map<String,String> setSession(HttpServletRequest req, User user){
 
+        if (user.getAuthId()==null){
+            throw new RuntimeException("authId can not be null to setSession");
+        }
+
         Map<String,String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
@@ -246,14 +250,14 @@ public class AuthHelper extends BaseHelper {
         String heaterToken = req.getHeader("token");
         String parameterToken = req.getParameter("token");
 
-        if (StringUtils.isNotBlank(heaterToken) && heaterToken.length() != 32){
+        if (StringUtils.isNotBlank(heaterToken) && heaterToken.length() > 63){
             logger.info("heaterToken is not allow, heaterToken: {}", heaterToken);
             Result result = new Result();
             result.setMoreError(Result.TOKEN_ILLEGAL_LENGTH);
             return Result.responseError(rep,result);
         }
 
-        if (StringUtils.isNotBlank(parameterToken) && parameterToken.length() != 37){
+        if (StringUtils.isNotBlank(parameterToken) && parameterToken.length() > 63){
             logger.info("parameterToken is not allow, parameterToken: {}", parameterToken);
             Result result = new Result();
             result.setMoreError(Result.TOKEN_ILLEGAL_LENGTH);

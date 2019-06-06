@@ -1,9 +1,7 @@
-package com.wkclz.gen.util;
+package com.wkclz.core.util;
 
 import com.sun.javafx.binding.StringFormatter;
 import com.wkclz.core.base.annotation.Desc;
-import com.wkclz.core.util.ClassUtil;
-import com.wkclz.core.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
