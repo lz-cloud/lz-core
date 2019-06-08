@@ -1,8 +1,9 @@
 package com.wkclz.core.util;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.poi.ss.formula.functions.T;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -112,6 +113,22 @@ public class MapUtil {
             e.printStackTrace();
         }
         return obj;
+    }
+
+
+    /**
+     * jsonString 2 Map
+     * @param jsonString
+     * @return
+     */
+    public static Map<String, Object> jsonString2Map(String jsonString){
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isNotBlank(jsonString)){
+            JSONObject jsonObject = JSONObject.parseObject(jsonString);
+            Set<Map.Entry<String, Object>> entries = jsonObject.entrySet();
+            entries.forEach(entry->map.put(entry.getKey(), entry.getValue()));
+        }
+        return map;
     }
 
 

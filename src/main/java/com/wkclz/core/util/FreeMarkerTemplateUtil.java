@@ -14,16 +14,16 @@ import java.util.Map;
  * Description:
  * Created: wangkaicun @ 2018-03-20 下午11:47
  */
-public class FreeMarkerTemplateUtils {
+public class FreeMarkerTemplateUtil {
 
-    private FreeMarkerTemplateUtils(){
+    private FreeMarkerTemplateUtil(){
     }
 
     private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_22);
 
     static {
         //这里比较重要，用来指定加载模板所在的路径
-        CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(FreeMarkerTemplateUtils.class, "/templates"));
+        CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(FreeMarkerTemplateUtil.class, "/templates"));
         CONFIGURATION.setDefaultEncoding("UTF-8");
         CONFIGURATION.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         CONFIGURATION.setCacheStorage(NullCacheStorage.INSTANCE);
@@ -31,7 +31,7 @@ public class FreeMarkerTemplateUtils {
 
     public static Template getTemplate(String templateName) throws IOException {
         try {
-            CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(FreeMarkerTemplateUtils.class, "/templates"));
+            CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(FreeMarkerTemplateUtil.class, "/templates"));
             return CONFIGURATION.getTemplate(templateName);
         } catch (IOException e) {
             throw e;
