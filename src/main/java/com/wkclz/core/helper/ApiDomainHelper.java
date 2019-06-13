@@ -76,7 +76,7 @@ public class ApiDomainHelper extends BaseHelper {
 
         logger.info("api url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
-        result.setError(Result.API_CORS);
+        result.setMoreError(Result.API_CORS);
         return Result.responseError(rep,result);
     }
 

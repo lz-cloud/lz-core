@@ -110,7 +110,7 @@ public class OrgDomainHelper extends BaseHelper {
 
         logger.info("origin url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
-        result.setError(Result.ORIGIN_CORS);
+        result.setMoreError(Result.ORIGIN_CORS);
         return Result.responseError(rep,result);
     }
 
