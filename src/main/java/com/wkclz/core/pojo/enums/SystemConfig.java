@@ -18,7 +18,8 @@ public enum SystemConfig {
     OSS_ACCESS_KEY_SECRET("oss_access_key_secret","oss_access_key_secret","【OSS】AccessKeySecret"),
     OSS_BUCKET_NAME("oss_bucket_name","com-wkclz-dev","【OSS】BucketName"),
     CORS_API("cors_api","localhost,127.0.0.1,api.wkclz.com","【跨域】后端接口地址（不需要带端口）"),
-    CORS_FRONT("cors_front","ocalhost,127.0.0.1,www.wkclz.com","【跨域】前端页面地址（不需要带端口）");
+    CORS_FRONT("cors_front","localhost,127.0.0.1,www.wkclz.com","【跨域】前端页面地址（不需要带端口）"),
+    COOKIE_DOMAIN("cookie_domain","wkclz.com","Cookie 作用域名");
 
     private String key;
     private String value;

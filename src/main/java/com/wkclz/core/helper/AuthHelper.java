@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.pojo.dto.User;
+import com.wkclz.core.pojo.enums.SystemConfig;
 import com.wkclz.core.util.RegularUtil;
 import com.wkclz.core.util.SecretUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +31,19 @@ public class AuthHelper extends BaseHelper {
     private JedisHelper jedisHelper;
     @Autowired
     private OrgDomainHelper orgDomainHelper;
+    @Autowired
+    private SystemConfigHelper systemConfigHelper;
 
     /**
      * 设置session
      * @param req
      * @return
      */
+
     public Map<String,String> setSession(HttpServletRequest req, User user){
+        return setSession(req, null, user);
+    }
+    public Map<String,String> setSession(HttpServletRequest req, HttpServletResponse rep, User user){
 
         if (user.getAuthId()==null){
             throw new RuntimeException("authId can not be null to setSession");
@@ -77,6 +82,12 @@ public class AuthHelper extends BaseHelper {
         }
 
         tokenMap.put("token",user.getToken());
+
+        // rep 传入支持 cookie 设置
+        if (rep != null){
+            addCookie(req, rep, "token", user.getToken(), getSessionLiveTime());
+        }
+
         return tokenMap;
     }
 
@@ -185,25 +196,30 @@ public class AuthHelper extends BaseHelper {
      * @param value
      * @param maxAge
      */
-    private static void addCookie(HttpServletRequest req, HttpServletResponse rep,String name,String value, Integer maxAge){
+    private void addCookie(HttpServletRequest req, HttpServletResponse rep,String name,String value, Integer maxAge){
 
-        String domain = OrgDomainHelper.getDomain(req);
+        String cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
 
+        if (StringUtils.isBlank(cookieDomain)){
+            cookieDomain = OrgDomainHelper.getDomain(req);
+            if (!RegularUtil.isIp(cookieDomain)){
+                int indexOf = cookieDomain.indexOf(".");
+                cookieDomain = cookieDomain.substring(indexOf+1);
+            }
+        }
+
+        /*
         try {
             value = URLEncoder.encode(value,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        */
 
         Cookie cookie = new Cookie(name, value);
-        if (RegularUtil.isIp(domain)){
-            cookie.setPath(domain);
-        } else {
-            int indexOf = domain.indexOf(".");
-            String path = domain.substring(indexOf);
-            cookie.setPath(path);
-        }
-
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setDomain(cookieDomain);
 
         if(maxAge!=null&&maxAge>0) {
             cookie.setMaxAge(maxAge);
