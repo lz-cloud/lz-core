@@ -4,9 +4,13 @@ import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -15,6 +19,8 @@ import java.util.*;
  */
 public class BaseHelper {
 
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseHelper.class);
 
 
     private static final Integer SESSION_LIVE_TIME_DEV = 24 * 60 * 60;
@@ -137,10 +143,19 @@ public class BaseHelper {
         if (url == null || url.trim().length() == 0){
             return url;
         }
-        if (url.contains("//")) { url = url.substring(url.indexOf("//") + 2); }
-        if (url.contains(":")) { url = url.substring(0, url.indexOf(":")); }
-        if (url.contains("/")) { url = url.substring(0, url.indexOf("/")); }
-        return url;
+        try {
+            URL url1 = new URL(url);
+            String host = url1.getHost();
+            return host;
+        } catch (MalformedURLException e) {
+            // e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+//        if (url.contains("//")) { url = url.substring(url.indexOf("//") + 2); }
+//        if (url.contains(":")) { url = url.substring(0, url.indexOf(":")); }
+//        if (url.contains("/")) { url = url.substring(0, url.indexOf("/")); }
+        return null;
     }
 
 }

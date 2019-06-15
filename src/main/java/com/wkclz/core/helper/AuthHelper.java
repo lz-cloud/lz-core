@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.pojo.dto.User;
+import com.wkclz.core.util.RegularUtil;
 import com.wkclz.core.util.SecretUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -167,7 +168,7 @@ public class AuthHelper extends BaseHelper {
         Long orgId = orgDomainHelper.getOrgId(req);
         if (orgId == null || orgId < 1){
             throw new RuntimeException("Can not get any information of the organization, domain is not definition!, url is " +
-                OrgDomainHelper.getOrigin(req) + req.getRequestURI()
+                OrgDomainHelper.getDomain(req) + req.getRequestURI()
             );
         }
         return orgId;
@@ -184,7 +185,9 @@ public class AuthHelper extends BaseHelper {
      * @param value
      * @param maxAge
      */
-    private static void addCookie(HttpServletResponse rep,String name,String value,Integer maxAge){
+    private static void addCookie(HttpServletRequest req, HttpServletResponse rep,String name,String value, Integer maxAge){
+
+        String domain = OrgDomainHelper.getDomain(req);
 
         try {
             value = URLEncoder.encode(value,"UTF-8");
@@ -192,8 +195,15 @@ public class AuthHelper extends BaseHelper {
             e.printStackTrace();
         }
 
-        Cookie cookie = new Cookie(name,value);
-        cookie.setPath("/");
+        Cookie cookie = new Cookie(name, value);
+        if (RegularUtil.isIp(domain)){
+            cookie.setPath(domain);
+        } else {
+            int indexOf = domain.indexOf(".");
+            String path = domain.substring(indexOf);
+            cookie.setPath(path);
+        }
+
 
         if(maxAge!=null&&maxAge>0) {
             cookie.setMaxAge(maxAge);

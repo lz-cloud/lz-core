@@ -69,14 +69,14 @@ public class OrgDomainHelper extends BaseHelper {
         if (req == null){
             return null;
         }
-        String origin = getOrigin(req);
+        String domain = getDomain(req);
 
-        if (StringUtils.isBlank(origin)){
-            throw new RuntimeException("Can not get Origin from the request！");
+        if (StringUtils.isBlank(domain)){
+            throw new RuntimeException("Can not get domain from the request！");
         }
 
         Map<String, Object> orgDomains = getOrgDomains();
-        Object orgIdObj = orgDomains.get(origin);
+        Object orgIdObj = orgDomains.get(domain);
         if (orgIdObj == null){
             return null;
         }
@@ -117,17 +117,28 @@ public class OrgDomainHelper extends BaseHelper {
         return Result.responseError(rep,result);
     }
 
-    public static String getOrigin(HttpServletRequest req){
-        String origin = req.getHeader("Origin");
-        if (origin == null){
-            origin = req.getParameter("Origin");
+    /**
+     * 获取请求域名
+     * @param req
+     * @return
+     */
+    public static String getDomain(HttpServletRequest req){
+        String domain = req.getHeader("Origin");
+        if (StringUtils.isBlank(domain)){
+            domain = req.getHeader("Referer");
+        }
+        if (StringUtils.isBlank(domain)){
+            domain = req.getParameter("Origin");
+        }
+        if (StringUtils.isBlank(domain)){
+            domain = req.getParameter("Referer");
         }
         // 非前后分离的情况，为当前域名
-        if (origin == null){
-            origin = req.getRequestURL().toString();
-            origin = getDomainFronUrl(origin);
+        if (StringUtils.isBlank(domain)){
+            domain = req.getRequestURL().toString();
         }
-        return origin;
+        domain = getDomainFronUrl(domain);
+        return domain;
     }
 
 }
