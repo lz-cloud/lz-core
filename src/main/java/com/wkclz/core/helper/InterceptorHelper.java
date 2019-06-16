@@ -63,7 +63,7 @@ public class InterceptorHelper {
         return true;
     }
 
-    public void afterCompletion(HttpServletRequest req) {
+    public void afterCompletion(HttpServletRequest req, HttpServletResponse rep) {
         String token = req.getParameter("token");
         if (token == null){
             return;
@@ -74,7 +74,7 @@ public class InterceptorHelper {
         if (!token.startsWith("temp_")){
             return;
         }
-        authHelper.invalidateSession(token);
+        authHelper.invalidateSession(req, rep);
     }
 
 }

@@ -55,29 +55,23 @@ public class BaseHelper {
         return result;
     }
 
-    public static String getTokenFromRequest(HttpServletRequest req) {
-        Object token = req.getHeader("token");
-        if (token == null) {
-            token = req.getParameter("token");
-        }
-        if (token == null) {
-            return null;
-        }
-        return token.toString();
-    }
-
-    public static String getTokenFromCookies(HttpServletRequest req) {
+    public static String getToken(HttpServletRequest req) {
         String token = null;
         Cookie[] cookies = req.getCookies();
-        if (cookies == null){
-            return null;
-        }
-        for (Cookie cookie:cookies) {
-            String name = cookie.getName();
-            if ("token".equals(name)){
-                token = cookie.getValue();
-                break;
+        if (cookies != null){
+            for (Cookie cookie:cookies) {
+                String name = cookie.getName();
+                if ("token".equals(name)){
+                    token = cookie.getValue();
+                    break;
+                }
             }
+        }
+        if (token == null) {
+            token = req.getHeader("token");
+        }
+        if (token == null) {
+            token = req.getParameter("token");
         }
         return token;
     }

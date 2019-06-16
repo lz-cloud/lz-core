@@ -139,7 +139,7 @@ public class AccessHelper extends BaseHelper {
         log.setLocalName(req.getLocalName());
         log.setMethod(req.getMethod());
         log.setServerName(req.getServerName());
-        log.setToken(BaseHelper.getTokenFromRequest(req));
+        log.setToken(BaseHelper.getToken(req));
 
         if (!StringUtils.isBlank(log.getToken())){
             User user = authHelper.getSession(req);

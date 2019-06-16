@@ -3,14 +3,11 @@ package com.wkclz.core.pojo.entity;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.wkclz.core.util.SecretUtil;
-import lombok.Data;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
 public class DataSource {
 
 
@@ -80,4 +77,45 @@ public class DataSource {
     }
 
 
+
+
+    public static Map<String, DruidPooledConnection> getDataConns() {
+        return dataConns;
+    }
+
+    public static void setDataConns(Map<String, DruidPooledConnection> dataConns) {
+        DataSource.dataConns = dataConns;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public void setDriverClassName(String driverClassName) {
+        this.driverClassName = driverClassName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

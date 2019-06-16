@@ -23,7 +23,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest req, HttpServletResponse rep, Object handler, Exception ex) {
-        interceptorHelper.afterCompletion(req);
+        interceptorHelper.afterCompletion(req, rep);
     }
 
 }

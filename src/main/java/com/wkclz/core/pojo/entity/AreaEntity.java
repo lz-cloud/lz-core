@@ -1,13 +1,10 @@
 package com.wkclz.core.pojo.entity;
 
-import lombok.Data;
-
 /**
  * Description: Create by Shrimp Generator
  *
  * @author: wangkaicun @ current time
  */
-@Data
 public class AreaEntity {
 
     /**
@@ -40,4 +37,51 @@ public class AreaEntity {
      */
     private Integer isLeaf;
 
+    public Long getParentAreaCode() {
+        return parentAreaCode;
+    }
+
+    public void setParentAreaCode(Long parentAreaCode) {
+        this.parentAreaCode = parentAreaCode;
+    }
+
+    public Long getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(Long areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public Integer getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(Integer typeCode) {
+        this.typeCode = typeCode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Integer getIsLeaf() {
+        return isLeaf;
+    }
+
+    public void setIsLeaf(Integer isLeaf) {
+        this.isLeaf = isLeaf;
+    }
 }
