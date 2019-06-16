@@ -25,6 +25,7 @@ public class Result {
     public static final String[] TOKEN_ERROR = {"10002", "token 不正确或已失效！"};
     public static final String[] TOKEN_ILLEGAL_TRANSFER = {"10003", "非法传输 token！"};
     public static final String[] TOKEN_ILLEGAL_LENGTH = {"10004", "非法长度的 token！"};
+    public static final String[] TOKEN_SIGN_FAILD = {"10005", "token 签名效验失败！"};
 
     public static final String[] CLIENT_CHANGE = {"20001", "用户登录环境改变！"};
     public static final String[] API_CORS = {"20002", "api url can not be cors"};

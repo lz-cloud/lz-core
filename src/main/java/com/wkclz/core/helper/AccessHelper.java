@@ -28,7 +28,7 @@ public class AccessHelper extends BaseHelper {
     @Autowired
     private AuthHelper authHelper;
 
-    private static PathMatcher matcher = new AntPathMatcher();
+    private static final PathMatcher matcher = new AntPathMatcher();
     private static final String NAME_SPACE = "_ACCESS_URI";
 
     /**
@@ -160,3 +160,14 @@ public class AccessHelper extends BaseHelper {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -259,12 +259,23 @@ public class AuthHelper extends BaseHelper {
         */
 
         // token 检测，需要检测权限的uri，没有 token均不放过
-        String token = BaseHelper.getToken(req);
+        String tokenStr = BaseHelper.getToken(req);
 
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(tokenStr)){
             logger.info("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
             Result result = new Result();
             result.setMoreError(Result.TOKEN_UNLL);
+            return Result.responseError(rep,result);
+        }
+
+        Token token = Token.getToken(tokenStr);
+        // token 签名
+        String sign = token.makeSign();
+        if (!sign.equals(token.getSign())){
+            Result result = new Result();
+            invalidateSession(req, rep);
+            logger.info("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
+            result.setMoreError(Result.TOKEN_SIGN_FAILD);
             return Result.responseError(rep,result);
         }
 
@@ -316,9 +327,8 @@ public class AuthHelper extends BaseHelper {
             }
         }
 
-
         // session检测，已经有session的， token 对的，放过
-        if ( user != null && !StringUtils.isBlank(user.getToken()) && token.equalsIgnoreCase(user.getToken())){
+        if ( user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())){
             // session 没有的情况，重新赋值
             User userSession = (User) req.getSession().getAttribute("user");
             if(userSession == null){
