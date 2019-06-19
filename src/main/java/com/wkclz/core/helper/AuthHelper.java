@@ -359,30 +359,25 @@ public class AuthHelper extends BaseHelper {
     private String getCookieDomain(HttpServletRequest req){
 
         String cookieDomain = OrgDomainHelper.getDomain(req);
-        boolean gotFlag = false;
 
         // 测试环境优先
         if ("127.0.0.1".equals(cookieDomain) || "localhost".equals(cookieDomain)){
-            gotFlag =true;
+            logger.info("=========> 开发环境，cookie domain: {}", cookieDomain);
+            return cookieDomain;
         }
 
         // db 配置其二
-        if (!gotFlag){
-            cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
-            if (StringUtils.isNotBlank(cookieDomain)){
-                gotFlag =true;
-            }
-        }
-
-        // 请求参数取值，其三
-        if (!gotFlag ){
-            cookieDomain = OrgDomainHelper.getDomain(req);
-        }
-
-        if (!RegularUtil.isIp(cookieDomain) && !"localhost".equals(cookieDomain)){
+        cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
+        if (StringUtils.isNotBlank(cookieDomain)){
             int indexOf = cookieDomain.indexOf(".");
             cookieDomain = cookieDomain.substring(indexOf+1);
+            return cookieDomain;
         }
+
+        int indexOf = cookieDomain.indexOf(".");
+        cookieDomain = cookieDomain.substring(indexOf+1);
+
+        logger.info("=========> 无cookie域，domain 截取 cookie: {}", cookieDomain);
 
         return cookieDomain;
     }
