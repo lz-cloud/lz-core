@@ -1,7 +1,6 @@
 package com.wkclz.core.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,6 +15,13 @@ public class AppInterceptor implements WebMvcConfigurer {
     @Autowired
     private SessionInterceptor sessionInterceptor;
 
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(sessionInterceptor).addPathPatterns("/**");
+    }
+
+    /*
     @Bean
     public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {
@@ -32,5 +38,6 @@ public class AppInterceptor implements WebMvcConfigurer {
             }
         };
     }
+    */
 
 }

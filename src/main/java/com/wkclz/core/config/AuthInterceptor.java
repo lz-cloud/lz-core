@@ -2,7 +2,7 @@ package com.wkclz.core.config;
 
 import com.wkclz.core.helper.InterceptorHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
 // @Component
-public class AuthInterceptor extends HandlerInterceptorAdapter {
+public class AuthInterceptor implements HandlerInterceptor {
 
     @Autowired
     private InterceptorHelper interceptorHelper;
