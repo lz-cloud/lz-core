@@ -5,7 +5,6 @@ import com.wkclz.core.base.Result;
 import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.SystemConfig;
-import com.wkclz.core.util.RegularUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -5,6 +5,7 @@ import com.wkclz.core.base.Sys;
 import com.wkclz.core.helper.BaseHelper;
 import com.wkclz.core.util.SecretUtil;
 
+import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -63,7 +64,8 @@ public class Token {
      */
     public static Token getToken(String base64){
         try {
-            byte[] base64Decode = SecretUtil.base64Decode(base64);
+            String decode = URLDecoder.decode(base64,"UTF-8");
+            byte[] base64Decode = SecretUtil.base64Decode(decode);
             Token token = JSONObject.parseObject(new String(base64Decode), Token.class);
             return token;
         } catch (Exception e) {
