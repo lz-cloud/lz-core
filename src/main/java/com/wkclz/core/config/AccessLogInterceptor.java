@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Description: 访问拦截，已经在网关流丽，此处不再需要
+ * Description: 访问拦截，已经在网关实现，此处不再需要
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
 // @Component

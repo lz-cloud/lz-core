@@ -182,7 +182,7 @@ public class BaseRepoHandler {
      * @param <Model>
      * @return
      */
-    public static  <Model> Model getNewInstance(Class clazz){
+    public static <Model> Model getNewInstance(Class clazz){
         Model model = null;
         try {
             model = (Model)clazz.newInstance();
