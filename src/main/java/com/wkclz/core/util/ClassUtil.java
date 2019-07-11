@@ -1,5 +1,7 @@
 package com.wkclz.core.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -20,39 +22,33 @@ import java.util.jar.JarFile;
  */
 public class ClassUtil {
 
-    public static void main(String[] args) {
 
-        // 包下面的类
-        Set<Class<?>> clazzs = getClasses("cn.package.test");
-        if (clazzs == null) {
-            return;
+    /**
+     * 静态类的方法
+     * @param clazz
+     * @param methodName
+     * @return
+     */
+    public static Method getModdelMethod(Class clazz, String methodName){
+        if (StringUtils.isBlank(methodName)){
+            throw new RuntimeException("method name can not be null");
         }
-
-        System.out.printf(clazzs.size() + "");
-        // 某类或者接口的子类
-        Set<Class<?>> inInterface = getByInterface(Object.class, clazzs);
-        System.out.printf(inInterface.size() + "");
-
-        for (Class<?> clazz : clazzs) {
-
-            // 获取类上的注解
-            Annotation[] annos = clazz.getAnnotations();
-            for (Annotation anno : annos) {
-                System.out.println(clazz.getSimpleName().concat(".").concat(anno.annotationType().getSimpleName()));
-            }
-
-            // 获取方法上的注解
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-                for (Annotation annotation : annotations) {
-                    System.out.println(clazz.getSimpleName().concat(".").concat(method.getName()).concat(".")
-                            .concat(annotation.annotationType().getSimpleName()));
-                }
+        if (clazz == Object.class){
+            return null;
+        }
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method: methods) {
+            String name = method.getName();
+            if (name.equals(methodName)){
+                return method;
             }
         }
-
+        Class superClazz = clazz.getSuperclass();
+        return getModdelMethod(superClazz, methodName);
     }
+
+
+
 
     /**
      * 从包package中获取所有的Class
@@ -222,6 +218,44 @@ public class ClassUtil {
             }
         }
         return classes;
+    }
+
+
+
+
+
+    public static void main(String[] args) {
+
+        // 包下面的类
+        Set<Class<?>> clazzs = getClasses("cn.package.test");
+        if (clazzs == null) {
+            return;
+        }
+
+        System.out.printf(clazzs.size() + "");
+        // 某类或者接口的子类
+        Set<Class<?>> inInterface = getByInterface(Object.class, clazzs);
+        System.out.printf(inInterface.size() + "");
+
+        for (Class<?> clazz : clazzs) {
+
+            // 获取类上的注解
+            Annotation[] annos = clazz.getAnnotations();
+            for (Annotation anno : annos) {
+                System.out.println(clazz.getSimpleName().concat(".").concat(anno.annotationType().getSimpleName()));
+            }
+
+            // 获取方法上的注解
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                Annotation[] annotations = method.getDeclaredAnnotations();
+                for (Annotation annotation : annotations) {
+                    System.out.println(clazz.getSimpleName().concat(".").concat(method.getName()).concat(".")
+                        .concat(annotation.annotationType().getSimpleName()));
+                }
+            }
+        }
+
     }
 
 }

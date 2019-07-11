@@ -4,6 +4,7 @@ import com.wkclz.core.base.BaseMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.BaseRepoHandler;
 import com.wkclz.core.base.PageData;
+import com.wkclz.core.util.ClassUtil;
 import com.wkclz.core.util.IntegerUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -190,22 +191,18 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
 
     // 获取 example
     private Example getExample(Model model){
-        Example example = null;
+        Example example;
         try {
-            Class clazz = model.getClass();
-            Method createExample = clazz.getDeclaredMethod("createExample", new Class[] { clazz });
+            Method createExample = ClassUtil.getModdelMethod(model.getClass(), "createExample");
             example = (Example)createExample.invoke(null, model);
             return example;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
         }
         return null;
     }
-
 
 
 }
