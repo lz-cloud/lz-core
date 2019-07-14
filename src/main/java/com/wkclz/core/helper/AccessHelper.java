@@ -9,6 +9,7 @@ import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -23,10 +24,10 @@ import java.util.List;
 @Component
 public class AccessHelper extends BaseHelper {
 
-    @Autowired(required = false)
-    private JedisHelper jedisHelper;
     @Autowired
     private AuthHelper authHelper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private static final PathMatcher matcher = new AntPathMatcher();
     private static final String NAME_SPACE = "_ACCESS_URI";
@@ -45,7 +46,7 @@ public class AccessHelper extends BaseHelper {
         if (accessUris == null || accessUris.size() == 0){
             throw new RuntimeException("accessUris can not be null or empty!");
         }
-        jedisHelper.STRINGS.set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
+        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
         ACCESS_URI = accessUris;
     }
 
@@ -61,7 +62,7 @@ public class AccessHelper extends BaseHelper {
         JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
 
         // redis 拉取
-        String accessUrisStr = jedisHelper.STRINGS.get(Sys.APPLICATION_GROUP + NAME_SPACE);
+        String accessUrisStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
         List<String> accessUris = JSONArray.parseArray(accessUrisStr, String.class);
         ACCESS_URI = accessUris;
         return ACCESS_URI;

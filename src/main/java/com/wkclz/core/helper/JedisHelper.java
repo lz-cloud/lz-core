@@ -15,6 +15,7 @@ import java.util.Set;
  * @version crateTime：2013-10-30 下午5:41:30
  * Class Explain:JedisUtil
  */
+@Deprecated
 @Component
 public class JedisHelper {
 
@@ -31,26 +32,32 @@ public class JedisHelper {
     /**
      * 操作Key的方法
      */
+    @Deprecated
     public Keys KEYS = new Keys();
     /**
      * 对存储结构为String类型的操作
      */
+    @Deprecated
     public Strings STRINGS = new Strings();
     /**
      * 对存储结构为List类型的操作
      */
+    @Deprecated
     public Lists LISTS = new Lists();
     /**
      * 对存储结构为Set类型的操作
      */
+    @Deprecated
     public Sets SETS = new Sets();
     /**
      * 对存储结构为HashMap类型的操作
      */
+    @Deprecated
     public Hash HASH = new Hash();
     /**
      * 对存储结构为Set(排序的)类型的操作
      */
+    @Deprecated
     public SortSet SORTSET = new SortSet();
 
 
@@ -82,6 +89,7 @@ public class JedisHelper {
     }
 
 
+    @Deprecated
     public JedisPool getPool() {
         if (jedisPool == null) {
             throw new NullPointerException("jedisPool is not init");
@@ -94,6 +102,7 @@ public class JedisHelper {
      *
      * @return
      */
+    @Deprecated
     public Jedis getJedis() {
         if (jedisPool == null) {
             throw new NullPointerException("jedisPool is not init");
@@ -110,6 +119,7 @@ public class JedisHelper {
      *
      * @return
      */
+    @Deprecated
     public static JedisHelper getInstance() {
         return jedisHelper;
     }
@@ -119,6 +129,7 @@ public class JedisHelper {
      *
      * @param jedis
      */
+    @Deprecated
     public void returnJedis(Jedis jedis) {
         if (null != jedis && null != jedisPool) {
             // jedisPool.close();
@@ -131,6 +142,7 @@ public class JedisHelper {
      *
      * @param jedis
      */
+    @Deprecated
     public void returnBrokenResource(Jedis jedis) {
         if (null != jedis && null != jedisPool) {
             // jedisPool.close();
@@ -146,6 +158,7 @@ public class JedisHelper {
      * @param seconds
      * @author ruan 2013-4-11
      */
+    @Deprecated
     public void expire(String key, int seconds) {
         if (seconds <= 0) {
             return;
@@ -161,12 +174,14 @@ public class JedisHelper {
      * @param key
      * @author ruan 2013-4-11
      */
+    @Deprecated
     public void expire(String key) {
         expire(key, expire);
     }
 
 
     //*******************************************Keys*******************************************//
+    @Deprecated
     public class Keys {
 
         /**
@@ -371,6 +386,7 @@ public class JedisHelper {
     }
 
     //*******************************************Sets*******************************************//
+    @Deprecated
     public class Sets {
 
         /**
@@ -571,6 +587,7 @@ public class JedisHelper {
     }
 
     //*******************************************SortSet*******************************************//
+    @Deprecated
     public class SortSet {
 
         /**
@@ -807,6 +824,7 @@ public class JedisHelper {
     }
 
     //*******************************************Hash*******************************************//
+    @Deprecated
     public class Hash {
 
         /**
@@ -1031,6 +1049,7 @@ public class JedisHelper {
 
 
     //*******************************************Strings*******************************************//
+    @Deprecated
     public class Strings {
         /**
          * 根据key获取记录
@@ -1273,6 +1292,7 @@ public class JedisHelper {
 
 
     //*******************************************Lists*******************************************//
+    @Deprecated
     public class Lists {
         /**
          * List长度

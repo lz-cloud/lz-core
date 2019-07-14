@@ -6,6 +6,7 @@ import com.wkclz.core.base.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +21,8 @@ import java.util.List;
 public class ApiDomainHelper extends BaseHelper {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired(required = false)
-    private JedisHelper jedisHelper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private static final String NAME_SPACE = "_API_DOMAINS";
 
@@ -39,7 +40,7 @@ public class ApiDomainHelper extends BaseHelper {
         if (apiDomains == null || apiDomains.size() == 0){
             throw new RuntimeException("apiDomains can not be null or empty!");
         }
-        jedisHelper.STRINGS.set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
+        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
         API_DOMAINS = apiDomains;
     }
 
@@ -55,7 +56,7 @@ public class ApiDomainHelper extends BaseHelper {
         JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
 
         // redis 拉取
-        String apiDomainsStr = jedisHelper.STRINGS.get(Sys.APPLICATION_GROUP + NAME_SPACE);
+        String apiDomainsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
         List<String> apiDomains = JSONArray.parseArray(apiDomainsStr, String.class);
         API_DOMAINS = apiDomains;
         return API_DOMAINS;

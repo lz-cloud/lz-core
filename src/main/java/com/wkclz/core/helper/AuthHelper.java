@@ -9,14 +9,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -26,12 +29,12 @@ import java.util.Map;
 public class AuthHelper extends BaseHelper {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired(required = false)
-    private JedisHelper jedisHelper;
     @Autowired
     private OrgDomainHelper orgDomainHelper;
     @Autowired
     private SystemConfigHelper systemConfigHelper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     /**
@@ -64,8 +67,8 @@ public class AuthHelper extends BaseHelper {
         user.setToken(token.getToken());
 
         // 设置 redis
-        jedisHelper.STRINGS.set(token.getRedisKey(), JSONObject.toJSONString(user));
-        jedisHelper.expire(token.getRedisKey(),getSessionLiveTime());
+        stringRedisTemplate.opsForValue().set(token.getRedisKey(), JSONObject.toJSONString(user));
+        stringRedisTemplate.expire(token.getRedisKey(), getSessionLiveTime(), TimeUnit.SECONDS);
 
         // 登录成功日志【仅在登录的时候需要，漫游时不需要】
         if (session == null){
@@ -108,12 +111,12 @@ public class AuthHelper extends BaseHelper {
         Token token = Token.getToken(tokenStr);
 
         String redisKey = token.getRedisKey();
-        String userStr = jedisHelper.STRINGS.get(redisKey);
+        String userStr = stringRedisTemplate.opsForValue().get(redisKey);
         if (userStr == null){
             return null;
         }
         // 延期 redis
-        jedisHelper.expire(redisKey, getSessionLiveTime());
+        stringRedisTemplate.expire(redisKey, getSessionLiveTime(), TimeUnit.SECONDS);
         User user = JSONObject.parseObject(userStr, User.class);
         return user;
     }
@@ -133,7 +136,7 @@ public class AuthHelper extends BaseHelper {
             return;
         }
         Token token = Token.getToken(tokenStr);
-        jedisHelper.KEYS.expired(token.getRedisKey(), 0);
+        stringRedisTemplate.expireAt(token.getRedisKey(), new Date());
         expireCookie(req, rep, "token");
     }
 

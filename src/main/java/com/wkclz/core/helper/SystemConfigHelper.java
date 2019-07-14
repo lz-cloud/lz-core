@@ -2,9 +2,8 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -16,8 +15,8 @@ import java.util.Map;
 @Component
 public class SystemConfigHelper extends BaseHelper {
 
-    @Autowired(required = false)
-    private JedisHelper jedisHelper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private static final String NAME_SPACE = "_SYSTEM_CONFIG";
 
@@ -35,7 +34,7 @@ public class SystemConfigHelper extends BaseHelper {
         if (systemConfigs == null || systemConfigs.size() == 0){
             throw new RuntimeException("systemConfigs can not be null or empty!");
         }
-        jedisHelper.STRINGS.set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(systemConfigs));
+        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(systemConfigs));
         SYSTEM_CONFIG = systemConfigs;
     }
 
@@ -51,7 +50,7 @@ public class SystemConfigHelper extends BaseHelper {
         JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
 
         // redis 拉取
-        String systemConfigsStr = jedisHelper.STRINGS.get(Sys.APPLICATION_GROUP + NAME_SPACE);
+        String systemConfigsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
         Map systemConfigs = JSONObject.parseObject(systemConfigsStr, Map.class);
         SYSTEM_CONFIG = systemConfigs;
         return SYSTEM_CONFIG;

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +25,8 @@ public class OrgDomainHelper extends BaseHelper {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired(required = false)
-    private JedisHelper jedisHelper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private static final String NAME_SPACE = "_ORG_DOMAINS";
 
@@ -43,7 +44,7 @@ public class OrgDomainHelper extends BaseHelper {
         if (orgDomains == null || orgDomains.size() == 0){
             throw new RuntimeException("orgDomains can not be null or empty!");
         }
-        jedisHelper.STRINGS.set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(orgDomains));
+        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(orgDomains));
         ORG_DOMAINS = orgDomains;
     }
 
@@ -59,7 +60,7 @@ public class OrgDomainHelper extends BaseHelper {
         JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
 
         // redis 拉取
-        String orgDomainsStr = jedisHelper.STRINGS.get(Sys.APPLICATION_GROUP + NAME_SPACE);
+        String orgDomainsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
         Map orgDomains = JSONObject.parseObject(orgDomainsStr, Map.class);
         ORG_DOMAINS = orgDomains;
         return ORG_DOMAINS;
