@@ -7,7 +7,8 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class RedisTemplateFix {
+public class ResetRedisTemplateSerializer {
+
     private RedisTemplate redisTemplate;
 
     @Autowired(required = false)
