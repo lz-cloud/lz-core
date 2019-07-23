@@ -60,6 +60,17 @@ public class BaseModel {
     private String messageId;
     private Long count;
 
+
+    /**
+     * 当前登录用户 id
+     */
+    private Long currentUserId;
+    /**
+     * 当前访问的组织 id
+     */
+    private Long currentOrgId;
+
+
     private Integer debug;
 
     public void init() {
@@ -272,6 +283,22 @@ public class BaseModel {
         this.count = count;
     }
 
+    public Long getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(Long currentUserId) {
+        this.currentUserId = currentUserId;
+    }
+
+    public Long getCurrentOrgId() {
+        return currentOrgId;
+    }
+
+    public void setCurrentOrgId(Long currentOrgId) {
+        this.currentOrgId = currentOrgId;
+    }
+
     public Integer getDebug() {
         return debug;
     }
@@ -279,4 +306,6 @@ public class BaseModel {
     public void setDebug(Integer debug) {
         this.debug = debug;
     }
+
+
 }
