@@ -1,6 +1,7 @@
 package com.wkclz.core.aop;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.helper.AuthHelper;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 @Aspect
 @Component
@@ -45,7 +47,7 @@ public class RestAop {
     public void pointCut(){}
 
     @Before(value = "pointCut()")
-    public void before(JoinPoint joinPoint){
+    public void before(JoinPoint joinPoint) {
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = attributes.getRequest();
@@ -66,10 +68,25 @@ public class RestAop {
                 userId = setCurrentUserId(model, req, userId);
                 orgId = setCurrentOrgId(model, req, orgId);
             }
+            if (arg instanceof ArrayList){
+                ArrayList list = (ArrayList)arg;
+                for (Object l : list){
+                    if (l instanceof BaseModel){
+                        BaseModel model = (BaseModel)l;
+                        userId = setCurrentUserId(model, req, userId);
+                        orgId = setCurrentOrgId(model, req, orgId);
+                    }
+                }
+            }
         }
 
-
-        logger.info("request uri: {}, args: {}", requestURI, args);
+        String value = null;
+        try {
+            value = objectMapper.writeValueAsString(args);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        logger.info("request uri: {}, args: {}", requestURI, value);
     }
 
 
@@ -92,7 +109,6 @@ public class RestAop {
     //第一个后置返回通知的返回值：姓名是大大
     //第二个后置返回通知的返回值：姓名是大大
     //第一个后置返回通知的返回值：{name=小小, id=1}
-
 
     /**
      * 后置异常通知
