@@ -1,9 +1,11 @@
 package com.wkclz.core.base;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.util.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -27,8 +29,9 @@ public class BaseRepoHandler {
         if (req == null) {
             return null;
         }
-        User user = (User) req.getSession().getAttribute("user");
-        if (user != null) {
+        Object userObj = req.getSession().getAttribute("user");
+        if (userObj != null) {
+            User user = JSONObject.parseObject(userObj.toString(), User.class);
             return user.getUserId();
         }
         return null;
@@ -87,7 +90,7 @@ public class BaseRepoHandler {
         model.setOrderBy(StringUtil.camelToUnderline(orderBy));
 
         // keyword 查询处理
-        if (model.getKeyword() != null && model.getKeyword() != "") {
+        if (StringUtils.isNotBlank(model.getKeyword())) {
             model.setKeyword("%" + model.getKeyword() + "%");
         }
         // 时间范围查询处理
@@ -248,25 +251,43 @@ public class BaseRepoHandler {
      * @return
      */
     public static <T> List<T> jdbcExecutor(Connection conn, String sql, Class<T> clazz){
+        Statement statement = null;
         try {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet results = statement.executeQuery(sql);
             List<Map> maps = ResultSetMapper.toMapList(results);
             List<T> list = MapUtil.map2ObjList(maps, clazz);
             return list;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null){
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
     public static List<Map> jdbcExecutor(Connection conn, String sql){
+        Statement statement = null;
         try {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet results = statement.executeQuery(sql);
             List<Map> maps = ResultSetMapper.toMapList(results);
             return maps;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null){
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

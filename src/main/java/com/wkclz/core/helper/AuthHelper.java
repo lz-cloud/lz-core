@@ -320,7 +320,7 @@ public class AuthHelper extends BaseHelper {
         String origin = req.getHeader("Origin");
         Long orgId = getOrgIdIfNotNull(req);
         if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")){
-            List<Integer> adminIds = user.getAdminIds();
+            List<Long> adminIds = user.getAdminIds();
             if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)){
                 logger.info("user is not admin, uri : {}",uri);
                 Result result = new Result();
@@ -332,9 +332,9 @@ public class AuthHelper extends BaseHelper {
         // session检测，已经有session的， token 对的，放过
         if ( user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())){
             // session 没有的情况，重新赋值
-            User userSession = (User) req.getSession().getAttribute("user");
-            if(userSession == null){
-                req.getSession().setAttribute("user",user);
+            Object userObj = req.getSession().getAttribute("user");
+            if(userObj == null){
+                req.getSession().setAttribute("user", JSONObject.toJSONString(user));
             }
             return true;
         }
@@ -348,11 +348,11 @@ public class AuthHelper extends BaseHelper {
      * @param req
      */
     public void checkUserSession(HttpServletRequest req){
-        User user = (User) req.getSession().getAttribute("user");
-        if(user == null){
-            user = getSession(req);
+        Object userObj = req.getSession().getAttribute("user");
+        if(userObj == null){
+            User user = getSession(req);
             if (user != null){
-                req.getSession().setAttribute("user",user);
+                req.getSession().setAttribute("user", JSONObject.toJSONString(user));
             }
         }
 

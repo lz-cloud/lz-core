@@ -30,7 +30,7 @@ public class IpHelper {
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
-                ipAddress = inet.getHostAddress();
+                ipAddress = inet == null ? null:inet.getHostAddress();
             }
         }
         // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
@@ -51,6 +51,9 @@ public class IpHelper {
             interfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
             e.printStackTrace();
+        }
+        if (interfaces == null){
+            return null;
         }
         while (interfaces.hasMoreElements()) {
             //得到单个接口

@@ -41,15 +41,19 @@ public class ExcelHelper {
             e.printStackTrace();
             log.error("文件有误!");
         } finally {
-            try {
-                if (fops != null) {
+            if (fops != null) {
+                try {
                     fops.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                if (in != null) {
+            }
+            if (in != null) {
+                try {
                     in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

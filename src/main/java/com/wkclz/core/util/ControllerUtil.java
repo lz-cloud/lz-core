@@ -23,6 +23,10 @@ public class ControllerUtil {
 
         // 获取路由
         Map<String, String> routers = getRouters(routerClazz);
+        if (routers == null){
+            return new ArrayList<>();
+        }
+
         Map<String, String> controllerMappings = getController(backPackagePath, module);
 
         List<String> controllers = new ArrayList<>();

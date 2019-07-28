@@ -55,7 +55,7 @@ public class AccessHelper extends BaseHelper {
         // java 缓存
         if (JAVA_LAST_ACTIVE_TIME != null && ACCESS_URI != null ){
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) == -1){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
                 return ACCESS_URI;
             }
         }

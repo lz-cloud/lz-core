@@ -10,6 +10,8 @@ import java.util.Random;
  */
 public class ValidateCode {
 
+    private static Random random = null;
+
     /**
      * 验证码类型为仅数字 0~9
      */
@@ -65,14 +67,13 @@ public class ValidateCode {
 
         StringBuffer code = new StringBuffer();
         int i = 0;
-        Random r = new Random();
 
         switch (type) {
 
             // 仅数字
             case TYPE_NUM_ONLY:
                 while (i < length) {
-                    int t = r.nextInt(10);
+                    int t = random.nextInt(10);
                     // 排除特殊字符
                     if (exChars == null || exChars.indexOf(t + "") < 0) {
                         code.append(t);
@@ -84,7 +85,7 @@ public class ValidateCode {
             // 仅字母（即大写字母、小写字母混合）
             case TYPE_LETTER_ONLY:
                 while (i < length) {
-                    int t = r.nextInt(123);
+                    int t = random.nextInt(123);
                     if ((t >= 97 || (t >= 65 && t <= 90)) && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
@@ -95,7 +96,7 @@ public class ValidateCode {
             // 数字、大写字母、小写字母混合
             case TYPE_ALL_MIXED:
                 while (i < length) {
-                    int t = r.nextInt(123);
+                    int t = random.nextInt(123);
                     if ((t >= 97 || (t >= 65 && t <= 90) || (t >= 48 && t <= 57))
                             && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
@@ -107,7 +108,7 @@ public class ValidateCode {
             // 数字、大写字母混合
             case TYPE_NUM_UPPER:
                 while (i < length) {
-                    int t = r.nextInt(91);
+                    int t = random.nextInt(91);
                     if ((t >= 65 || (t >= 48 && t <= 57)) && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
@@ -118,7 +119,7 @@ public class ValidateCode {
             // 数字、小写字母混合
             case TYPE_NUM_LOWER:
                 while (i < length) {
-                    int t = r.nextInt(123);
+                    int t = random.nextInt(123);
                     if ((t >= 97 || (t >= 48 && t <= 57)) && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
@@ -129,7 +130,7 @@ public class ValidateCode {
             // 仅大写字母
             case TYPE_UPPER_ONLY:
                 while (i < length) {
-                    int t = r.nextInt(91);
+                    int t = random.nextInt(91);
                     if ((t >= 65) && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
@@ -140,7 +141,7 @@ public class ValidateCode {
             // 仅小写字母
             case TYPE_LOWER_ONLY:
                 while (i < length) {
-                    int t = r.nextInt(123);
+                    int t = random.nextInt(123);
                     if ((t >= 97) && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
@@ -179,7 +180,6 @@ public class ValidateCode {
         g.fillRect(0, 0, width, height);
 
         // 画干扰线
-        Random r = new Random();
         if (interLine > 0) {
 
             int x = 0;
@@ -188,8 +188,8 @@ public class ValidateCode {
             int y1;
             for (int i = 0; i < interLine; i++) {
                 g.setColor(lineColor == null ? getRandomColor() : lineColor);
-                y = r.nextInt(height);
-                y1 = r.nextInt(height);
+                y = random.nextInt(height);
+                y1 = random.nextInt(height);
 
                 g.drawLine(x, y, x1, y1);
             }
@@ -252,8 +252,10 @@ public class ValidateCode {
      * @return
      */
     private static Color getRandomColor() {
-        Random r = new Random();
-        Color c = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+        if (random == null){
+            random = new Random();
+        }
+        Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
         return c;
     }
 

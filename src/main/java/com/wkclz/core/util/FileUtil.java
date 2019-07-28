@@ -48,12 +48,14 @@ public class FileUtil {
      * @return
      */
     public static String readFile(File file){
+        FileReader reader = null;
+        BufferedReader bReader = null;
         try {
             if (!file.isFile()){
                 throw new RuntimeException("error file!");
             }
-            FileReader reader = new FileReader(file);
-            BufferedReader bReader = new BufferedReader(reader);
+            reader = new FileReader(file);
+            bReader = new BufferedReader(reader);
             StringBuilder sb = new StringBuilder();
             String s = "";
             while ((s =bReader.readLine()) != null) {
@@ -65,6 +67,21 @@ public class FileUtil {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (reader!=null){
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bReader!=null){
+                try {
+                    bReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

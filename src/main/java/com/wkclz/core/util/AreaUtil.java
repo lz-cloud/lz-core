@@ -6,6 +6,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AreaUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(AreaUtil.class);
 
     private static final String BASE_URL = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/";
     private static int RETRY_TIMES = 0;
@@ -40,6 +44,9 @@ public class AreaUtil {
      */
     private static void getProvinces(String url, List<AreaEntity> areas, Long parentCode) {
         Document provinceDoc = getDoc(url);
+        if (provinceDoc == null){
+            return;
+        }
         Elements mastheads = provinceDoc.select("tr.provincetr");
         for (Element masthead : mastheads) {
             Elements resultLinks = masthead.select("td > a");
@@ -75,6 +82,10 @@ public class AreaUtil {
      */
     private static void getCitys(String url, List<AreaEntity> areas, Long parentCode) {
         Document cityDoc = getDoc(url);
+
+        if (cityDoc == null){
+            return;
+        }
         url = url.substring(0, url.lastIndexOf("."));
         url = url.substring(0, url.lastIndexOf("/"));
         url = url + "/";
@@ -121,6 +132,10 @@ public class AreaUtil {
      */
     private static void getCountys(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
+
+        if (countryDoc == null){
+            return;
+        }
         url = url.substring(0, url.lastIndexOf("."));
         url = url.substring(0, url.lastIndexOf("/"));
         url = url + "/";
@@ -168,6 +183,9 @@ public class AreaUtil {
      */
     private static void getTowns(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
+        if (countryDoc == null){
+            return;
+        }
         url = url.substring(0, url.lastIndexOf("."));
         url = url.substring(0, url.lastIndexOf("/"));
         url = url + "/";
@@ -215,7 +233,9 @@ public class AreaUtil {
      */
     private static void getVillagetrs(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
-
+        if (countryDoc == null){
+            return;
+        }
         Elements mastheads = countryDoc.select("tr.villagetr");
         for (Element masthead : mastheads) {
 
@@ -258,6 +278,9 @@ public class AreaUtil {
         }
         File file2Save = new File(savePath + urlStr.substring(urlStr.lastIndexOf("/")));
 
+        InputStream inputStream = null;
+        FileOutputStream fos = null;
+        OutputStreamWriter osw = null;
         try {
             Document doc;
 
@@ -265,16 +288,15 @@ public class AreaUtil {
                 doc = Jsoup.parse(file2Save, "GB2312", urlStr);
             } else {
 
-                InputStream inputStream = new URL(urlStr).openStream();
+                inputStream = new URL(urlStr).openStream();
                 doc = Jsoup.parse(inputStream, "GB2312", urlStr);
 
                 String html = doc.html();
 
-                FileOutputStream fos = new FileOutputStream(file2Save, false);
-                OutputStreamWriter osw = new OutputStreamWriter(fos, "gb2312");
+                fos = new FileOutputStream(file2Save, false);
+                osw = new OutputStreamWriter(fos, "gb2312");
                 osw.write(html);
                 osw.flush();
-                fos.close();
             }
 
             RETRY_TIMES = 0;
@@ -285,6 +307,28 @@ public class AreaUtil {
                 return getDoc(urlStr);
             }
             e.printStackTrace();
+        } finally {
+            if (inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (osw != null){
+                try {
+                    osw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

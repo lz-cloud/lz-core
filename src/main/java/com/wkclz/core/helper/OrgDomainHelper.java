@@ -40,7 +40,7 @@ public class OrgDomainHelper extends BaseHelper {
      * 初始化 ORG_DOMAINS
      * @param orgDomains
      */
-    public void setOrgDomains(Map<String, Object> orgDomains){
+    public synchronized void setOrgDomains(Map<String, Object> orgDomains){
         if (orgDomains == null || orgDomains.size() == 0){
             throw new RuntimeException("orgDomains can not be null or empty!");
         }
@@ -53,7 +53,7 @@ public class OrgDomainHelper extends BaseHelper {
         // java 缓存
         if (JAVA_LAST_ACTIVE_TIME != null && ORG_DOMAINS != null ){
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) == -1){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
                 return ORG_DOMAINS;
             }
         }

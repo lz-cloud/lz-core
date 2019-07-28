@@ -36,7 +36,7 @@ public class ApiDomainHelper extends BaseHelper {
      * 初始化 API_DOMAINS
      * @param apiDomains
      */
-    public void setApiDomains(List<String> apiDomains){
+    public synchronized void setApiDomains(List<String> apiDomains){
         if (apiDomains == null || apiDomains.size() == 0){
             throw new RuntimeException("apiDomains can not be null or empty!");
         }
@@ -49,7 +49,7 @@ public class ApiDomainHelper extends BaseHelper {
         // java 缓存
         if (JAVA_LAST_ACTIVE_TIME != null && API_DOMAINS != null ){
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) == -1){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
                 return API_DOMAINS;
             }
         }

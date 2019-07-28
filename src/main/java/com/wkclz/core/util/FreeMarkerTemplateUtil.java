@@ -5,6 +5,7 @@ import freemarker.cache.NullCacheStorage;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.ParseException;
 import freemarker.template.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class FreeMarkerTemplateUtil {
      * @throws IOException
      */
     public static Template getTemplate(String templateName, String templatesDir) throws IOException {
-        if (templatesDir!=null&&templatesDir!=""){
+        if (StringUtils.isNotBlank(templatesDir)){
             CONFIGURATION.setDirectoryForTemplateLoading(new File(templatesDir));
         }
         try {

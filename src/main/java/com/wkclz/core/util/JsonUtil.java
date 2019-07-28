@@ -35,6 +35,7 @@ public class JsonUtil {
      * @param object
      */
     public static void writeJson(String jsonFilePath, Object object){
+        FileWriter writer = null;
         try {
             File file = new File(jsonFilePath);
             if (!file.isFile()) {
@@ -43,12 +44,20 @@ public class JsonUtil {
             String jsonStr = JSON.toJSONString(object);
             jsonStr = format(jsonStr);
 
-            FileWriter writer = new FileWriter(file);
+            writer = new FileWriter(file);
             writer.write(jsonStr);
             writer.flush();
-            writer.close();
         } catch (IOException e) {
             // who care ?
+        } finally {
+            if (writer != null){
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
     }

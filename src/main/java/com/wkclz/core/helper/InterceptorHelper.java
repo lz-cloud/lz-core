@@ -52,10 +52,12 @@ public class InterceptorHelper {
         }
 
         // uri 权限检测 TODO
+        /*
         boolean userUriAuthCheckResult = true;
         if (!userUriAuthCheckResult){
             return false;
         }
+        */
 
         // 内存 session 检测【不再需要返回判断】【如果存在，不会重复设置】
         authHelper.checkUserSession(req);
@@ -65,9 +67,6 @@ public class InterceptorHelper {
 
     public void afterCompletion(HttpServletRequest req, HttpServletResponse rep) {
         String token = req.getParameter("token");
-        if (token == null){
-            return;
-        }
         if (StringUtils.isBlank(token)){
             return;
         }
