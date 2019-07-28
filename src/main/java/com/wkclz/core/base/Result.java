@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +51,6 @@ public class Result {
     private Object data;
 
     public Result() {
-        if (Sys.CURRENT_ENV != EnvType.PROD) {
-            this.requestTime = new Date();
-        }
     }
 
     public Result(Object data) {
@@ -75,7 +71,6 @@ public class Result {
     }
 
     public Result setError(String... error) {
-        Result.calcCostTime(this);
         this.error = concatStr(error);
         this.code = -1;
         return this;
@@ -86,7 +81,6 @@ public class Result {
     }
 
     public Result setRemind(String... remind) {
-        Result.calcCostTime(this);
         this.remind = concatStr(remind);
         this.code = 0;
         return this;
@@ -101,7 +95,6 @@ public class Result {
     }
 
     public Result setData(Object data) {
-        Result.calcCostTime(this);
         this.code = 1;
         this.data = data;
         return this;
@@ -131,23 +124,51 @@ public class Result {
         this.costTime = costTime;
     }
 
+
+
+    public static Result error(String... error){
+        Result result = new Result();
+        result.error = concatStr(error);
+        result.code = -1;
+        return result;
+    }
+
+    public static Result remind(String... remind){
+        Result result = new Result();
+        result.remind = concatStr(remind);
+        result.code = 0;
+        return result;
+    }
+
+    public static Result data(Object data){
+        Result result = new Result();
+        result.data = data;
+        result.code = 1;
+        return result;
+    }
+
+    public static Result ok(){
+        Result result = new Result();
+        result.data = true;
+        result.code = 1;
+        return result;
+    }
+
+
+
     public Result setOk() {
-        Result.calcCostTime(this);
         this.data = true;
         this.code = 1;
         return this;
     }
 
-
     public Result setMoreError(ResultStatus status) {
-        Result.calcCostTime(this);
         this.code = status.getCode();
         this.error = status.getMsg();
         return this;
     }
 
     public Result setMoreRemind(ResultStatus status) {
-        Result.calcCostTime(this);
         this.code = status.getCode();
         this.error = status.getMsg();
         return this;
@@ -200,13 +221,5 @@ public class Result {
         return false;
     }
 
-    
-    private static void calcCostTime(Result result){
-        if (Sys.CURRENT_ENV != EnvType.PROD) {
-            result.setResponeTime(new Date());
-            if(result.getRequestTime() != null){
-                result.setCostTime(result.getResponeTime().getTime()-result.getRequestTime().getTime());
-            }
-        }
-    }
+
 }

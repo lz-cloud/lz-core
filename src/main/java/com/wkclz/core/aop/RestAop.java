@@ -4,11 +4,18 @@ package com.wkclz.core.aop;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.BaseModel;
+import com.wkclz.core.base.Result;
+import com.wkclz.core.base.Sys;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.helper.OrgDomainHelper;
 import com.wkclz.core.pojo.dto.User;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import com.wkclz.core.pojo.enums.EnvType;
+import com.wkclz.core.util.UniqueCodeUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +25,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+/**
+ * RestAop
+ * wangkc @ 2019-07-28 23:56:25
+ */
 @Aspect
 @Component
 public class RestAop {
@@ -34,102 +47,15 @@ public class RestAop {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAop.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private final String POINT_CUT = "execution(public * com.wkclz.*.controller.custom..*.*(..))";
-
+    private final String POINT_CUT = "execution(public * *..controller..*.*(..)) || execution(public * *..rest..*.*(..))";
 
     @Autowired
     private AuthHelper authHelper;
     @Autowired
     private OrgDomainHelper orgDomainHelper;
 
-
     @Pointcut(POINT_CUT)
     public void pointCut(){}
-
-    @Before(value = "pointCut()")
-    public void before(JoinPoint joinPoint) {
-
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest req = attributes.getRequest();
-
-        String requestURI = req.getRequestURI();
-        Long userId =  null;
-        Long orgId = null;
-
-        //获取目标方法参数信息
-        Object[] args = joinPoint.getArgs();
-        if (args == null || args.length == 0){
-            return;
-        }
-
-        for (Object arg:args) {
-            if (arg instanceof BaseModel){
-                BaseModel model = (BaseModel)arg;
-                userId = setCurrentUserId(model, req, userId);
-                orgId = setCurrentOrgId(model, req, orgId);
-            }
-            if (arg instanceof ArrayList){
-                ArrayList list = (ArrayList)arg;
-                for (Object l : list){
-                    if (l instanceof BaseModel){
-                        BaseModel model = (BaseModel)l;
-                        userId = setCurrentUserId(model, req, userId);
-                        orgId = setCurrentOrgId(model, req, orgId);
-                    }
-                }
-            }
-        }
-
-        String value = null;
-        try {
-            value = objectMapper.writeValueAsString(args);
-        } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException", e);
-        }
-        logger.info("request uri: {}, args: {}", requestURI, value);
-    }
-
-
-    /**
-     * 后置返回
-     *      如果第一个参数为JoinPoint，则第二个参数为返回值的信息
-     *      如果第一个参数不为JoinPoint，则第一个参数为returning中对应的参数
-     * returning：限定了只有目标方法返回值与通知方法参数类型匹配时才能执行后置返回通知，否则不执行，
-     *            参数为Object类型将匹配任何目标返回值
-     */
-    @AfterReturning(value = POINT_CUT,returning = "result")
-    public void doAfterReturningAdvice1(JoinPoint joinPoint,Object result){
-        // logger.info("第一个后置返回通知的返回值："+result);
-    }
-
-    @AfterReturning(value = POINT_CUT,returning = "result",argNames = "result")
-    public void doAfterReturningAdvice2(String result){
-        // logger.info("第二个后置返回通知的返回值："+result);
-    }
-    //第一个后置返回通知的返回值：姓名是大大
-    //第二个后置返回通知的返回值：姓名是大大
-    //第一个后置返回通知的返回值：{name=小小, id=1}
-
-    /**
-     * 后置异常通知
-     *  定义一个名字，该名字用于匹配通知实现方法的一个参数名，当目标方法抛出异常返回后，将把目标方法抛出的异常传给通知方法；
-     *  throwing:限定了只有目标方法抛出的异常与通知方法相应参数异常类型时才能执行后置异常通知，否则不执行，
-     *            对于throwing对应的通知方法参数为Throwable类型将匹配任何异常。
-     * @param joinPoint
-     * @param exception
-     */
-    @AfterThrowing(value = POINT_CUT,throwing = "exception")
-    public void doAfterThrowingAdvice(JoinPoint joinPoint,Throwable exception){
-        logger.info(joinPoint.getSignature().getName());
-        if(exception instanceof NullPointerException){
-            logger.info("发生了空指针异常!!!!!");
-        }
-    }
-
-    @After(value = POINT_CUT)
-    public void doAfterAdvice(JoinPoint joinPoint){
-        // logger.info("后置通知执行了!");
-    }
 
     /**
      * 环绕通知：
@@ -138,23 +64,106 @@ public class RestAop {
      *   环绕通知非常强大，可以决定目标方法是否执行，什么时候执行，执行时是否需要替换方法参数，执行完毕是否需要替换返回值。
      *   环绕通知第一个参数必须是org.aspectj.lang.ProceedingJoinPoint类型
      */
-    /*
     @Around(value = POINT_CUT)
-    public Object doAroundAdvice(ProceedingJoinPoint proceedingJoinPoint){
-        logger.info("@Around环绕通知："+proceedingJoinPoint.getSignature().toString());
+    public Object doAroundAdvice(ProceedingJoinPoint point){
+
+        logger.debug("@Around环绕通知："+point.getSignature().toString());
+
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest req = attributes.getRequest();
+
+        String seq = req.getHeader("seq");
+        String method = req.getMethod();
+        String uri = req.getRequestURI();
+        Date requestTime = new Date();
+        Date responeTime = null;
+        Long costTime = null;
+
+        if (StringUtils.isBlank(seq)){
+            // 如果未生成，需要和 网关 的生成方法保持一致
+            String uuid = UniqueCodeUtil.getJavaUuid();
+            seq = StringUtils.join(Sys.APPLICATION_GROUP, "_", uuid);
+        }
+
+        // 给入参赋值
+        String args = setArgs(point, req);
+        logger.info("{} ----> method: {}, uri: {}, args: {}", seq, method, uri, args);
+
+        // 请求具体方法
         Object obj = null;
         try {
-            //可以加参数
-            obj = proceedingJoinPoint.proceed();
-            logger.info(obj.toString());
+            obj = point.proceed();
         } catch (Throwable throwable) {
-            // who care ?
+            logger.error("Throwable",throwable);
         }
-        logger.info("@Around环绕通知执行结束");
+
+        // 返回参数处理
+        if (obj != null && obj instanceof Result){
+            responeTime = new Date();
+            costTime = responeTime.getTime()-requestTime.getTime();
+
+            if (Sys.CURRENT_ENV != EnvType.PROD) {
+                Result result = (Result)obj;
+                result.setRequestTime(requestTime);
+                result.setResponeTime(responeTime);
+                result.setCostTime(costTime);
+            }
+        }
+
+        String value = null;
+        try {
+            value = objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            logger.error("JsonProcessingException",e);
+        }
+        logger.info("{} ----> method: {}, uri: {}, ms: {}, result: {}", seq, method, uri, costTime, value);
+
+        logger.debug("@Around环绕通知执行结束");
         return obj;
     }
-    */
 
+    private String setArgs(ProceedingJoinPoint point, HttpServletRequest req){
+        Long userId =  null;
+        Long orgId = null;
+        String value = null;
+
+        // param 赋值
+        Object[] args = point.getArgs();
+        if (args != null && args.length > 0){
+            List<Object> baseModelArgs = new ArrayList<>();
+            for (Object arg:args) {
+                if (arg instanceof BaseModel){
+                    BaseModel model = (BaseModel)arg;
+                    userId = setCurrentUserId(model, req, userId);
+                    orgId = setCurrentOrgId(model, req, orgId);
+                    baseModelArgs.add(arg);
+                }
+                if (arg instanceof ArrayList){
+                    ArrayList list = (ArrayList)arg;
+                    boolean isBaseModel = false;
+                    for (Object l : list){
+                        if (l instanceof BaseModel){
+                            isBaseModel = true;
+                            BaseModel model = (BaseModel)l;
+                            userId = setCurrentUserId(model, req, userId);
+                            orgId = setCurrentOrgId(model, req, orgId);
+                        }
+                    }
+                    if (isBaseModel){
+                        baseModelArgs.add(arg);
+                    }
+                }
+            }
+            if (!baseModelArgs.isEmpty()){
+                try {
+                    value = objectMapper.writeValueAsString(baseModelArgs);
+                } catch (JsonProcessingException e) {
+                    logger.error("JsonProcessingException", e);
+                }
+            }
+        }
+        return value;
+    }
 
 
     private Long setCurrentUserId(BaseModel model, HttpServletRequest req, Long userId){
