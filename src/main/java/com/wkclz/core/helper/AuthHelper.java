@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.pojo.enums.SystemConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -266,7 +267,7 @@ public class AuthHelper extends BaseHelper {
         if (StringUtils.isBlank(tokenStr)){
             logger.info("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
             Result result = new Result();
-            result.setMoreError(Result.TOKEN_UNLL);
+            result.setMoreError(ResultStatus.TOKEN_UNLL);
             return Result.responseError(rep,result);
         }
 
@@ -277,7 +278,7 @@ public class AuthHelper extends BaseHelper {
             Result result = new Result();
             invalidateSession(req, rep);
             logger.info("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
-            result.setMoreError(Result.TOKEN_SIGN_FAILD);
+            result.setMoreError(ResultStatus.TOKEN_SIGN_FAILD);
             return Result.responseError(rep,result);
         }
 
@@ -287,7 +288,7 @@ public class AuthHelper extends BaseHelper {
             Result result = new Result();
             invalidateSession(req, rep);
             logger.info("token is error, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
-            result.setMoreError(Result.TOKEN_ERROR);
+            result.setMoreError(ResultStatus.TOKEN_ERROR);
             return Result.responseError(rep,result);
             /*
             // 对开发环境直接赋值登录

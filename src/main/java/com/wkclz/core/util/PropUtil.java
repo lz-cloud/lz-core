@@ -52,7 +52,10 @@ public class PropUtil {
         if (!file.exists()){
             file.mkdirs();
             try {
-                file.createNewFile();
+                boolean newFile = file.createNewFile();
+                if (!newFile){
+                    logger.info("file exist: {}", file.getAbsolutePath());
+                }
             } catch (IOException e) {
                 logger.error("IOException", e);
             }

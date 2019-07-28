@@ -42,7 +42,10 @@ public class JsonUtil {
         try {
             File file = new File(jsonFilePath);
             if (!file.isFile()) {
-                file.createNewFile();
+                boolean newFile = file.createNewFile();
+                if (!newFile){
+                    logger.info("file exist: {}", file.getAbsolutePath());
+                }
             }
             String jsonStr = JSON.toJSONString(object);
             jsonStr = format(jsonStr);

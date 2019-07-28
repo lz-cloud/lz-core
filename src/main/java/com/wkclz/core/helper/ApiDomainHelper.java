@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ public class ApiDomainHelper extends BaseHelper {
 
         logger.info("api url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
-        result.setMoreError(Result.API_CORS);
+        result.setMoreError(ResultStatus.API_CORS);
         return Result.responseError(rep,result);
     }
 

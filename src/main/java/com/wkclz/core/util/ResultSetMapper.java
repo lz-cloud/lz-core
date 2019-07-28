@@ -1,5 +1,8 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -8,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ResultSetMapper {
+    private static final Logger logger = LoggerFactory.getLogger(QrCodeUtil.class);
+
 
     public static List<Map> toMapList(ResultSet rs) {
         List list = new ArrayList();
@@ -28,8 +33,8 @@ public class ResultSetMapper {
                 }
                 list.add(map);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Exception", e);
         } finally {
             // do nothing
         }

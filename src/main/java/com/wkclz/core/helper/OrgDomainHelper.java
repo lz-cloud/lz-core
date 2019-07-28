@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.util.RegularUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -114,7 +115,7 @@ public class OrgDomainHelper extends BaseHelper {
 
         logger.info("origin url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
-        result.setMoreError(Result.ORIGIN_CORS);
+        result.setMoreError(ResultStatus.ORIGIN_CORS);
         return Result.responseError(rep,result);
     }
 
