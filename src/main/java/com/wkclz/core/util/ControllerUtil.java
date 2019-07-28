@@ -3,6 +3,8 @@ package com.wkclz.core.util;
 import com.sun.javafx.binding.StringFormatter;
 import com.wkclz.core.base.annotation.Desc;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -11,6 +13,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class ControllerUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerUtil.class);
 
     // 不进行读取的 uri
     private static List<String> IGNORE_URI = Arrays.asList(new String[]{"/robotMsg","/wechat/check/signature"});
@@ -149,7 +153,7 @@ public class ControllerUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         }
         map = sortMapByKey(map);
         return map;

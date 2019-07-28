@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class MapUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(MapUtil.class);
 
     /**
      * Object 2 Map
@@ -46,7 +49,7 @@ public class MapUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            // who care ?
         }
         return map;
         */
@@ -106,11 +109,11 @@ public class MapUtil {
             obj = clazz.newInstance();
             BeanUtils.populate(obj, map);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error("InstantiationException", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
         }
         return obj;
     }

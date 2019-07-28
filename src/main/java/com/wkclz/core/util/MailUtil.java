@@ -4,6 +4,8 @@ package com.wkclz.core.util;
 import com.sun.mail.util.MailSSLSocketFactory;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class MailUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(MailUtil.class);
 
     // 发件人邮箱服务器
     private String emailHost;
@@ -211,9 +215,9 @@ public class MailUtil {
             // 发送邮件
             Transport.send(mimeMessage);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.error("MessagingException", e);
         } catch (GeneralSecurityException e) {
-            e.printStackTrace();
+            logger.error("GeneralSecurityException", e);
         }
     }
 

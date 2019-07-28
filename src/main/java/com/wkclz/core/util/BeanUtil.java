@@ -1,5 +1,7 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -19,6 +21,7 @@ import java.util.Set;
  */
 public class BeanUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
     /**
      * remove the blank string in the  Object
      *
@@ -40,7 +43,7 @@ public class BeanUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         return obj;
     }
@@ -82,9 +85,9 @@ public class BeanUtil {
                 list.add(t);
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error("InstantiationException", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         }
         return list;
     }

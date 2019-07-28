@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wkclz.core.pojo.enums.EnvType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result {
 
+    private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
     public static final String SYSTEM_ERROR = "System error, we have turned to the Admin of this website";
     public static final String REDIS_IS_DISABLED = "Redis config or Redis server is error! no Redis will be support!";
@@ -207,10 +210,10 @@ public class Result {
             rep.getWriter().print(string);
             rep.getWriter().close();
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("JsonProcessingException", e);
             return false;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
             return false;
         }
         return false;

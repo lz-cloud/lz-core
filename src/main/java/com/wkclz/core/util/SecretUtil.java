@@ -1,5 +1,8 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,6 +18,8 @@ import java.util.UUID;
  * Created: wangkaicun @ 2017-10-23 上午12:28
  */
 public class SecretUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecretUtil.class);
 
     private static final String GENERAL_SALT = "wkclz@qq.com$www.wkclz.com&cc";
 
@@ -47,7 +52,7 @@ public class SecretUtil {
         try {
             encryptPassword = aesEncrypt(pwdStr, salt);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         return encryptPassword;
     }
@@ -66,7 +71,7 @@ public class SecretUtil {
         try {
             decryptPassword = aesDecrypt(encryptPwdStr, salt);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         return decryptPassword;
     }

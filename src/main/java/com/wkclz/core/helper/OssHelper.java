@@ -7,6 +7,8 @@ import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.PutObjectResult;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.util.RegularUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  * Created: wangkaicun @ 2017-12-23 下午2:48
  */
 public class OssHelper {
+    private static final Logger logger = LoggerFactory.getLogger(OssHelper.class);
 
     private static SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
 
@@ -81,7 +84,7 @@ public class OssHelper {
         try {
             uploadFiles(file.getInputStream(), fileFullPath);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         }
         String outerEndpoint = helper.getSystemConfig("oss_outer_endpoint");
 
@@ -198,7 +201,8 @@ public class OssHelper {
                     }
                 }
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                logger.error("UnsupportedEncodingException", e);
+
             }
             str = sb.toString();
         }

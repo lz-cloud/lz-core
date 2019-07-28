@@ -6,6 +6,8 @@ import freemarker.cache.StringTemplateLoader;
 import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.util.Map;
  * Created: wangkaicun @ 2018-03-20 下午11:47
  */
 public class FreeMarkerTemplateUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(FreeMarkerTemplateUtil.class);
 
     private FreeMarkerTemplateUtil(){
     }
@@ -71,13 +75,13 @@ public class FreeMarkerTemplateUtil {
             Template tpl = stringConfig.getTemplate("_template_", "utf-8");
             return org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processTemplateIntoString(tpl, params);
         } catch (TemplateNotFoundException e) {
-            e.printStackTrace();
+            logger.error("TemplateNotFoundException", e);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("ParseException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } catch (TemplateException e) {
-            e.printStackTrace();
+            logger.error("TemplateException", e);
         }
         return null;
     }

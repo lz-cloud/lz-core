@@ -1,10 +1,16 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtil {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
     public static List<String> getFileList(List<String> filesResult, String strPath) {
 
@@ -64,22 +70,22 @@ public class FileUtil {
             bReader.close();
             return sb.toString();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("FileNotFoundException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } finally {
             if (reader!=null){
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
             if (bReader!=null){
                 try {
                     bReader.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }

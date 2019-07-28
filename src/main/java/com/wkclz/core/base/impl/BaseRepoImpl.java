@@ -6,6 +6,8 @@ import com.wkclz.core.base.BaseRepoHandler;
 import com.wkclz.core.base.PageData;
 import com.wkclz.core.util.ClassUtil;
 import com.wkclz.core.util.IntegerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends BaseRepoHandler {
+    private static final Logger logger = LoggerFactory.getLogger(BaseRepoImpl.class);
 
     protected BaseMapper<Model, Example> mapper;
     // 用于在 Model 为 null 时的实例化
@@ -65,11 +68,11 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
             Method copyIfNotNull = clazz.getDeclaredMethod("copyIfNotNull", new Class[] { clazz,clazz });
             copyIfNotNull.invoke(null, model, target);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.error("NoSuchMethodException", e);
         }
         target.setVersion(target.getVersion()+1);
         return mapper.updateByPrimaryKeySelective(target);
@@ -132,11 +135,11 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
             Method createDelExample = modelClazz.getDeclaredMethod("createDelExample", new Class[] { List.class });
             example = (Example)createDelExample.invoke(null, ids);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.error("NoSuchMethodException", e);
         }
 
 
@@ -197,9 +200,9 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
             example = (Example)createExample.invoke(null, model);
             return example;
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
         }
         return null;
     }

@@ -4,6 +4,8 @@ package com.wkclz.core.util;
 import com.wkclz.core.base.annotation.Desc;
 import com.wkclz.core.pojo.entity.EnumEntity;
 import com.wkclz.core.pojo.entity.EnumTypeEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,6 +20,8 @@ import java.util.Set;
  * @Create 2018-06-06 18:14:08
  */
 public class EnumUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(EnumUtil.class);
 
 
     private static List<EnumTypeEntity> DICT_TYPE_ENTITYS;
@@ -103,9 +107,9 @@ public class EnumUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
         }
         return dictEntities;
     }

@@ -1,5 +1,8 @@
 package com.wkclz.core.helper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.*;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.List;
  * Created: wangkaicun @ 2017-10-21 上午12:41
  */
 public class IpHelper {
+    private static final Logger logger = LoggerFactory.getLogger(IpHelper.class);
 
     public static String getIpAddr(HttpServletRequest req) {
         String ipAddress = req.getHeader("x-forwarded-for");
@@ -28,7 +32,7 @@ public class IpHelper {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error("UnknownHostException", e);
                 }
                 ipAddress = inet == null ? null:inet.getHostAddress();
             }
@@ -50,7 +54,7 @@ public class IpHelper {
         try {
             interfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            e.printStackTrace();
+            logger.error("SocketException", e);
         }
         if (interfaces == null){
             return null;

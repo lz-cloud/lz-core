@@ -142,8 +142,7 @@ public class BaseHelper {
             String host = url1.getHost();
             return host;
         } catch (MalformedURLException e) {
-            // e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error("MalformedURLException", e);
         }
 
 //        if (url.contains("//")) { url = url.substring(url.indexOf("//") + 2); }

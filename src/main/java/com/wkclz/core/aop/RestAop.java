@@ -84,7 +84,7 @@ public class RestAop {
         try {
             value = objectMapper.writeValueAsString(args);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("JsonProcessingException", e);
         }
         logger.info("request uri: {}, args: {}", requestURI, value);
     }
@@ -148,7 +148,7 @@ public class RestAop {
             obj = proceedingJoinPoint.proceed();
             logger.info(obj.toString());
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            // who care ?
         }
         logger.info("@Around环绕通知执行结束");
         return obj;

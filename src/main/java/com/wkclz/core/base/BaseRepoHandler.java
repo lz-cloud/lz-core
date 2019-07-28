@@ -6,6 +6,8 @@ import com.github.pagehelper.PageHelper;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -22,6 +24,8 @@ import java.util.Map;
  * Created: wangkaicun @ 2018-01-21 下午7:46
  */
 public class BaseRepoHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseRepoHandler.class);
 
     protected static final int INSERT_SIZE = 1200;
 
@@ -190,9 +194,9 @@ public class BaseRepoHandler {
         try {
             model = (Model)clazz.newInstance();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error("InstantiationException", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         }
         return model;
     }
@@ -235,7 +239,7 @@ public class BaseRepoHandler {
         try {
             client.index(indexRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
-            e.printStackTrace();
+            // who care ?
         }
     }
     */
@@ -259,13 +263,13 @@ public class BaseRepoHandler {
             List<T> list = MapUtil.map2ObjList(maps, clazz);
             return list;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException", e);
         } finally {
             if (statement != null){
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("SQLException", e);
                 }
             }
         }
@@ -279,13 +283,13 @@ public class BaseRepoHandler {
             List<Map> maps = ResultSetMapper.toMapList(results);
             return maps;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException", e);
         } finally {
             if (statement != null){
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("SQLException", e);
                 }
             }
         }

@@ -5,6 +5,8 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,7 @@ import java.util.Base64;
  * 生成二维码帮助类
  */
 public class QrCodeUtil {
+    private static final Logger logger = LoggerFactory.getLogger(QrCodeUtil.class);
 
     /**
      * 生成base64位二维码
@@ -36,9 +39,9 @@ public class QrCodeUtil {
             ImageIO.write(bufferedImage, "jpg", Base64.getEncoder().wrap(os));
             return "data:image/jpg;base64," + os.toString();
         } catch (WriterException e) {
-            e.printStackTrace();
+            logger.error("WriterException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         }
         return null;
     }
@@ -58,9 +61,9 @@ public class QrCodeUtil {
             ImageIO.write(bufferedImage, "jpg", Base64.getEncoder().wrap(os));
             return "data:image/jpg;base64," + os.toString();
         } catch (WriterException e) {
-            e.printStackTrace();
+            logger.error("WriterException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         }
         return null;
     }
@@ -87,13 +90,13 @@ public class QrCodeUtil {
                 baos.write(byteChunk, 0, n);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }

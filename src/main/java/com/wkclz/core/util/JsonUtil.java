@@ -3,6 +3,8 @@ package com.wkclz.core.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class JsonUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(JsonUtil.class);
 
     private static final Pattern PATTERN = Pattern.compile("\\s*|\t|\r|\n");
 
@@ -54,7 +57,7 @@ public class JsonUtil {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
 

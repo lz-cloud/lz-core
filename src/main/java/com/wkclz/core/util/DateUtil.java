@@ -3,6 +3,8 @@ package com.wkclz.core.util;
 
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.pojo.enums.DateRangeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,8 @@ import java.util.Date;
  * Created: wangkaicun @ 2017-10-18 下午10:21
  */
 public class DateUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     private static final String SDF_YYYY_MM_DD = "yyyy-MM-dd";
     private static final String SDF_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
@@ -127,7 +131,7 @@ public class DateUtil {
                 Date date = sdfYmdhms.parse(dateStr);
                 return date;
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error("ParseException", e);
             }
         }
         throw new RuntimeException("Error DateTime string");

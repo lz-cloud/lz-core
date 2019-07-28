@@ -9,7 +9,7 @@ import java.io.*;
 
 public class ExcelHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(ExcelHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExcelHelper.class);
 
     public static void excelStreamResopnse(HttpServletResponse response, Excel excel) {
 
@@ -21,7 +21,7 @@ public class ExcelHelper {
             File file = excel.createXlsxByFile();
             String fileName = file.getName();
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-            log.info("the excel file is in {}", file.getPath());
+            logger.info("the excel file is in {}", file.getPath());
 
             in = new FileInputStream(file);
 
@@ -38,21 +38,20 @@ public class ExcelHelper {
             fops.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("文件有误!");
+            logger.error("Exception", e);
         } finally {
             if (fops != null) {
                 try {
                     fops.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }

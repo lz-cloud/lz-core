@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.helper.BaseHelper;
 import com.wkclz.core.util.SecretUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Date;
 
 public class Token {
+    private static final Logger logger = LoggerFactory.getLogger(Token.class);
 
     public Token(){
     }
@@ -69,7 +72,7 @@ public class Token {
             Token token = JSONObject.parseObject(new String(base64Decode), Token.class);
             return token;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception", e);
         }
         return null;
     }

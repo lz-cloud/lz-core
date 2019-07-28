@@ -1,5 +1,8 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,7 @@ import java.util.Set;
  * @since 2017-01-15 13:55:02
  */
 public class PropertiesUtil {
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
     /**
      * Properties 转换为 Map的List
@@ -41,15 +45,15 @@ public class PropertiesUtil {
             in = new BufferedInputStream(new FileInputStream(new File(fileStr)));
             prop.load(in);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("FileNotFoundException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }

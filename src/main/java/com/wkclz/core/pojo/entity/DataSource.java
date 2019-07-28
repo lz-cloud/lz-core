@@ -3,12 +3,15 @@ package com.wkclz.core.pojo.entity;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.wkclz.core.util.SecretUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataSource {
+    private static final Logger logger = LoggerFactory.getLogger(DataSource.class);
 
 
     private static Map<String, DruidPooledConnection> dataConns = null;
@@ -43,7 +46,7 @@ public class DataSource {
                 dataConns.put(hex, conn);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException", e);
         }
         return conn;
     }

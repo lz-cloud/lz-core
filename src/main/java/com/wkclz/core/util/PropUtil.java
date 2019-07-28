@@ -1,11 +1,16 @@
 package com.wkclz.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
 public class PropUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(PropUtil.class);
 
     public static Properties readProp(String propertiesPath){
         File file = new File(propertiesPath);
@@ -19,15 +24,15 @@ public class PropUtil {
             in = new BufferedInputStream(new FileInputStream(file));
             props.load(in);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("FileNotFoundException", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } finally {
             if (in!=null){
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }
@@ -49,7 +54,7 @@ public class PropUtil {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("IOException", e);
             }
         }
 
@@ -58,13 +63,13 @@ public class PropUtil {
             fw = new FileWriter(propertiesPath);
             sortProp.store(fw, "此属性文件由程序自动管理，请不要手动编辑");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException", e);
         } finally {
             if (fw!=null){
                 try {
                     fw.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IOException", e);
                 }
             }
         }
@@ -95,9 +100,9 @@ public class PropUtil {
                 field.set(obj, prop.get(field.getName()));
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error("InstantiationException", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
         }
         return obj;
     }
