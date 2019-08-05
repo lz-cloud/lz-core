@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class ValidateCode {
 
-    private static Random random = null;
+    private static Random random = new Random();
 
     /**
      * 验证码类型为仅数字 0~9
