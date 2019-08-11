@@ -113,7 +113,7 @@ public class RestAop {
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException",e);
         }
-        logger.info("{} ----> method: {}, uri: {}, ms: {}, args: {}, result: {}", seq, method, uri, args, costTime, value);
+        logger.info("{} ----> method: {}, uri: {}, ms: {}, args: {}, result: {}", seq, method, uri, costTime, args, value);
 
         return obj;
     }
