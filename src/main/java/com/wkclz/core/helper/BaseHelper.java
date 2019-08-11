@@ -137,6 +137,9 @@ public class BaseHelper {
         if (url == null || url.trim().length() == 0){
             return url;
         }
+        if (!url.startsWith("http")){
+            url = "http://" + url;
+        }
         try {
             URL url1 = new URL(url);
             String host = url1.getHost();
