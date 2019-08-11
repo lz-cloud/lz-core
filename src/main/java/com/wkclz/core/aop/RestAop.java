@@ -67,8 +67,6 @@ public class RestAop {
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point){
 
-        logger.debug("@Around环绕通知："+point.getSignature().toString());
-
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = attributes.getRequest();
 
@@ -87,7 +85,6 @@ public class RestAop {
 
         // 给入参赋值
         String args = setArgs(point, req);
-        logger.info("{} ----> method: {}, uri: {}, args: {}", seq, method, uri, args);
 
         // 请求具体方法
         Object obj = null;
@@ -116,9 +113,8 @@ public class RestAop {
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException",e);
         }
-        logger.info("{} ----> method: {}, uri: {}, ms: {}, result: {}", seq, method, uri, costTime, value);
+        logger.info("{} ----> method: {}, uri: {}, ms: {}, args: {}, result: {}", seq, method, uri, args, costTime, value);
 
-        logger.debug("@Around环绕通知执行结束");
         return obj;
     }
 
@@ -134,8 +130,8 @@ public class RestAop {
             for (Object arg:args) {
                 if (arg instanceof BaseModel){
                     BaseModel model = (BaseModel)arg;
-                    userId = setCurrentUserId(model, req, userId);
-                    orgId = setCurrentOrgId(model, req, orgId);
+                    userId = this.setCurrentUserId(model, req, userId);
+                    orgId = this.setCurrentOrgId(model, req, orgId);
                     baseModelArgs.add(arg);
                 }
                 if (arg instanceof ArrayList){
@@ -145,8 +141,8 @@ public class RestAop {
                         if (l instanceof BaseModel){
                             isBaseModel = true;
                             BaseModel model = (BaseModel)l;
-                            userId = setCurrentUserId(model, req, userId);
-                            orgId = setCurrentOrgId(model, req, orgId);
+                            userId = this.setCurrentUserId(model, req, userId);
+                            orgId = this.setCurrentOrgId(model, req, orgId);
                         }
                     }
                     if (isBaseModel){
