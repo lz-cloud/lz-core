@@ -6,6 +6,7 @@ import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.util.RegularUtil;
+import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class OrgDomainHelper extends BaseHelper {
         if (req == null){
             return null;
         }
-        String domain = getDomain(req);
+        String domain = UrlUtil.getDomain(req);
 
         if (StringUtils.isBlank(domain)){
             throw new RuntimeException("Can not get domain from the request！");
@@ -99,7 +100,7 @@ public class OrgDomainHelper extends BaseHelper {
         if (url==null) {
             return true;
         }
-        url = getDomainFronUrl(url);
+        url = UrlUtil.getDomainFronUrl(url);
 
         // 特殊情况，不检查跨域
         if (RegularUtil.isIp(url) && Sys.CURRENT_ENV != EnvType.PROD ){
@@ -119,28 +120,5 @@ public class OrgDomainHelper extends BaseHelper {
         return Result.responseError(rep,result);
     }
 
-    /**
-     * 获取请求域名
-     * @param req
-     * @return
-     */
-    public static String getDomain(HttpServletRequest req){
-        String domain = req.getHeader("Origin");
-        if (StringUtils.isBlank(domain)){
-            domain = req.getHeader("Referer");
-        }
-        if (StringUtils.isBlank(domain)){
-            domain = req.getParameter("Origin");
-        }
-        if (StringUtils.isBlank(domain)){
-            domain = req.getParameter("Referer");
-        }
-        // 非前后分离的情况，为当前域名
-        if (StringUtils.isBlank(domain)){
-            domain = req.getRequestURL().toString();
-        }
-        domain = getDomainFronUrl(domain);
-        return domain;
-    }
 
 }

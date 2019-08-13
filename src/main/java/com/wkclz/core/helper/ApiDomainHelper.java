@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.ResultStatus;
+import com.wkclz.core.util.UrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class ApiDomainHelper extends BaseHelper {
         }
 
         String url = req.getRequestURL().toString();
-        url = getDomainFronUrl(url);
+        url = UrlUtil.getDomainFronUrl(url);
 
         if (apiDomains.contains(url)) {
             return true;

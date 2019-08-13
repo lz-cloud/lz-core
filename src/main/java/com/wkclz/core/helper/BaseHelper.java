@@ -133,25 +133,5 @@ public class BaseHelper {
         return liveTime;
     }
 
-    protected static String getDomainFronUrl(String url){
-        if (url == null || url.trim().length() == 0){
-            return url;
-        }
-        if (!url.startsWith("http")){
-            url = "http://" + url;
-        }
-        try {
-            URL url1 = new URL(url);
-            String host = url1.getHost();
-            return host;
-        } catch (MalformedURLException e) {
-            logger.error("MalformedURLException", e);
-        }
-
-//        if (url.contains("//")) { url = url.substring(url.indexOf("//") + 2); }
-//        if (url.contains(":")) { url = url.substring(0, url.indexOf(":")); }
-//        if (url.contains("/")) { url = url.substring(0, url.indexOf("/")); }
-        return null;
-    }
 
 }

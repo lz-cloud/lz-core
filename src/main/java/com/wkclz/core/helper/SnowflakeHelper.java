@@ -9,7 +9,7 @@ import java.util.Enumeration;
 
 public class SnowflakeHelper {
 
-    public static SnowflakeIdWorker SFIW = null;
+    private static SnowflakeIdWorker SFIW = null;
 
     // 生成唯一序列
     public static synchronized long getSnowflakeId(){
@@ -24,7 +24,7 @@ public class SnowflakeHelper {
     /**
      * 获取机器编码
      */
-    public static long getWorkId() {
+    private static long getWorkId() {
         long machinePiece;
         StringBuilder sb = new StringBuilder();
         Enumeration<NetworkInterface> e = null;
@@ -41,17 +41,19 @@ public class SnowflakeHelper {
         return machinePiece;
     }
 
-    public static long getDatacenterId(){
+    private static long getDatacenterId(){
         int hashCode = Sys.CURRENT_ENV.hashCode();
         return hashCode;
     }
 
+    /*
     public static void main(String[] args) {
         for (int i = 0; i < 1000; i++) {
             long snowflakeId = SnowflakeHelper.getSnowflakeId();
             System.out.println(snowflakeId);
         }
     }
+    */
 
 
 }

@@ -6,6 +6,7 @@ import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.pojo.enums.SystemConfig;
+import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +150,7 @@ public class AuthHelper extends BaseHelper {
         Long orgId = orgDomainHelper.getOrgId(req);
         if (orgId == null || orgId < 1){
             throw new RuntimeException("Can not get any information of the organization, domain is not definition!, url is " +
-                OrgDomainHelper.getDomain(req) + req.getRequestURI()
+                UrlUtil.getDomain(req) + req.getRequestURI()
             );
         }
         return orgId;
@@ -361,7 +362,7 @@ public class AuthHelper extends BaseHelper {
 
     private String getCookieDomain(HttpServletRequest req){
 
-        String cookieDomain = OrgDomainHelper.getDomain(req);
+        String cookieDomain = UrlUtil.getDomain(req);
 
         // 测试环境优先
         if ("127.0.0.1".equals(cookieDomain) || "localhost".equals(cookieDomain)){
