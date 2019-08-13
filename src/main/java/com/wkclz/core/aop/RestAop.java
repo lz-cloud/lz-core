@@ -66,8 +66,18 @@ public class RestAop {
      */
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point){
-
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null){
+            return servletRequestHandle(point, attributes);
+        } else {
+            return normalHandle(point);
+        }
+    }
+
+
+
+    private Object servletRequestHandle(ProceedingJoinPoint point, ServletRequestAttributes attributes){
+
         HttpServletRequest req = attributes.getRequest();
 
         String seq = req.getHeader("seq");
@@ -117,6 +127,19 @@ public class RestAop {
 
         return obj;
     }
+
+    public Object normalHandle(ProceedingJoinPoint point){
+        Object obj = null;
+        try {
+            obj = point.proceed();
+        } catch (Throwable throwable) {
+            logger.error("Throwable",throwable);
+        }
+        return obj;
+    }
+
+
+
 
     private String setArgs(ProceedingJoinPoint point, HttpServletRequest req){
         Long userId =  null;
