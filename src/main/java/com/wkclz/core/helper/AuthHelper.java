@@ -70,8 +70,10 @@ public class AuthHelper extends BaseHelper {
         user.setToken(token.getToken());
 
         // 设置 redis
-        stringRedisTemplate.opsForValue().set(token.getRedisKey(), JSONObject.toJSONString(user));
-        stringRedisTemplate.expire(token.getRedisKey(), getSessionLiveTime(), TimeUnit.SECONDS);
+        String redisKey = token.getRedisKey();
+        String userStr = JSONObject.toJSONString(user);
+        stringRedisTemplate.opsForValue().set(redisKey, userStr);
+        stringRedisTemplate.expire(redisKey, getSessionLiveTime(), TimeUnit.SECONDS);
 
         // 登录成功日志【仅在登录的时候需要，漫游时不需要】
         if (session == null) {
