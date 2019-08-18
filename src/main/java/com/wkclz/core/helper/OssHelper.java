@@ -40,12 +40,12 @@ public class OssHelper {
         Calendar calendar = Calendar.getInstance();
         StringBuffer fileName = new StringBuffer();
         fileName.append(calendar.get(Calendar.DAY_OF_MONTH))
-                .append(calendar.get(Calendar.HOUR_OF_DAY))
-                .append(calendar.get(Calendar.MINUTE))
-                .append(calendar.get(Calendar.SECOND))
-                .append(calendar.get(Calendar.MILLISECOND))
-                .append(UUID.randomUUID().toString())
-                .append(getExtFileName(originalFilename));
+            .append(calendar.get(Calendar.HOUR_OF_DAY))
+            .append(calendar.get(Calendar.MINUTE))
+            .append(calendar.get(Calendar.SECOND))
+            .append(calendar.get(Calendar.MILLISECOND))
+            .append(UUID.randomUUID().toString())
+            .append(getExtFileName(originalFilename));
         return fileName.toString();
     }
 
@@ -64,12 +64,12 @@ public class OssHelper {
         Calendar calendar = Calendar.getInstance();
         StringBuffer path = new StringBuffer(Sys.CURRENT_ENV.toString().toLowerCase());
         path.append("/")
-                .append(businessType)
-                .append("/")
-                .append(calendar.get(Calendar.YEAR))
-                .append(calendar.get(Calendar.MONTH) + 1)
-                .append("/")
-                .append(fileName);
+            .append(businessType)
+            .append("/")
+            .append(calendar.get(Calendar.YEAR))
+            .append(calendar.get(Calendar.MONTH) + 1)
+            .append("/")
+            .append(fileName);
         return path.toString();
     }
 
@@ -89,8 +89,8 @@ public class OssHelper {
         String outerEndpoint = helper.getSystemConfig("oss_outer_endpoint");
 
         // 此处返回外网地址
-        outerEndpoint = outerEndpoint == null ? "":outerEndpoint;
-        outerEndpoint = outerEndpoint.endsWith("/")? outerEndpoint : outerEndpoint + "/";
+        outerEndpoint = outerEndpoint == null ? "" : outerEndpoint;
+        outerEndpoint = outerEndpoint.endsWith("/") ? outerEndpoint : outerEndpoint + "/";
         return outerEndpoint + fileFullPath;
     }
 

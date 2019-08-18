@@ -14,6 +14,7 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
         }
         return false;
     }
+
     // 该方法告诉工具，如何将自定义前缀去除
     @Override
     public String unwrapEncryptedValue(String s) {

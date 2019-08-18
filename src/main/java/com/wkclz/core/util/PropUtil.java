@@ -12,9 +12,9 @@ public class PropUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(PropUtil.class);
 
-    public static Properties readProp(String propertiesPath){
+    public static Properties readProp(String propertiesPath) {
         File file = new File(propertiesPath);
-        if (!file.exists()){
+        if (!file.exists()) {
             return null;
         }
 
@@ -28,7 +28,7 @@ public class PropUtil {
         } catch (IOException e) {
             logger.error("IOException", e);
         } finally {
-            if (in!=null){
+            if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
@@ -40,20 +40,20 @@ public class PropUtil {
 
     }
 
-    public static void writeProp(String propertiesPath, Properties newProps){
+    public static void writeProp(String propertiesPath, Properties newProps) {
         Properties oldProp = readProp(propertiesPath);
-        newProps.forEach((propKey,propValue) ->{
-            oldProp.setProperty(propKey.toString(),propValue.toString());
+        newProps.forEach((propKey, propValue) -> {
+            oldProp.setProperty(propKey.toString(), propValue.toString());
         });
 
         Properties sortProp = MapUtil.map2Prop(MapUtil.sortMapByKey(MapUtil.prop2Map(oldProp)));
 
         File file = new File(propertiesPath);
-        if (!file.exists()){
+        if (!file.exists()) {
             file.mkdirs();
             try {
                 boolean newFile = file.createNewFile();
-                if (!newFile){
+                if (!newFile) {
                     logger.info("file exist: {}", file.getAbsolutePath());
                 }
             } catch (IOException e) {
@@ -68,7 +68,7 @@ public class PropUtil {
         } catch (IOException e) {
             logger.error("IOException", e);
         } finally {
-            if (fw!=null){
+            if (fw != null) {
                 try {
                     fw.close();
                 } catch (IOException e) {
@@ -79,24 +79,25 @@ public class PropUtil {
     }
 
 
-
-
     /**
      * Map 2 Object
+     *
      * @param prop
      * @param clazz
      * @return
      * @throws Exception
      */
-    public static Object prop2Object(Properties prop, Class<?> clazz){
-        if (prop == null) { return null; }
+    public static Object prop2Object(Properties prop, Class<?> clazz) {
+        if (prop == null) {
+            return null;
+        }
         Object obj = null;
         try {
             obj = clazz.newInstance();
             Field[] declaredFields = obj.getClass().getDeclaredFields();
-            for(Field field:declaredFields){
+            for (Field field : declaredFields) {
                 int mod = field.getModifiers();
-                if(Modifier.isStatic(mod) || Modifier.isFinal(mod)){
+                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
                     continue;
                 }
                 field.setAccessible(true);
@@ -109,9 +110,6 @@ public class PropUtil {
         }
         return obj;
     }
-
-
-
 
 
 }

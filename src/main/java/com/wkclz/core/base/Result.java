@@ -125,35 +125,33 @@ public class Result {
     }
 
 
-
-    public static Result error(String... error){
+    public static Result error(String... error) {
         Result result = new Result();
         result.error = concatStr(error);
         result.code = -1;
         return result;
     }
 
-    public static Result remind(String... remind){
+    public static Result remind(String... remind) {
         Result result = new Result();
         result.remind = concatStr(remind);
         result.code = 0;
         return result;
     }
 
-    public static Result data(Object data){
+    public static Result data(Object data) {
         Result result = new Result();
         result.data = data;
         result.code = 1;
         return result;
     }
 
-    public static Result ok(){
+    public static Result ok() {
         Result result = new Result();
         result.data = true;
         result.code = 1;
         return result;
     }
-
 
 
     public Result setOk() {
@@ -192,7 +190,6 @@ public class Result {
         }
         return msg;
     }
-
 
 
     /**

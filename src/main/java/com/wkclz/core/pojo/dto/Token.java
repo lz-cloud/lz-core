@@ -14,32 +14,32 @@ import java.util.Date;
 public class Token {
     private static final Logger logger = LoggerFactory.getLogger(Token.class);
 
-    public Token(){
+    public Token() {
     }
 
-    public Token(Long authId, Long userId){
+    public Token(Long authId, Long userId) {
         this.authId = authId;
         this.userId = userId;
         init();
     }
 
 
-    public Token(Long authId, Long userId, String token){
+    public Token(Long authId, Long userId, String token) {
         this.authId = authId;
         this.userId = userId;
         this.token = token;
         init();
     }
 
-    private void init(){
-        if (this.token == null){
+    private void init() {
+        if (this.token == null) {
             this.token = SecretUtil.getKey();
         }
 
         Integer sessionLiveTime = BaseHelper.getSessionLiveTime();
         // 强制过期时间最小三天
-        if (sessionLiveTime - (3*24*60*60) < 0){
-            sessionLiveTime = 3*24*60*60;
+        if (sessionLiveTime - (3 * 24 * 60 * 60) < 0) {
+            sessionLiveTime = 3 * 24 * 60 * 60;
         }
 
 
@@ -54,7 +54,7 @@ public class Token {
     /**
      * Base64 编码
      */
-    public String base64(){
+    public String base64() {
         String jsonString = JSONObject.toJSONString(this);
         String base64Encode = SecretUtil.base64Encode(jsonString.getBytes());
         return base64Encode;
@@ -62,12 +62,13 @@ public class Token {
 
     /**
      * 从 base64 中还原 token
+     *
      * @param base64
      * @return
      */
-    public static Token getToken(String base64){
+    public static Token getToken(String base64) {
         try {
-            String decode = URLDecoder.decode(base64,"UTF-8");
+            String decode = URLDecoder.decode(base64, "UTF-8");
             byte[] base64Decode = SecretUtil.base64Decode(decode);
             Token token = JSONObject.parseObject(new String(base64Decode), Token.class);
             return token;
@@ -77,18 +78,18 @@ public class Token {
         return null;
     }
 
-    public String getRedisKey(){
+    public String getRedisKey() {
         String redisKey = Sys.APPLICATION_GROUP + ":" + this.authId + ":" + this.userId + ":" + this.token;
         return redisKey;
     }
 
 
-
     /**
      * 产生 sign
+     *
      * @return
      */
-    public String makeSign(){
+    public String makeSign() {
         StringBuffer sb = new StringBuffer();
         sb.append("authId-").append(authId);
         sb.append("token-").append(token);
@@ -100,14 +101,14 @@ public class Token {
 
     /**
      * 验证 sign 是否合法
+     *
      * @return
      */
-    public boolean checkSign(){
+    public boolean checkSign() {
         String sign = makeSign();
         boolean equals = sign.equals(this.getSign());
         return equals;
     }
-
 
 
     /**
@@ -134,9 +135,6 @@ public class Token {
      * 签名
      */
     private String sign;
-
-
-
 
 
     public Long getAuthId() {

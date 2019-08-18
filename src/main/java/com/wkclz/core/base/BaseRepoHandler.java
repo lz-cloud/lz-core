@@ -83,7 +83,7 @@ public class BaseRepoHandler {
 
         String orderBy = model.getOrderBy();
         // 注入风险检测
-        if (orderBy!=null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && sqlInj(orderBy)){
+        if (orderBy != null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && sqlInj(orderBy)) {
             throw new RuntimeException("orderBy 有注入风险，请谨慎操作！");
         }
 
@@ -185,14 +185,15 @@ public class BaseRepoHandler {
 
     /**
      * Class 创建实例
+     *
      * @param clazz
      * @param <Model>
      * @return
      */
-    public static <Model> Model getNewInstance(Class clazz){
+    public static <Model> Model getNewInstance(Class clazz) {
         Model model = null;
         try {
-            model = (Model)clazz.newInstance();
+            model = (Model) clazz.newInstance();
         } catch (InstantiationException e) {
             logger.error("InstantiationException", e);
         } catch (IllegalAccessException e) {
@@ -245,16 +246,16 @@ public class BaseRepoHandler {
     */
 
 
-
     /**
      * 从 jdbc 查询
+     *
      * @param conn
      * @param sql
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> List<T> jdbcExecutor(Connection conn, String sql, Class<T> clazz){
+    public static <T> List<T> jdbcExecutor(Connection conn, String sql, Class<T> clazz) {
         Statement statement = null;
         try {
             statement = conn.createStatement();
@@ -265,7 +266,7 @@ public class BaseRepoHandler {
         } catch (SQLException e) {
             logger.error("SQLException", e);
         } finally {
-            if (statement != null){
+            if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
@@ -275,7 +276,8 @@ public class BaseRepoHandler {
         }
         return null;
     }
-    public static List<Map> jdbcExecutor(Connection conn, String sql){
+
+    public static List<Map> jdbcExecutor(Connection conn, String sql) {
         Statement statement = null;
         try {
             statement = conn.createStatement();
@@ -285,7 +287,7 @@ public class BaseRepoHandler {
         } catch (SQLException e) {
             logger.error("SQLException", e);
         } finally {
-            if (statement != null){
+            if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
@@ -297,7 +299,6 @@ public class BaseRepoHandler {
     }
 
 
-
     /**
      * 注入风险检测。默认只作用在 orderBy 上。不能用于其他地方的注入检测
      * 注入风险：
@@ -305,16 +306,17 @@ public class BaseRepoHandler {
      * 2、MBG 的 noValue，singleValue，betweenValue，listValue 注入风险：Example 的 Criteria 产生，无注入风险
      * 3、MBG 的 like 注入风险：like 前的由 Example 控制，后的为 #{}, 无注入风险
      * 4、Custom 实现的 like 强制使用 AND column like concat("%",#{value},"%")
+     *
      * @param str
      * @return
      */
-    private static boolean sqlInj(String str){
+    private static boolean sqlInj(String str) {
         str = str.toLowerCase();
         String injStr = "'|and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;| or |-|+";
         String injStra[] = injStr.split("\\|");
-        for (int i=0 ; i < injStra.length; i++ ){
+        for (int i = 0; i < injStra.length; i++) {
             String is = injStra[i];
-            if (str.indexOf(is)>=0){
+            if (str.indexOf(is) >= 0) {
                 return true;
             }
         }

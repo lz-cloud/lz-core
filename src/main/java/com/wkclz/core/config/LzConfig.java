@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * wangkc @ 2019-07-21 23:46:08
  */
 @Component
-@ConfigurationProperties(prefix="lz")
+@ConfigurationProperties(prefix = "lz")
 public class LzConfig {
 
 

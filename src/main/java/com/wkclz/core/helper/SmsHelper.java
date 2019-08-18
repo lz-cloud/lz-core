@@ -106,11 +106,11 @@ public class SmsHelper {
 
     public static String sendSmsResponseToString(SendSmsResponse sendSmsResponse) {
         return "SendSmsResponse{" +
-                "requestId='" + sendSmsResponse.getRequestId() + '\'' +
-                ", bizId='" + sendSmsResponse.getBizId() + '\'' +
-                ", code='" + sendSmsResponse.getCode() + '\'' +
-                ", message='" + sendSmsResponse.getMessage() + '\'' +
-                '}';
+            "requestId='" + sendSmsResponse.getRequestId() + '\'' +
+            ", bizId='" + sendSmsResponse.getBizId() + '\'' +
+            ", code='" + sendSmsResponse.getCode() + '\'' +
+            ", message='" + sendSmsResponse.getMessage() + '\'' +
+            '}';
     }
 
 }

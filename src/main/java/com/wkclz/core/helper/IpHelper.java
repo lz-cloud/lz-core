@@ -34,7 +34,7 @@ public class IpHelper {
                 } catch (UnknownHostException e) {
                     logger.error("UnknownHostException", e);
                 }
-                ipAddress = inet == null ? null:inet.getHostAddress();
+                ipAddress = inet == null ? null : inet.getHostAddress();
             }
         }
         // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
@@ -56,7 +56,7 @@ public class IpHelper {
         } catch (SocketException e) {
             logger.error("SocketException", e);
         }
-        if (interfaces == null){
+        if (interfaces == null) {
             return null;
         }
         while (interfaces.hasMoreElements()) {

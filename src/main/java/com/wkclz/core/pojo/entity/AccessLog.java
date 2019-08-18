@@ -2,6 +2,7 @@ package com.wkclz.core.pojo.entity;
 
 /**
  * Description: Create by Shrimp Generator
+ *
  * @author: wangkaicun @ current time
  */
 
@@ -148,7 +149,7 @@ public class AccessLog {
     private String method;
 
     /**
-     * 
+     *
      */
     private String serverName;
 

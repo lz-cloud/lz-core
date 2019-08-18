@@ -58,10 +58,10 @@ public class BaseHelper {
     public static String getToken(HttpServletRequest req) {
         String token = null;
         Cookie[] cookies = req.getCookies();
-        if (cookies != null){
-            for (Cookie cookie:cookies) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
                 String name = cookie.getName();
-                if ("token".equals(name)){
+                if ("token".equals(name)) {
                     token = cookie.getValue();
                     break;
                 }
@@ -98,36 +98,36 @@ public class BaseHelper {
     }
 
 
-    public static Integer getJavaCacheLiveTime(){
+    public static Integer getJavaCacheLiveTime() {
         Integer liveTime = 1800;
-        if (EnvType.PROD == Sys.CURRENT_ENV){
+        if (EnvType.PROD == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.JAVA_CACHE_LIVE_TIME_PROD;
         }
-        if (EnvType.UAT == Sys.CURRENT_ENV ){
+        if (EnvType.UAT == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.JAVA_CACHE_LIVE_TIME_UAT;
         }
-        if (EnvType.SIT == Sys.CURRENT_ENV ){
+        if (EnvType.SIT == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.JAVA_CACHE_LIVE_TIME_SIT;
         }
-        if (EnvType.DEV == Sys.CURRENT_ENV){
+        if (EnvType.DEV == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.JAVA_CACHE_LIVE_TIME_DEV;
         }
         return liveTime;
     }
 
 
-    public static Integer getSessionLiveTime(){
+    public static Integer getSessionLiveTime() {
         Integer liveTime = 1800;
-        if (EnvType.PROD == Sys.CURRENT_ENV){
+        if (EnvType.PROD == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.SESSION_LIVE_TIME_PROD;
         }
-        if (EnvType.UAT == Sys.CURRENT_ENV ){
+        if (EnvType.UAT == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.SESSION_LIVE_TIME_UAT;
         }
-        if (EnvType.SIT == Sys.CURRENT_ENV ){
+        if (EnvType.SIT == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.SESSION_LIVE_TIME_SIT;
         }
-        if (EnvType.DEV == Sys.CURRENT_ENV){
+        if (EnvType.DEV == Sys.CURRENT_ENV) {
             liveTime = BaseHelper.SESSION_LIVE_TIME_DEV;
         }
         return liveTime;

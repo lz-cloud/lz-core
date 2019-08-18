@@ -40,22 +40,23 @@ public class AccessHelper extends BaseHelper {
 
     /**
      * 初始化 accessUris
+     *
      * @param accessUris
      */
-    public void setAccessUris(List<String> accessUris){
-        if (accessUris == null || accessUris.size() == 0){
+    public void setAccessUris(List<String> accessUris) {
+        if (accessUris == null || accessUris.size() == 0) {
             throw new RuntimeException("accessUris can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
         ACCESS_URI = accessUris;
     }
 
-    private synchronized List<String> getAccessUri(){
+    private synchronized List<String> getAccessUri() {
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && ACCESS_URI != null ){
+        if (JAVA_LAST_ACTIVE_TIME != null && ACCESS_URI != null) {
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
                 return ACCESS_URI;
             }
         }
@@ -68,22 +69,22 @@ public class AccessHelper extends BaseHelper {
         return ACCESS_URI;
     }
 
-    public boolean checkAccessUri(HttpServletRequest req){
+    public boolean checkAccessUri(HttpServletRequest req) {
         List<String> accessUris = getAccessUri();
 
-        if (accessUris == null || accessUris.size() == 0){
+        if (accessUris == null || accessUris.size() == 0) {
             throw new RuntimeException("accessUris must be init after system start up!");
         }
 
         String uri = req.getRequestURI();
-        if (accessUris.contains(uri)){
+        if (accessUris.contains(uri)) {
             return true;
         }
         // PathMatcher 匹配
-        for (String accessUri: accessUris){
-            if (accessUri.contains("**")){
+        for (String accessUri : accessUris) {
+            if (accessUri.contains("**")) {
                 boolean match = matcher.match(accessUri, uri);
-                if (match){
+                if (match) {
                     return true;
                 }
             }
@@ -91,21 +92,21 @@ public class AccessHelper extends BaseHelper {
         return false;
     }
 
-    public AccessLog getAccessLog(HttpServletRequest req){
+    public AccessLog getAccessLog(HttpServletRequest req) {
 
         // 此处为全部检测跳过标识。
         String uri = req.getRequestURI();
-        if ( uri.endsWith(".html") ||  uri.endsWith(".js") ||  uri.endsWith(".jpg") ||  uri.endsWith(".png") ||  uri.endsWith(".css") ||  uri.endsWith(".ico")  ){
+        if (uri.endsWith(".html") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".css") || uri.endsWith(".ico")) {
             return null;
         }
-        if ("/error".equals(uri) || uri.startsWith("/websocket") ){
+        if ("/error".equals(uri) || uri.startsWith("/websocket")) {
             return null;
         }
 
         AccessLog log = new AccessLog();
 
         String userAgentHeader = req.getHeader("User-Agent");
-        if (userAgentHeader != null){
+        if (userAgentHeader != null) {
             UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
             Browser browser = userAgent.getBrowser();
             OperatingSystem os = userAgent.getOperatingSystem();
@@ -142,9 +143,9 @@ public class AccessHelper extends BaseHelper {
         log.setServerName(req.getServerName());
         log.setToken(BaseHelper.getToken(req));
 
-        if (!StringUtils.isBlank(log.getToken())){
+        if (!StringUtils.isBlank(log.getToken())) {
             User user = authHelper.getSession(req);
-            if (user !=null ){
+            if (user != null) {
                 log.setAuthId(user.getAuthId());
                 log.setUserId(user.getUserId());
                 log.setNickName(user.getUsername());
@@ -152,9 +153,15 @@ public class AccessHelper extends BaseHelper {
         }
 
         // 防止太长
-        if (log.getUserAgent() !=null && log.getUserAgent().length() > 1000)  { log.setUserAgent(log.getUserAgent().substring(0,1000)); }
-        if (log.getCookie() !=null && log.getCookie().length() > 4000)  { log.setCookie(log.getCookie().substring(0,4000)); }
-        if (log.getQueryString() !=null && log.getQueryString().length() > 1000)  { log.setQueryString(log.getQueryString().substring(0,1000)); }
+        if (log.getUserAgent() != null && log.getUserAgent().length() > 1000) {
+            log.setUserAgent(log.getUserAgent().substring(0, 1000));
+        }
+        if (log.getCookie() != null && log.getCookie().length() > 4000) {
+            log.setCookie(log.getCookie().substring(0, 4000));
+        }
+        if (log.getQueryString() != null && log.getQueryString().length() > 1000) {
+            log.setQueryString(log.getQueryString().substring(0, 1000));
+        }
 
         return log;
     }

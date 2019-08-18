@@ -87,7 +87,7 @@ public class CheckPwdUtil {
     //测试符号字元
     private int checkChar() {
         charlen = this.length - this.upperAlp
-                - this.lowerAlp - this.num;
+            - this.lowerAlp - this.num;
         return this.charlen * 6;
     }
 
@@ -155,7 +155,7 @@ public class CheckPwdUtil {
     private int repeatDex() {
         char[] c = this.psw.toLowerCase().toCharArray();
         HashMap<Character, Integer> hashMap =
-                new HashMap<Character, Integer>();
+            new HashMap<Character, Integer>();
         for (int i = 0; i < c.length; i++) {
             if (hashMap.containsKey(c[i])) {
                 hashMap.put(c[i], hashMap.get(c[i]) + 1);
@@ -165,7 +165,7 @@ public class CheckPwdUtil {
         }
         int sum = 0;
         Iterator<Map.Entry<Character, Integer>> iterator =
-                hashMap.entrySet().iterator();
+            hashMap.entrySet().iterator();
         while (iterator.hasNext()) {
             int j = iterator.next().getValue();
             if (j > 0) {
@@ -195,7 +195,7 @@ public class CheckPwdUtil {
         char[] c = this.psw.toCharArray();
         for (int i = 0; i < c.length - 1; i++) {
             if (PATTERN_A2Z_LOWWER.matcher(c[i] + "").find()
-                    && c[i] + 1 == c[i + 1]) {
+                && c[i] + 1 == c[i + 1]) {
                 j++;
             }
         }
@@ -208,7 +208,7 @@ public class CheckPwdUtil {
         int j = 0;
         for (int i = 0; i < c.length - 1; i++) {
             if (PATTERN_0_TO_9.matcher(c[i] + "").matches()
-                    && PATTERN_0_TO_9.matcher(c[i + 1] + "").matches()) {
+                && PATTERN_0_TO_9.matcher(c[i + 1] + "").matches()) {
                 j++;
             }
         }

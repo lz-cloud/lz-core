@@ -11,24 +11,26 @@ import java.net.URL;
 public class UrlUtil {
 
     private final static Logger logger = LoggerFactory.getLogger(UrlUtil.class);
+
     /**
      * 获取请求域名
+     *
      * @param req
      * @return
      */
-    public static String getDomain(HttpServletRequest req){
+    public static String getDomain(HttpServletRequest req) {
         String domain = req.getHeader("Origin");
-        if (StringUtils.isBlank(domain)){
+        if (StringUtils.isBlank(domain)) {
             domain = req.getHeader("Referer");
         }
-        if (StringUtils.isBlank(domain)){
+        if (StringUtils.isBlank(domain)) {
             domain = req.getParameter("Origin");
         }
-        if (StringUtils.isBlank(domain)){
+        if (StringUtils.isBlank(domain)) {
             domain = req.getParameter("Referer");
         }
         // 非前后分离的情况，为当前域名
-        if (StringUtils.isBlank(domain)){
+        if (StringUtils.isBlank(domain)) {
             domain = req.getRequestURL().toString();
         }
         domain = getDomainFronUrl(domain);
@@ -36,11 +38,11 @@ public class UrlUtil {
     }
 
 
-    public static String getDomainFronUrl(String url){
-        if (url == null || url.trim().length() == 0){
+    public static String getDomainFronUrl(String url) {
+        if (url == null || url.trim().length() == 0) {
             return url;
         }
-        if (!url.startsWith("http")){
+        if (!url.startsWith("http")) {
             url = "http://" + url;
         }
         try {
@@ -54,7 +56,7 @@ public class UrlUtil {
     }
 
 
-    public static String getFrontPortalAnddDomain(HttpServletRequest req){
+    public static String getFrontPortalAndDomain(HttpServletRequest req) {
         String domain = getDomain(req);
         String portalAndDomain = req.getProtocol() + "://" + domain;
         return portalAndDomain;

@@ -21,7 +21,7 @@ public class FreeMarkerTemplateUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(FreeMarkerTemplateUtil.class);
 
-    private FreeMarkerTemplateUtil(){
+    private FreeMarkerTemplateUtil() {
     }
 
     private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_22);
@@ -45,13 +45,14 @@ public class FreeMarkerTemplateUtil {
 
     /**
      * 自定义路径
+     *
      * @param templateName
      * @param templatesDir
      * @return
      * @throws IOException
      */
     public static Template getTemplate(String templateName, String templatesDir) throws IOException {
-        if (StringUtils.isNotBlank(templatesDir)){
+        if (StringUtils.isNotBlank(templatesDir)) {
             CONFIGURATION.setDirectoryForTemplateLoading(new File(templatesDir));
         }
         try {

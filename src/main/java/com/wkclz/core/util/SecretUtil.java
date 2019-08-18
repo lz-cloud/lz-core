@@ -38,8 +38,6 @@ public class SecretUtil {
     }
 
 
-
-
     /**
      * 密码加密处理
      *
@@ -56,12 +54,14 @@ public class SecretUtil {
         }
         return encryptPassword;
     }
+
     public static String getEncryptPassword(String pwdStr) {
         return getEncryptPassword(pwdStr, GENERAL_SALT);
     }
 
     /**
      * 密码解密处理
+     *
      * @param encryptPwdStr
      * @param salt
      * @return
@@ -75,6 +75,7 @@ public class SecretUtil {
         }
         return decryptPassword;
     }
+
     public static String getDecryptPassword(String encryptPwdStr) {
         return getDecryptPassword(encryptPwdStr, GENERAL_SALT);
     }
@@ -200,6 +201,7 @@ public class SecretUtil {
 
     /**
      * 密码简单对称加密示例
+     *
      * @param args
      */
     public static void main(String[] args) {

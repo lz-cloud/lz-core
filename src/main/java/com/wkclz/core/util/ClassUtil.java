@@ -26,31 +26,31 @@ public class ClassUtil {
 
 
     private static final Logger logger = LoggerFactory.getLogger(ClassUtil.class);
+
     /**
      * 静态类的方法
+     *
      * @param clazz
      * @param methodName
      * @return
      */
-    public static Method getModdelMethod(Class clazz, String methodName){
-        if (StringUtils.isBlank(methodName)){
+    public static Method getModelMethod(Class clazz, String methodName) {
+        if (StringUtils.isBlank(methodName)) {
             throw new RuntimeException("method name can not be null");
         }
-        if (clazz == Object.class){
+        if (clazz == Object.class) {
             return null;
         }
         Method[] methods = clazz.getDeclaredMethods();
-        for (Method method: methods) {
+        for (Method method : methods) {
             String name = method.getName();
-            if (name.equals(methodName)){
+            if (name.equals(methodName)) {
                 return method;
             }
         }
         Class superClazz = clazz.getSuperclass();
-        return getModdelMethod(superClazz, methodName);
+        return getModelMethod(superClazz, methodName);
     }
-
-
 
 
     /**
@@ -171,7 +171,7 @@ public class ClassUtil {
             // 如果是目录 则继续扫描
             if (file.isDirectory()) {
                 findAndAddClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(), recursive,
-                        classes);
+                    classes);
             } else {
                 // 如果是java类文件 去掉后面的.class 只留下类名
                 String className = file.getName().substring(0, file.getName().length() - 6);
@@ -180,7 +180,7 @@ public class ClassUtil {
                     // classes.add(Class.forName(packageName + '.' + className));
                     // 经过回复同学的提醒，这里用forName有一些不好，会触发static方法，没有使用classLoader的load干净
                     classes.add(
-                            Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
+                        Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
                     // log.error("添加用户自定义视图类错误 找不到此类的.class文件");
                     logger.error("ClassNotFoundException", e);
@@ -222,9 +222,6 @@ public class ClassUtil {
         }
         return classes;
     }
-
-
-
 
 
     public static void main(String[] args) {

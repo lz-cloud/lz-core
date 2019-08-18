@@ -36,6 +36,7 @@ public enum ResultStatus {
     public Integer getCode() {
         return code;
     }
+
     public String getMsg() {
         return msg;
     }

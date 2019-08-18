@@ -44,6 +44,7 @@ public class HttpUtil {
 
     /**
      * 使用HttpURLConnection
+     *
      * @param address
      * @param listener
      */
@@ -82,6 +83,7 @@ public class HttpUtil {
 
     /**
      * 使用okhttp请求
+     *
      * @param address
      * @param callback
      */

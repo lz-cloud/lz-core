@@ -78,8 +78,6 @@ public class User<CmsUser, CmsUserAuth> {
     private List<String> roles;
 
 
-
-
     public String getToken() {
         return token;
     }

@@ -27,19 +27,19 @@ public class InterceptorHelper {
 
         // API 安全检测
         boolean apiDomainCheckResult = apiDomainHelper.checkApiDomains(req, rep);
-        if (!apiDomainCheckResult){
+        if (!apiDomainCheckResult) {
             return false;
         }
 
         // Org 安全检测
         boolean orgDomainCheckResult = orgDomainHelper.checkOrgDomains(req, rep);
-        if (!orgDomainCheckResult){
+        if (!orgDomainCheckResult) {
             return false;
         }
 
         // uri 拦截检测【如果检查通过，无需再检查token】
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
-        if (checkAccessUriResult){
+        if (checkAccessUriResult) {
             // 内存 session 检测【不再需要返回判断】【如果存在，不会重复设置】
             authHelper.checkUserSession(req);
             return true;
@@ -47,7 +47,7 @@ public class InterceptorHelper {
 
         // token 检测
         boolean userTokenCheckResult = authHelper.checkUserToken(req, rep);
-        if (!userTokenCheckResult){
+        if (!userTokenCheckResult) {
             return false;
         }
 
@@ -67,10 +67,10 @@ public class InterceptorHelper {
 
     public void afterCompletion(HttpServletRequest req, HttpServletResponse rep) {
         String token = req.getParameter("token");
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             return;
         }
-        if (!token.startsWith("temp_")){
+        if (!token.startsWith("temp_")) {
             return;
         }
         authHelper.invalidateSession(req, rep);

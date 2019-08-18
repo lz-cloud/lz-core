@@ -22,6 +22,7 @@ import java.util.Set;
 public class BeanUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
+
     /**
      * remove the blank string in the  Object
      *

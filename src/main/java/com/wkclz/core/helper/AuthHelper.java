@@ -41,12 +41,13 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 设置session 【支持 session】
+     *
      * @param req
      * @return
      */
-    public Map<String, String> setSession(HttpServletRequest req, HttpServletResponse rep, User user){
+    public Map<String, String> setSession(HttpServletRequest req, HttpServletResponse rep, User user) {
 
-        if (user.getAuthId()==null){
+        if (user.getAuthId() == null) {
             throw new RuntimeException("authId can not be null to setSession");
         }
 
@@ -54,9 +55,9 @@ public class AuthHelper extends BaseHelper {
 
         // 已经登录的情况
         Object session = getSession(req);
-        if(session!=null){
-            user = (User)session;
-            if (user.getToken()!=null){
+        if (session != null) {
+            user = (User) session;
+            if (user.getToken() != null) {
                 Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
                 addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
                 tokenMap.put("token", token.base64());
@@ -73,12 +74,12 @@ public class AuthHelper extends BaseHelper {
         stringRedisTemplate.expire(token.getRedisKey(), getSessionLiveTime(), TimeUnit.SECONDS);
 
         // 登录成功日志【仅在登录的时候需要，漫游时不需要】
-        if (session == null){
+        if (session == null) {
             // 登录请求，漫游
-            logger.info("漫游请求，重建，uri: {}",req.getRequestURI());
+            logger.info("漫游请求，重建，uri: {}", req.getRequestURI());
         } else {
             // 登录请求，漫游
-            logger.info("正常登录请求，建立，uri: {}",req.getRequestURI());
+            logger.info("正常登录请求，建立，uri: {}", req.getRequestURI());
         }
 
         addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
@@ -90,11 +91,12 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 获取 session
+     *
      * @param req
      * @return
      */
-    public User getSession(HttpServletRequest req){
-        if (req == null){
+    public User getSession(HttpServletRequest req) {
+        if (req == null) {
             return null;
         }
         String tokenStr = BaseHelper.getToken(req);
@@ -103,18 +105,19 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 获取 session
+     *
      * @param tokenStr
      * @return
      */
-    public User getSession(String tokenStr){
-        if (StringUtils.isBlank(tokenStr)){
+    public User getSession(String tokenStr) {
+        if (StringUtils.isBlank(tokenStr)) {
             return null;
         }
         Token token = Token.getToken(tokenStr);
 
         String redisKey = token.getRedisKey();
         String userStr = stringRedisTemplate.opsForValue().get(redisKey);
-        if (userStr == null){
+        if (userStr == null) {
             return null;
         }
         // 延期 redis
@@ -124,16 +127,15 @@ public class AuthHelper extends BaseHelper {
     }
 
 
-
-
     /**
      * 退出登录
+     *
      * @param req
      */
-    public void invalidateSession(HttpServletRequest req, HttpServletResponse rep){
+    public void invalidateSession(HttpServletRequest req, HttpServletResponse rep) {
 
         String tokenStr = BaseHelper.getToken(req);
-        if (StringUtils.isBlank(tokenStr)){
+        if (StringUtils.isBlank(tokenStr)) {
             req.getSession().invalidate();
             return;
         }
@@ -143,12 +145,12 @@ public class AuthHelper extends BaseHelper {
     }
 
 
-    public Long getOrgId(HttpServletRequest req){
-        if (req == null){
+    public Long getOrgId(HttpServletRequest req) {
+        if (req == null) {
             throw new RuntimeException("Request is null, can not get any information of the organization!");
         }
         Long orgId = orgDomainHelper.getOrgId(req);
-        if (orgId == null || orgId < 1){
+        if (orgId == null || orgId < 1) {
             throw new RuntimeException("Can not get any information of the organization, domain is not definition!, url is " +
                 UrlUtil.getDomain(req) + req.getRequestURI()
             );
@@ -156,24 +158,25 @@ public class AuthHelper extends BaseHelper {
         return orgId;
     }
 
-    public Long getOrgIdIfNotNull(HttpServletRequest req){
+    public Long getOrgIdIfNotNull(HttpServletRequest req) {
         return orgDomainHelper.getOrgId(req);
     }
 
     /**
      * 添加 cookie
+     *
      * @param rep
      * @param name
      * @param value
      * @param maxAge
      */
-    private void addCookie(HttpServletRequest req, HttpServletResponse rep,String name,String value, Integer maxAge){
+    private void addCookie(HttpServletRequest req, HttpServletResponse rep, String name, String value, Integer maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setDomain(getCookieDomain(req));
 
-        if(maxAge!=null&&maxAge>0) {
+        if (maxAge != null && maxAge > 0) {
             cookie.setMaxAge(maxAge);
         }
         rep.addCookie(cookie);
@@ -181,30 +184,32 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 根据名字获取cookie
+     *
      * @param req
      * @param name
      * @return
      */
-    private static Cookie getCookieByName(HttpServletRequest req,String name){
-        Map<String,Cookie> cookieMap = readCookieMap(req);
-        if(cookieMap.containsKey(name)){
+    private static Cookie getCookieByName(HttpServletRequest req, String name) {
+        Map<String, Cookie> cookieMap = readCookieMap(req);
+        if (cookieMap.containsKey(name)) {
             Cookie cookie = cookieMap.get(name);
             return cookie;
-        }else{
+        } else {
             return null;
         }
     }
 
     /**
      * 将cookie封装到Map里面
+     *
      * @param req
      * @return
      */
-    private static Map<String,Cookie> readCookieMap(HttpServletRequest req){
-        Map<String,Cookie> cookieMap = new HashMap<>();
+    private static Map<String, Cookie> readCookieMap(HttpServletRequest req) {
+        Map<String, Cookie> cookieMap = new HashMap<>();
         Cookie[] cookies = req.getCookies();
-        if(null!=cookies){
-            for(Cookie cookie : cookies){
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
                 cookieMap.put(cookie.getName(), cookie);
             }
         }
@@ -212,9 +217,7 @@ public class AuthHelper extends BaseHelper {
     }
 
 
-
-
-    private void expireCookie(HttpServletRequest req, HttpServletResponse rep,String name){
+    private void expireCookie(HttpServletRequest req, HttpServletResponse rep, String name) {
 
         Cookie cookie = new Cookie(name, "");
         cookie.setHttpOnly(true);
@@ -227,6 +230,7 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 用户 token 检测
+     *
      * @param req
      * @param rep
      * @return
@@ -265,32 +269,32 @@ public class AuthHelper extends BaseHelper {
         // token 检测，需要检测权限的uri，没有 token均不放过
         String tokenStr = BaseHelper.getToken(req);
 
-        if (StringUtils.isBlank(tokenStr)){
+        if (StringUtils.isBlank(tokenStr)) {
             logger.info("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
             Result result = new Result();
             result.setMoreError(ResultStatus.TOKEN_UNLL);
-            return Result.responseError(rep,result);
+            return Result.responseError(rep, result);
         }
 
         Token token = Token.getToken(tokenStr);
         // token 签名
         String sign = token.makeSign();
-        if (!sign.equals(token.getSign())){
+        if (!sign.equals(token.getSign())) {
             Result result = new Result();
             invalidateSession(req, rep);
             logger.info("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
             result.setMoreError(ResultStatus.TOKEN_SIGN_FAILD);
-            return Result.responseError(rep,result);
+            return Result.responseError(rep, result);
         }
 
         // 到 redis 去查找，找不到，不放过
         User user = getSession(req);
-        if (user == null){
+        if (user == null) {
             Result result = new Result();
             invalidateSession(req, rep);
             logger.info("token is error, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
             result.setMoreError(ResultStatus.TOKEN_ERROR);
-            return Result.responseError(rep,result);
+            return Result.responseError(rep, result);
             /*
             // 对开发环境直接赋值登录
             if (EnvType.DEV == EnvType.CURRENT_ENV){
@@ -321,21 +325,21 @@ public class AuthHelper extends BaseHelper {
         // 管理后台
         String origin = req.getHeader("Origin");
         Long orgId = getOrgIdIfNotNull(req);
-        if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")){
+        if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")) {
             List<Long> adminIds = user.getAdminIds();
-            if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)){
-                logger.info("user is not admin, uri : {}",uri);
+            if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)) {
+                logger.info("user is not admin, uri : {}", uri);
                 Result result = new Result();
                 result.setError("非法访问管理后台");
-                return Result.responseError(rep,result);
+                return Result.responseError(rep, result);
             }
         }
 
         // session检测，已经有session的， token 对的，放过
-        if ( user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())){
+        if (user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())) {
             // session 没有的情况，重新赋值
             Object userObj = req.getSession().getAttribute("user");
-            if(userObj == null){
+            if (userObj == null) {
                 req.getSession().setAttribute("user", JSONObject.toJSONString(user));
             }
             return true;
@@ -347,39 +351,40 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 如果 session 不存在于内存，需要创建
+     *
      * @param req
      */
-    public void checkUserSession(HttpServletRequest req){
+    public void checkUserSession(HttpServletRequest req) {
         Object userObj = req.getSession().getAttribute("user");
-        if(userObj == null){
+        if (userObj == null) {
             User user = getSession(req);
-            if (user != null){
+            if (user != null) {
                 req.getSession().setAttribute("user", JSONObject.toJSONString(user));
             }
         }
 
     }
 
-    private String getCookieDomain(HttpServletRequest req){
+    private String getCookieDomain(HttpServletRequest req) {
 
         String cookieDomain = UrlUtil.getDomain(req);
 
         // 测试环境优先
-        if ("127.0.0.1".equals(cookieDomain) || "localhost".equals(cookieDomain)){
+        if ("127.0.0.1".equals(cookieDomain) || "localhost".equals(cookieDomain)) {
             logger.info("=========> 开发环境，cookie domain: {}", cookieDomain);
             return cookieDomain;
         }
 
         // db 配置其二
         cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
-        if (StringUtils.isNotBlank(cookieDomain)){
+        if (StringUtils.isNotBlank(cookieDomain)) {
             int indexOf = cookieDomain.indexOf(".");
-            cookieDomain = cookieDomain.substring(indexOf+1);
+            cookieDomain = cookieDomain.substring(indexOf + 1);
             return cookieDomain;
         }
 
         int indexOf = cookieDomain.indexOf(".");
-        cookieDomain = cookieDomain.substring(indexOf+1);
+        cookieDomain = cookieDomain.substring(indexOf + 1);
 
         logger.info("=========> 无cookie域，domain 截取 cookie: {}", cookieDomain);
 

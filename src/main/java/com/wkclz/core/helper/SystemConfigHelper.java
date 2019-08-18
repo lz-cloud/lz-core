@@ -28,22 +28,23 @@ public class SystemConfigHelper extends BaseHelper {
 
     /**
      * 初始化 SYSTEM_CONFIG
+     *
      * @param systemConfigs
      */
-    public void setSystemConfig(Map<String, String> systemConfigs){
-        if (systemConfigs == null || systemConfigs.size() == 0){
+    public void setSystemConfig(Map<String, String> systemConfigs) {
+        if (systemConfigs == null || systemConfigs.size() == 0) {
             throw new RuntimeException("systemConfigs can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(systemConfigs));
         SYSTEM_CONFIG = systemConfigs;
     }
 
-    private synchronized Map<String, String> getSystemConfigs(){
+    private synchronized Map<String, String> getSystemConfigs() {
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && SYSTEM_CONFIG != null ){
+        if (JAVA_LAST_ACTIVE_TIME != null && SYSTEM_CONFIG != null) {
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
                 return SYSTEM_CONFIG;
             }
         }
@@ -57,7 +58,7 @@ public class SystemConfigHelper extends BaseHelper {
     }
 
     public String getSystemConfig(String key) {
-        if (key == null || key.trim().length() == 0){
+        if (key == null || key.trim().length() == 0) {
             throw new RuntimeException("key must not be null ot empty!");
         }
         Map<String, String> systemConfigs = getSystemConfigs();

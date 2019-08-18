@@ -40,22 +40,23 @@ public class OrgDomainHelper extends BaseHelper {
 
     /**
      * 初始化 ORG_DOMAINS
+     *
      * @param orgDomains
      */
-    public synchronized void setOrgDomains(Map<String, Object> orgDomains){
-        if (orgDomains == null || orgDomains.size() == 0){
+    public synchronized void setOrgDomains(Map<String, Object> orgDomains) {
+        if (orgDomains == null || orgDomains.size() == 0) {
             throw new RuntimeException("orgDomains can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(orgDomains));
         ORG_DOMAINS = orgDomains;
     }
 
-    private synchronized Map<String, Object> getOrgDomains(){
+    private synchronized Map<String, Object> getOrgDomains() {
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && ORG_DOMAINS != null ){
+        if (JAVA_LAST_ACTIVE_TIME != null && ORG_DOMAINS != null) {
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
                 return ORG_DOMAINS;
             }
         }
@@ -68,19 +69,19 @@ public class OrgDomainHelper extends BaseHelper {
         return ORG_DOMAINS;
     }
 
-    public Long getOrgId(HttpServletRequest req){
-        if (req == null){
+    public Long getOrgId(HttpServletRequest req) {
+        if (req == null) {
             return null;
         }
         String domain = UrlUtil.getDomain(req);
 
-        if (StringUtils.isBlank(domain)){
+        if (StringUtils.isBlank(domain)) {
             throw new RuntimeException("Can not get domain from the request！");
         }
 
         Map<String, Object> orgDomains = getOrgDomains();
         Object orgIdObj = orgDomains.get(domain);
-        if (orgIdObj == null){
+        if (orgIdObj == null) {
             return null;
         }
         Long orgId = Long.valueOf(orgIdObj.toString());
@@ -97,16 +98,16 @@ public class OrgDomainHelper extends BaseHelper {
         // 此处只检查 header
         String url = req.getHeader("Origin");
         // postman 请求，不会有 Origin
-        if (url==null) {
+        if (url == null) {
             return true;
         }
         url = UrlUtil.getDomainFronUrl(url);
 
         // 特殊情况，不检查跨域
-        if (RegularUtil.isIp(url) && Sys.CURRENT_ENV != EnvType.PROD ){
+        if (RegularUtil.isIp(url) && Sys.CURRENT_ENV != EnvType.PROD) {
             return true;
         }
-        if ("localhost".equals(url) && Sys.CURRENT_ENV != EnvType.PROD ){
+        if ("localhost".equals(url) && Sys.CURRENT_ENV != EnvType.PROD) {
             return true;
         }
 
@@ -117,7 +118,7 @@ public class OrgDomainHelper extends BaseHelper {
         logger.info("origin url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
         result.setMoreError(ResultStatus.ORIGIN_CORS);
-        return Result.responseError(rep,result);
+        return Result.responseError(rep, result);
     }
 
 

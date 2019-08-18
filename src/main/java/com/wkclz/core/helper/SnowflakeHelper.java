@@ -12,8 +12,8 @@ public class SnowflakeHelper {
     private static SnowflakeIdWorker SFIW = null;
 
     // 生成唯一序列
-    public static synchronized long getSnowflakeId(){
-        if (SFIW == null){
+    public static synchronized long getSnowflakeId() {
+        if (SFIW == null) {
             long workId = SnowflakeHelper.getWorkId();
             long datacenterId = SnowflakeHelper.getDatacenterId();
             SFIW = new SnowflakeIdWorker(workId, datacenterId);
@@ -41,7 +41,7 @@ public class SnowflakeHelper {
         return machinePiece;
     }
 
-    private static long getDatacenterId(){
+    private static long getDatacenterId() {
         int hashCode = Sys.CURRENT_ENV.hashCode();
         return hashCode;
     }

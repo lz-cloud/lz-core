@@ -85,22 +85,23 @@ public class StringUtil {
 
     /**
      * 字符串转换为Map
+     *
      * @param str
      * @return
      */
-    public static Map<String, String> strVar2Map(String str, String separator){
+    public static Map<String, String> strVar2Map(String str, String separator) {
 
         Map<String, String> varMap = new HashMap<>();
-        if (str == null || "".equalsIgnoreCase(str) ){
+        if (str == null || "".equalsIgnoreCase(str)) {
             return varMap;
         }
         String[] variablesArr = str.split(separator);
-        if (variablesArr.length>0){
-            for (String varStr:variablesArr) {
-                if (varStr.contains("=")){
-                    String key = varStr.substring(0,varStr.indexOf("="));
-                    String value = varStr.substring(varStr.indexOf("=")+1,varStr.length());
-                    varMap.put(key,value);
+        if (variablesArr.length > 0) {
+            for (String varStr : variablesArr) {
+                if (varStr.contains("=")) {
+                    String key = varStr.substring(0, varStr.indexOf("="));
+                    String value = varStr.substring(varStr.indexOf("=") + 1, varStr.length());
+                    varMap.put(key, value);
                 }
             }
         }
@@ -130,6 +131,7 @@ public class StringUtil {
 
     /**
      * 移除特殊字符
+     *
      * @param str
      * @return
      */

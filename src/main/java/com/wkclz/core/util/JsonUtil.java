@@ -21,29 +21,31 @@ public class JsonUtil {
 
     /**
      * 读取 json 文件
+     *
      * @return
      */
-    public static <T> T readJson(String jsonFilePath, Class<T> clazz){
-        if (StringUtils.isBlank(jsonFilePath)){
+    public static <T> T readJson(String jsonFilePath, Class<T> clazz) {
+        if (StringUtils.isBlank(jsonFilePath)) {
             return null;
         }
         String str = FileUtil.readFile(jsonFilePath);
         str = replaceBlank(str);
         JSON json = JSON.parseObject(str);
-        return JSONObject.toJavaObject(json,clazz);
+        return JSONObject.toJavaObject(json, clazz);
     }
 
     /**
      * 把 Object 写入到文件
+     *
      * @param object
      */
-    public static void writeJson(String jsonFilePath, Object object){
+    public static void writeJson(String jsonFilePath, Object object) {
         FileWriter writer = null;
         try {
             File file = new File(jsonFilePath);
             if (!file.isFile()) {
                 boolean newFile = file.createNewFile();
-                if (!newFile){
+                if (!newFile) {
                     logger.info("file exist: {}", file.getAbsolutePath());
                 }
             }
@@ -56,7 +58,7 @@ public class JsonUtil {
         } catch (IOException e) {
             // who care ?
         } finally {
-            if (writer != null){
+            if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
@@ -70,6 +72,7 @@ public class JsonUtil {
 
     /**
      * json 字符串格式化，增强可读性
+     *
      * @param s
      * @return
      */
@@ -82,11 +85,11 @@ public class JsonUtil {
         //将字符串中的字符逐个按行输出
         char quotationMark = '"';
         Integer quotationMarks = 0;
-        for(int index=0;index<s.length();index++) {
+        for (int index = 0; index < s.length(); index++) {
             // 获取s中的每个字符
             char c = s.charAt(index);
-            if (quotationMark == c){
-                quotationMarks ++;
+            if (quotationMark == c) {
+                quotationMarks++;
 
             }
 
@@ -103,7 +106,7 @@ public class JsonUtil {
                     break;
                 case ',':
                     jsonForMatStr.append(c);
-                    if (quotationMarks % 2 == 0){
+                    if (quotationMarks % 2 == 0) {
                         jsonForMatStr.append("\n");
                     }
                     break;
@@ -125,6 +128,7 @@ public class JsonUtil {
 
     /**
      * 辅助json 格式化
+     *
      * @param level
      * @return
      */
@@ -140,12 +144,13 @@ public class JsonUtil {
     /**
      * 移除字符串内的非正常字符
      * Pattern.compile("\\s*|\t|\r|\n")
+     *
      * @param str
      * @return
      */
     private static String replaceBlank(String str) {
         String dest = "";
-        if (str!=null) {
+        if (str != null) {
             Matcher m = PATTERN.matcher(str);
             dest = m.replaceAll("");
         }

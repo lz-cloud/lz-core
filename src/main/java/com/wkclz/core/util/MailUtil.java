@@ -114,15 +114,15 @@ public class MailUtil {
     @Override
     public String toString() {
         return "MailUtil{" +
-                "emailHost='" + emailHost + '\'' +
-                ", emailFrom='" + emailFrom + '\'' +
-                ", emailPassword='" + emailPassword + '\'' +
-                ", toEmails='" + toEmails + '\'' +
-                ", subject='" + subject + '\'' +
-                ", content='" + content + '\'' +
-                ", pictures=" + pictures +
-                ", attachments=" + attachments +
-                '}';
+            "emailHost='" + emailHost + '\'' +
+            ", emailFrom='" + emailFrom + '\'' +
+            ", emailPassword='" + emailPassword + '\'' +
+            ", toEmails='" + toEmails + '\'' +
+            ", subject='" + subject + '\'' +
+            ", content='" + content + '\'' +
+            ", pictures=" + pictures +
+            ", attachments=" + attachments +
+            '}';
     }
 
     public void sendEmail() {
@@ -130,8 +130,8 @@ public class MailUtil {
         try {
 
             if (null == this.getEmailHost() || "".equals(this.getEmailHost())
-                    || null == this.getEmailFrom() || "".equals(this.getEmailFrom())
-                    || null == this.getEmailPassword() || "".equals(this.getEmailPassword())) {
+                || null == this.getEmailFrom() || "".equals(this.getEmailFrom())
+                || null == this.getEmailPassword() || "".equals(this.getEmailPassword())) {
                 throw new RuntimeException("发件人信息不完全，请确认发件人信息！");
             }
 
@@ -178,7 +178,7 @@ public class MailUtil {
             // 添加图片
             if (null != pictures) {
                 for (Iterator<Map.Entry<String, String>> it = pictures.entrySet()
-                        .iterator(); it.hasNext(); ) {
+                    .iterator(); it.hasNext(); ) {
                     Map.Entry<String, String> entry = it.next();
                     String cid = entry.getKey();
                     String filePath = entry.getValue();
@@ -196,7 +196,7 @@ public class MailUtil {
             // 添加附件
             if (null != attachments) {
                 for (Iterator<Map.Entry<String, String>> it = attachments
-                        .entrySet().iterator(); it.hasNext(); ) {
+                    .entrySet().iterator(); it.hasNext(); ) {
                     Map.Entry<String, String> entry = it.next();
                     String cid = entry.getKey();
                     String filePath = entry.getValue();
@@ -306,7 +306,7 @@ public class MailUtil {
         Map<String, String> attachments = new HashMap<String, String>();
         attachments.put("d1.jar", "D:/work/download/activation.jar");
         attachments.put("d2.doc",
-                "C:/Documents and Settings/Administrator/桌面/Java设计模式.doc");
+            "C:/Documents and Settings/Administrator/桌面/Java设计模式.doc");
 
         Map<String, String> pictures = new HashMap<String, String>();
         pictures.put("d1", "D:/work/download/d1.jpg");
@@ -336,7 +336,7 @@ public class MailUtil {
         Map<String, String> attachments = new HashMap<String, String>();
         attachments.put("d1.jar", "D:/work/download/activation.jar");
         attachments.put("d2.doc",
-                "C:/Documents and Settings/Administrator/桌面/Java设计模式.doc");
+            "C:/Documents and Settings/Administrator/桌面/Java设计模式.doc");
 
         Map<String, String> pictures = new HashMap<String, String>();
         pictures.put("d1", "D:/work/download/d1.jpg");

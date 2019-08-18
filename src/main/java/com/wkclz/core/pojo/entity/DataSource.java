@@ -28,19 +28,20 @@ public class DataSource {
 
     /**
      * 取得已经构造生成的数据库连接
+     *
      * @return 返回数据库连接对象
      * @throws Exception
      */
     public static synchronized DruidPooledConnection getConnect(DataSource dataSource) {
 
-        if (dataConns == null){
+        if (dataConns == null) {
             dataConns = new HashMap<>();
         }
         String url = dataSource.getUrl();
         String hex = SecretUtil.md5(url);
         DruidPooledConnection conn = dataConns.get(hex);
         try {
-            if (conn == null || conn.isClosed()){
+            if (conn == null || conn.isClosed()) {
                 DruidDataSource druidDataSource = getDruidDataSource(dataSource);
                 conn = druidDataSource.getConnection();
                 dataConns.put(hex, conn);
@@ -53,7 +54,7 @@ public class DataSource {
 
     private static DruidDataSource getDruidDataSource(DataSource dataSource) {
 
-        DruidDataSource db =new DruidDataSource();
+        DruidDataSource db = new DruidDataSource();
 
         //设置连接参数
         db.setUrl(dataSource.getUrl());
@@ -78,8 +79,6 @@ public class DataSource {
 
         return db;
     }
-
-
 
 
     public static Map<String, DruidPooledConnection> getDataConns() {

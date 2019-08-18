@@ -203,7 +203,7 @@ public class JedisHelper {
          */
         public String rename(String oldkey, String newkey) {
             return rename(SafeEncoder.encode(oldkey),
-                    SafeEncoder.encode(newkey));
+                SafeEncoder.encode(newkey));
         }
 
         /**
@@ -890,7 +890,7 @@ public class JedisHelper {
          * 以Map的形式返回hash中的存储和值
          *
          * @param key
-         * @return Map<Strinig   ,   String>
+         * @return Map<Strinig, String>
          */
         public Map<String, String> hgetAll(String key) {
             //ShardedJedis sjedis = getShardedJedis();
@@ -1343,7 +1343,7 @@ public class JedisHelper {
          */
         public String lset(String key, int index, String value) {
             return lset(SafeEncoder.encode(key), index,
-                    SafeEncoder.encode(value));
+                SafeEncoder.encode(value));
         }
 
         /**
@@ -1358,7 +1358,7 @@ public class JedisHelper {
         public long linsert(String key, BinaryClient.LIST_POSITION where, String pivot,
                             String value) {
             return linsert(SafeEncoder.encode(key), where,
-                    SafeEncoder.encode(pivot), SafeEncoder.encode(value));
+                SafeEncoder.encode(pivot), SafeEncoder.encode(value));
         }
 
         /**

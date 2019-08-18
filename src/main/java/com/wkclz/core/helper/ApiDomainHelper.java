@@ -36,22 +36,23 @@ public class ApiDomainHelper extends BaseHelper {
 
     /**
      * 初始化 API_DOMAINS
+     *
      * @param apiDomains
      */
-    public synchronized void setApiDomains(List<String> apiDomains){
-        if (apiDomains == null || apiDomains.size() == 0){
+    public synchronized void setApiDomains(List<String> apiDomains) {
+        if (apiDomains == null || apiDomains.size() == 0) {
             throw new RuntimeException("apiDomains can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
         API_DOMAINS = apiDomains;
     }
 
-    private synchronized List<String> getApiDomains(){
+    private synchronized List<String> getApiDomains() {
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && API_DOMAINS != null ){
+        if (JAVA_LAST_ACTIVE_TIME != null && API_DOMAINS != null) {
             Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0){
+            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
                 return API_DOMAINS;
             }
         }
@@ -80,7 +81,7 @@ public class ApiDomainHelper extends BaseHelper {
         logger.info("api url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
         result.setMoreError(ResultStatus.API_CORS);
-        return Result.responseError(rep,result);
+        return Result.responseError(rep, result);
     }
 
 }

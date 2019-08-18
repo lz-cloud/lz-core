@@ -44,7 +44,7 @@ public class AreaUtil {
      */
     private static void getProvinces(String url, List<AreaEntity> areas, Long parentCode) {
         Document provinceDoc = getDoc(url);
-        if (provinceDoc == null){
+        if (provinceDoc == null) {
             return;
         }
         Elements mastheads = provinceDoc.select("tr.provincetr");
@@ -83,7 +83,7 @@ public class AreaUtil {
     private static void getCitys(String url, List<AreaEntity> areas, Long parentCode) {
         Document cityDoc = getDoc(url);
 
-        if (cityDoc == null){
+        if (cityDoc == null) {
             return;
         }
         url = url.substring(0, url.lastIndexOf("."));
@@ -133,7 +133,7 @@ public class AreaUtil {
     private static void getCountys(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
 
-        if (countryDoc == null){
+        if (countryDoc == null) {
             return;
         }
         url = url.substring(0, url.lastIndexOf("."));
@@ -183,7 +183,7 @@ public class AreaUtil {
      */
     private static void getTowns(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
-        if (countryDoc == null){
+        if (countryDoc == null) {
             return;
         }
         url = url.substring(0, url.lastIndexOf("."));
@@ -233,7 +233,7 @@ public class AreaUtil {
      */
     private static void getVillagetrs(String url, List<AreaEntity> areas, Long parentCode) {
         Document countryDoc = getDoc(url);
-        if (countryDoc == null){
+        if (countryDoc == null) {
             return;
         }
         Elements mastheads = countryDoc.select("tr.villagetr");
@@ -308,21 +308,21 @@ public class AreaUtil {
             }
             logger.error("JsonProcessingException", e);
         } finally {
-            if (inputStream != null){
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
                     logger.error("IOException", e);
                 }
             }
-            if (fos != null){
+            if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
                     logger.error("IOException", e);
                 }
             }
-            if (osw != null){
+            if (osw != null) {
                 try {
                     osw.close();
                 } catch (IOException e) {

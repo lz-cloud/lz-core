@@ -115,17 +115,18 @@ public class DateUtil {
 
     /**
      * 字符串格式化为时间
+     *
      * @param dateStr
      * @return
      */
-    public static final Date getDate(String dateStr){
-        if (dateStr == null){
+    public static final Date getDate(String dateStr) {
+        if (dateStr == null) {
             return null;
         }
-        if (dateStr.length() == SDF_YYYY_MM_DD.length() ){
+        if (dateStr.length() == SDF_YYYY_MM_DD.length()) {
             dateStr += " 00:00:00";
         }
-        if (dateStr.length() == SDF_YYYY_MM_DD_HH_MM_SS.length() ){
+        if (dateStr.length() == SDF_YYYY_MM_DD_HH_MM_SS.length()) {
             SimpleDateFormat sdfYmdhms = new SimpleDateFormat(SDF_YYYY_MM_DD_HH_MM_SS);
             try {
                 Date date = sdfYmdhms.parse(dateStr);

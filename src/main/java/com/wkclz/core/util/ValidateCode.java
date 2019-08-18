@@ -98,7 +98,7 @@ public class ValidateCode {
                 while (i < length) {
                     int t = random.nextInt(123);
                     if ((t >= 97 || (t >= 65 && t <= 90) || (t >= 48 && t <= 57))
-                            && (exChars == null || exChars.indexOf((char) t) < 0)) {
+                        && (exChars == null || exChars.indexOf((char) t) < 0)) {
                         code.append((char) t);
                         i++;
                     }
@@ -241,7 +241,7 @@ public class ValidateCode {
 
         String textCode = generateTextCode(type, length, exChars);
         BufferedImage bim = generateImageCode(textCode, width, height, interLine, randomLocation, backColor, foreColor,
-                lineColor);
+            lineColor);
 
         return bim;
     }
@@ -252,7 +252,7 @@ public class ValidateCode {
      * @return
      */
     private static Color getRandomColor() {
-        if (random == null){
+        if (random == null) {
             random = new Random();
         }
         Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));

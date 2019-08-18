@@ -16,6 +16,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Autowired
     private InterceptorHelper interceptorHelper;
+
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {
         return interceptorHelper.preHandle(req, rep);

@@ -121,15 +121,16 @@ public class MapUtil {
 
     /**
      * jsonString 2 Map
+     *
      * @param jsonString
      * @return
      */
-    public static Map<String, Object> jsonString2Map(String jsonString){
+    public static Map<String, Object> jsonString2Map(String jsonString) {
         Map<String, Object> map = new HashMap<>();
-        if (StringUtils.isNotBlank(jsonString)){
+        if (StringUtils.isNotBlank(jsonString)) {
             JSONObject jsonObject = JSONObject.parseObject(jsonString);
             Set<Map.Entry<String, Object>> entries = jsonObject.entrySet();
-            entries.forEach(entry->map.put(entry.getKey(), entry.getValue()));
+            entries.forEach(entry -> map.put(entry.getKey(), entry.getValue()));
         }
         return map;
     }
@@ -193,40 +194,38 @@ public class MapUtil {
         Set<String> keySet = map.keySet();
         for (String key : keySet) {
             str.append(key)
-                    .append("=")
-                    .append(map.get(key).toString())
-                    .append("&");
+                .append("=")
+                .append(map.get(key).toString())
+                .append("&");
         }
         return str.substring(0, str.length() - 1);
     }
 
 
-
-
     /**
      * Properties 转 Map
+     *
      * @param prop
      * @return
      */
-    public static Map<String, String> prop2Map(Properties prop){
+    public static Map<String, String> prop2Map(Properties prop) {
         Map<String, String> map = new HashMap<>();
-        prop.forEach((propKey,propValue) ->{
-            map.put(propKey.toString(),propValue.toString());
+        prop.forEach((propKey, propValue) -> {
+            map.put(propKey.toString(), propValue.toString());
         });
         return map;
     }
 
     /**
-     *
      * @param map 转 Properties
      * @return
      */
-    public static Properties map2Prop(Map<String, String> map){
+    public static Properties map2Prop(Map<String, String> map) {
         Properties prop = new Properties();
         Set<String> sets = map.keySet();
-        sets.forEach(set->{
-            if (map.get(set)!=null){
-                prop.setProperty(set,map.get(set));
+        sets.forEach(set -> {
+            if (map.get(set) != null) {
+                prop.setProperty(set, map.get(set));
             }
         });
         return prop;
@@ -234,6 +233,7 @@ public class MapUtil {
 
     /**
      * Map 排序
+     *
      * @param map
      * @return
      */
@@ -252,7 +252,6 @@ public class MapUtil {
             return str1.compareTo(str2);
         }
     }
-
 
 
 }
