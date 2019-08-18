@@ -199,7 +199,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
     private Example getExample(Model model) {
         Example example;
         try {
-            Method createExample = ClassUtil.getModdelMethod(model.getClass(), "createExample");
+            Method createExample = ClassUtil.getModelMethod(model.getClass(), "createExample");
             example = (Example) createExample.invoke(null, model);
             return example;
         } catch (IllegalAccessException e) {
