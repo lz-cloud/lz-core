@@ -174,7 +174,8 @@ public class AuthHelper extends BaseHelper {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain(getCookieDomain(req));
+        String cookieDomain = getCookieDomain(req);
+        cookie.setDomain(cookieDomain);
 
         if (maxAge != null && maxAge > 0) {
             cookie.setMaxAge(maxAge);
@@ -222,7 +223,8 @@ public class AuthHelper extends BaseHelper {
         Cookie cookie = new Cookie(name, "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setDomain(getCookieDomain(req));
+        String cookieDomain = getCookieDomain(req);
+        cookie.setDomain(cookieDomain);
         cookie.setMaxAge(0);
         rep.addCookie(cookie);
     }
@@ -377,16 +379,14 @@ public class AuthHelper extends BaseHelper {
 
         // db 配置其二
         cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
-        if (StringUtils.isNotBlank(cookieDomain)) {
-            int indexOf = cookieDomain.indexOf(".");
-            cookieDomain = cookieDomain.substring(indexOf + 1);
-            return cookieDomain;
+
+        if (StringUtils.isBlank(cookieDomain)) {
+            cookieDomain = UrlUtil.getDomain(req);
+            logger.info("=========> 无cookie域，domain 截取 cookie: {}", cookieDomain);
         }
 
         int indexOf = cookieDomain.indexOf(".");
         cookieDomain = cookieDomain.substring(indexOf + 1);
-
-        logger.info("=========> 无cookie域，domain 截取 cookie: {}", cookieDomain);
 
         return cookieDomain;
     }
