@@ -3,7 +3,6 @@ package com.wkclz.core.base;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
