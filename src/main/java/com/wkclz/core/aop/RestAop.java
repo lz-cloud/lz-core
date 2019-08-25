@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.helper.OrgDomainHelper;
 import com.wkclz.core.pojo.dto.User;
@@ -130,10 +131,23 @@ public class RestAop {
 
     public Object normalHandle(ProceedingJoinPoint point) {
         Object obj = null;
+
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            logger.error("Throwable", throwable);
+            // 自定义异常，转换为 Result
+            if (throwable instanceof BizException){
+                BizException bizException = (BizException)throwable;
+                Result result = new Result();
+                result.setError(bizException.getMessage());
+                if (bizException.getCode() == 0){
+                    result.setCode(0);
+                }
+                obj = result;
+            } else {
+                // 非自定义异常不处理
+                logger.error("Throwable", throwable);
+            }
         }
         return obj;
     }
