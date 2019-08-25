@@ -17,7 +17,7 @@ import java.util.Date;
  * Created: wangkaicun @ 2017-10-20 下午9:11
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Result {
+public class Result<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
@@ -48,12 +48,12 @@ public class Result {
     /**
      * 详情
      */
-    private Object data;
+    private T data;
 
     public Result() {
     }
 
-    public Result(Object data) {
+    public Result(T data) {
         this.code = 1;
         this.data = data;
     }
@@ -94,7 +94,7 @@ public class Result {
         return null;
     }
 
-    public Result setData(Object data) {
+    public Result setData(T data) {
         this.code = 1;
         this.data = data;
         return this;
@@ -155,9 +155,7 @@ public class Result {
 
 
     public Result setOk() {
-        this.data = true;
-        this.code = 1;
-        return this;
+        return Result.ok();
     }
 
     public Result setMoreError(ResultStatus status) {
