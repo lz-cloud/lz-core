@@ -8,6 +8,7 @@ import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
+import com.wkclz.core.helper.InterceptorHelper;
 import com.wkclz.core.helper.OrgDomainHelper;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.EnvType;
@@ -25,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +56,8 @@ public class RestAop {
     private AuthHelper authHelper;
     @Autowired
     private OrgDomainHelper orgDomainHelper;
+    @Autowired
+    private InterceptorHelper interceptorHelper;
 
     @Pointcut(POINT_CUT)
     public void pointCut() {
@@ -80,6 +84,17 @@ public class RestAop {
     private Object servletRequestHandle(ProceedingJoinPoint point, ServletRequestAttributes attributes) {
 
         HttpServletRequest req = attributes.getRequest();
+
+        // 权限验证
+        String authed = req.getHeader("authed");
+        if (authed == null || !"true".equals(authed)){
+            HttpServletResponse rep = attributes.getResponse();
+            boolean handle = interceptorHelper.preHandle(req, rep);
+            if (!handle){
+                logger.warn("======> no user found, please login again!");
+                return Result.remind("未找到登录信息，请重新登录!");
+            }
+        }
 
         String seq = req.getHeader("seq");
         String method = req.getMethod();

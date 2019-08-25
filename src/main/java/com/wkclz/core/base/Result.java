@@ -158,6 +158,13 @@ public class Result<T> {
         return Result.ok();
     }
 
+    public boolean isSuccess(){
+        if (this.code != null && this.code == 1){
+            return true;
+        }
+        return false;
+    }
+
     public Result setMoreError(ResultStatus status) {
         this.code = status.getCode();
         this.error = status.getMsg();
