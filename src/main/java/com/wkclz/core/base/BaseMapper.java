@@ -1,7 +1,7 @@
 package com.wkclz.core.base;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
  * Description: common mapper
  * Created: wangkaicun @ 2019-01-17 14:43
  */
-@Component
+@Mapper
 public interface BaseMapper<Model, Example> {
 
     long countByExample(Example example);
