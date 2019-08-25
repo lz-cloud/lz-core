@@ -87,7 +87,7 @@ public class Result<T> {
     }
 
 
-    public Object getData() {
+    public T getData() {
         if (code > 0 && data != null) {
             return data;
         }
