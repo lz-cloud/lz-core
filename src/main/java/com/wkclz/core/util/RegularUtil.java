@@ -15,6 +15,7 @@ public class RegularUtil {
     private static final Pattern IS_EMAIL = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
     private static final Pattern IS_MOBILE = Pattern.compile("^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$");
     private static final Pattern IS_IP = Pattern.compile("(?=(\\b|\\D))(((\\d{1,2})|(1\\d{1,2})|(2[0-4]\\d)|(25[0-5]))\\.){3}((\\d{1,2})|(1\\d{1,2})|(2[0-4]\\d)|(25[0-5]))(?=(\\b|\\D))");
+    private static final Pattern IS_DOMAIN = Pattern.compile("^(?=^.{3,255}$)(http(s)?:\\/\\/)?(www\\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\\d+)*(\\/\\w+\\.\\w+)*$");
 
     /**
      * 匹配正整数
@@ -62,9 +63,21 @@ public class RegularUtil {
      * @param str
      * @return
      */
+    public static boolean isdomain(String str) {
+        return reg(str, IS_DOMAIN);
+    }
+
+    /**
+     * 判断字符串是否为IP
+     *
+     * @param str
+     * @return
+     */
     public static boolean isIp(String str) {
         return reg(str, IS_IP);
     }
+
+
 
     /**
      * 判断字符串是否含有双字节字符
@@ -113,16 +126,9 @@ public class RegularUtil {
 
 
     public static void main(String[] args) {
-        String ip = "127.0.0.1";
-        System.out.println(isIp(ip));
-        // true
-
-        /*
-        System.out.println(isDate("2020-02-29"));
-        // true
+        System.out.println(isIp("127.0.0.1"));
+        System.out.println(isdomain("www.www.wklz.com"));
         System.out.println(isDate("2019-02-29"));
-        // false
-        */
     }
 
 }
