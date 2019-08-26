@@ -88,7 +88,7 @@ public class RestAop {
         // 给入参赋值
         String args = setArgs(point, req);
         if (req.getAttribute("isInner") == null){
-
+            /*
             // 权限验证
             String authed = req.getHeader("authed");
             if (authed == null || !"true".equals(authed)){
@@ -99,6 +99,7 @@ public class RestAop {
                     return Result.remind("未找到登录信息，请重新登录!");
                 }
             }
+            */
         }
 
 
