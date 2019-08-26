@@ -38,6 +38,7 @@ public class BaseModel {
     private List<Long> ids;
 
     private String keyword;
+    private Boolean inner;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -307,5 +308,11 @@ public class BaseModel {
         this.debug = debug;
     }
 
+    public Boolean getInner() {
+        return inner;
+    }
 
+    public void setInner(Boolean inner) {
+        this.inner = inner;
+    }
 }

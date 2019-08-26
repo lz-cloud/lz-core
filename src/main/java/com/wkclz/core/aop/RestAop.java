@@ -85,16 +85,22 @@ public class RestAop {
 
         HttpServletRequest req = attributes.getRequest();
 
-        // 权限验证
-        String authed = req.getHeader("authed");
-        if (authed == null || !"true".equals(authed)){
-            HttpServletResponse rep = attributes.getResponse();
-            boolean handle = interceptorHelper.preHandle(req, rep);
-            if (!handle){
-                logger.warn("======> no user found, please login again!");
-                return Result.remind("未找到登录信息，请重新登录!");
+        // 给入参赋值
+        String args = setArgs(point, req);
+        if (req.getAttribute("isInner") == null){
+
+            // 权限验证
+            String authed = req.getHeader("authed");
+            if (authed == null || !"true".equals(authed)){
+                HttpServletResponse rep = attributes.getResponse();
+                boolean handle = interceptorHelper.preHandle(req, rep);
+                if (!handle){
+                    logger.warn("======> no user found, please login again!");
+                    return Result.remind("未找到登录信息，请重新登录!");
+                }
             }
         }
+
 
         String seq = req.getHeader("seq");
         String method = req.getMethod();
@@ -109,8 +115,6 @@ public class RestAop {
             seq = StringUtils.join(Sys.APPLICATION_GROUP, "_", uuid);
         }
 
-        // 给入参赋值
-        String args = setArgs(point, req);
 
         // 请求具体方法
         Object obj = null;
@@ -172,6 +176,7 @@ public class RestAop {
         Long userId = null;
         Long orgId = null;
         String value = null;
+        boolean isInnner = false;
 
         // param 赋值
         Object[] args = point.getArgs();
@@ -183,6 +188,10 @@ public class RestAop {
                     userId = this.setCurrentUserId(model, req, userId);
                     orgId = this.setCurrentOrgId(model, req, orgId);
                     baseModelArgs.add(arg);
+                    // 内部请求标识
+                    if (!isInnner && model.getInner() != null && model.getInner()){
+                        isInnner = true;
+                    }
                 }
                 if (arg instanceof ArrayList) {
                     ArrayList list = (ArrayList) arg;
@@ -193,6 +202,10 @@ public class RestAop {
                             BaseModel model = (BaseModel) l;
                             userId = this.setCurrentUserId(model, req, userId);
                             orgId = this.setCurrentOrgId(model, req, orgId);
+                            // 内部请求标识
+                            if (!isInnner && model.getInner() != null && model.getInner()){
+                                isInnner = true;
+                            }
                         }
                     }
                     if (isBaseModel) {
@@ -207,6 +220,9 @@ public class RestAop {
                     logger.error("JsonProcessingException", e);
                 }
             }
+        }
+        if (isInnner){
+            req.setAttribute("isInner", true);
         }
         return value;
     }
