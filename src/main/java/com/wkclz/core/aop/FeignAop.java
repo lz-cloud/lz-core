@@ -19,8 +19,8 @@ import java.util.ArrayList;
  * FeignAop
  * wangkc @ 2019-08-25 20:33:55
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class FeignAop {
 
     /**

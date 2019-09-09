@@ -20,13 +20,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -87,8 +87,8 @@ public class RestAop {
 
         // 给入参赋值
         String args = setArgs(point, req);
-        if (req.getAttribute("isInner") == null){
             /*
+        if (req.getAttribute("isInner") == null){
             // 权限验证
             String authed = req.getHeader("authed");
             if (authed == null || !"true".equals(authed)){
@@ -99,8 +99,8 @@ public class RestAop {
                     return Result.remind("未找到登录信息，请重新登录!");
                 }
             }
-            */
         }
+            */
 
 
         String seq = req.getHeader("seq");
@@ -110,12 +110,16 @@ public class RestAop {
         Date responeTime = null;
         Long costTime = null;
 
+
         if (StringUtils.isBlank(seq)) {
             // 如果未生成，需要和 网关 的生成方法保持一致
             String uuid = UniqueCodeUtil.getJavaUuid();
             seq = StringUtils.join(Sys.APPLICATION_GROUP, "_", uuid);
         }
-
+        String mdcSeq = MDC.get("seq");
+        if (mdcSeq == null){
+            MDC.put("seq", seq);
+        }
 
         // 请求具体方法
         Object obj = null;
@@ -144,7 +148,7 @@ public class RestAop {
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException", e);
         }
-        logger.info("{} ----> method: {}, uri: {}, ms: {}, args: {}, result: {}", seq, method, uri, costTime, args, value);
+        logger.info("{}|{}|{}ms|{}|{}", seq, method, costTime, uri, args);
 
         return obj;
     }
