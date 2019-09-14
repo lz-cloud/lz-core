@@ -87,7 +87,7 @@ public class RestAop {
 
         // 给入参赋值
         String args = setArgs(point, req);
-            /*
+        /*
         if (req.getAttribute("isInner") == null){
             // 权限验证
             String authed = req.getHeader("authed");
@@ -100,7 +100,7 @@ public class RestAop {
                 }
             }
         }
-            */
+        */
 
 
         String seq = req.getHeader("seq");
@@ -114,7 +114,7 @@ public class RestAop {
         if (StringUtils.isBlank(seq)) {
             // 如果未生成，需要和 网关 的生成方法保持一致
             String uuid = UniqueCodeUtil.getJavaUuid();
-            seq = StringUtils.join(Sys.APPLICATION_GROUP, "_", uuid);
+            seq = StringUtils.join(Sys.APPLICATION_GROUP.toLowerCase(), "_", uuid);
         }
         String mdcSeq = MDC.get("seq");
         if (mdcSeq == null){
@@ -126,28 +126,30 @@ public class RestAop {
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            logger.error("Throwable", throwable);
+            obj = Result.error(throwable.getMessage());
+            logger.error("Throwable: "+ throwable.getLocalizedMessage());
+            throwable.printStackTrace();
         }
 
         // 返回参数处理
         if (obj != null && obj instanceof Result) {
-            responeTime = new Date();
-            costTime = responeTime.getTime() - requestTime.getTime();
-
             if (Sys.CURRENT_ENV != EnvType.PROD) {
+                responeTime = new Date();
+                costTime = responeTime.getTime() - requestTime.getTime();
                 Result result = (Result) obj;
                 result.setRequestTime(requestTime);
                 result.setResponeTime(responeTime);
                 result.setCostTime(costTime);
             }
         }
-
+        /*
         String value = null;
         try {
             value = objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException", e);
         }
+        */
         logger.info("{}|{}|{}ms|{}|{}", seq, method, costTime, uri, args);
 
         return obj;
