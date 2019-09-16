@@ -2,18 +2,13 @@ package com.wkclz.core.aop;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.exception.BizException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 /**
  * FeignAop
@@ -50,26 +45,6 @@ public class FeignAop {
      */
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point) {
-
-        // param 内部请求 赋值
-        Object[] args = point.getArgs();
-        if (args != null && args.length > 0) {
-            for (Object arg : args) {
-                if (arg instanceof BaseModel) {
-                    BaseModel model = (BaseModel) arg;
-                    model.setInner(true);
-                }
-                if (arg instanceof ArrayList) {
-                    ArrayList list = (ArrayList) arg;
-                    for (Object l : list) {
-                        if (l instanceof BaseModel) {
-                            BaseModel model = (BaseModel) l;
-                            model.setInner(true);
-                        }
-                    }
-                }
-            }
-        }
 
         Object obj = null;
         try {

@@ -53,8 +53,14 @@ public class FeignHeadConfiguration {
                         requestTemplate.header(name, value);
                     }
                 }
-
-                // seq
+                /*  理论header 已经包含了这个值
+                // traceId
+                String mdcTraceId = MDC.get("traceId");
+                if (mdcTraceId != null){
+                    requestTemplate.header("traceId", mdcTraceId);
+                }
+                */
+                // seq 要一直变化，所以要获取新值
                 String mdcSeq = MDC.get("seq");
                 if (mdcSeq != null){
                     requestTemplate.header("seq", mdcSeq);

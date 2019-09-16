@@ -103,7 +103,29 @@ public class RestAop {
         */
 
 
+        // traceId
+        String traceId = req.getHeader("traceId");
+        if (StringUtils.isBlank(traceId)) {
+            // 如果未生成，需要和 网关 的生成方法保持一致
+            String uuid = UniqueCodeUtil.getJavaUuid();
+            traceId = StringUtils.join(Sys.APPLICATION_GROUP.toLowerCase(), "_", uuid);
+        }
+        String mdcTraceId = MDC.get("traceId");
+        if (mdcTraceId == null){
+            MDC.put("traceId", traceId);
+        }
+
+
+        // seq
         String seq = req.getHeader("seq");
+        if (StringUtils.isBlank(seq)) {
+            // 如果未生成，需要和 网关 的生成方法保持一致
+            seq = "0";
+        }
+        Integer newSeq = Integer.valueOf(seq) + 1;
+        MDC.put("seq", newSeq + "");
+
+
         String method = req.getMethod();
         String uri = req.getRequestURI();
         Date requestTime = new Date();
@@ -111,15 +133,6 @@ public class RestAop {
         Long costTime = null;
 
 
-        if (StringUtils.isBlank(seq)) {
-            // 如果未生成，需要和 网关 的生成方法保持一致
-            String uuid = UniqueCodeUtil.getJavaUuid();
-            seq = StringUtils.join(Sys.APPLICATION_GROUP.toLowerCase(), "_", uuid);
-        }
-        String mdcSeq = MDC.get("seq");
-        if (mdcSeq == null){
-            MDC.put("seq", seq);
-        }
 
         // 请求具体方法
         Object obj = null;
@@ -183,7 +196,6 @@ public class RestAop {
         Long userId = null;
         Long orgId = null;
         String value = null;
-        boolean isInnner = false;
 
         // param 赋值
         Object[] args = point.getArgs();
@@ -195,10 +207,6 @@ public class RestAop {
                     userId = this.setCurrentUserId(model, req, userId);
                     orgId = this.setCurrentOrgId(model, req, orgId);
                     baseModelArgs.add(arg);
-                    // 内部请求标识
-                    if (!isInnner && model.getInner() != null && model.getInner()){
-                        isInnner = true;
-                    }
                 }
                 if (arg instanceof ArrayList) {
                     ArrayList list = (ArrayList) arg;
@@ -209,10 +217,6 @@ public class RestAop {
                             BaseModel model = (BaseModel) l;
                             userId = this.setCurrentUserId(model, req, userId);
                             orgId = this.setCurrentOrgId(model, req, orgId);
-                            // 内部请求标识
-                            if (!isInnner && model.getInner() != null && model.getInner()){
-                                isInnner = true;
-                            }
                         }
                     }
                     if (isBaseModel) {
@@ -227,9 +231,6 @@ public class RestAop {
                     logger.error("JsonProcessingException", e);
                 }
             }
-        }
-        if (isInnner){
-            req.setAttribute("isInner", true);
         }
         return value;
     }
