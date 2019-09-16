@@ -163,7 +163,7 @@ public class RestAop {
             logger.error("JsonProcessingException", e);
         }
         */
-        logger.info("{}|{}|{}ms|{}|{}", seq, method, costTime, uri, args);
+        logger.info("{}|{}|{}|{}ms|{}|{}",traceId, seq, method, costTime, uri, args);
 
         return obj;
     }
