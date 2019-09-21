@@ -95,4 +95,22 @@ public class FileUtil {
     }
 
 
+    public static boolean delFile(String path) {
+        File file = new File(path);
+        return delFile(file);
+    }
+    public static boolean delFile(File file) {
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                delFile(f);
+            }
+        }
+        return file.delete();
+    }
+
+
 }
