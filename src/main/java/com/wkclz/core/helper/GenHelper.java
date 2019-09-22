@@ -49,7 +49,7 @@ public class GenHelper {
 
             //获取文件信息
             byte[] getData = readInputStream(inputStream);
-            String savePath = getSavePath(conn);
+            String savePath = getSavePath(conn).replace("\\","/");
 
             // 保存文件
             File file = new File(savePath);
