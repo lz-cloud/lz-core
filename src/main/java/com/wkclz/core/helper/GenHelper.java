@@ -28,7 +28,7 @@ public class GenHelper {
     private final static String GEN_RULE_PRE = "http://gen.lz.wkclz.com/gen/rule/";
 
 
-    public static boolean genCodde(String authCode) {
+    public static boolean genCode(String authCode) {
         long start = System.currentTimeMillis();
 
         try {
