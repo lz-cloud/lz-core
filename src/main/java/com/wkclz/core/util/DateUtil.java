@@ -244,7 +244,7 @@ public class DateUtil {
             sb.append(min + "分 ");
         }
         if (day > 0 || hour > 0 || min > 0 || sec > 0){
-            sb.append(sec + "秒 ");
+            sb.append(sec + "秒");
         }
         if (sb.length() == 0){
             sb.append("0秒");
