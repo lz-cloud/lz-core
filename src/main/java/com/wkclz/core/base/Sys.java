@@ -1,5 +1,6 @@
 package com.wkclz.core.base;
 
+import com.wkclz.core.helper.AppHelper;
 import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.util.DateUtil;
 import org.apache.commons.lang3.EnumUtils;
@@ -7,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+
+import java.util.Map;
 
 /**
  * Description:
@@ -96,6 +99,13 @@ public class Sys {
 
         // set startupDate for the whole system
         Long startupDate = applicationContext.getStartupDate();
+
+        AppHelper bean = applicationContext.getBean(AppHelper.class);
+        Map<String, String> appInfo = bean.getAppInfo();
+
+        Sys.APPLICATION_GROUP = appInfo.get("group");
+        Sys.APPLICATION_NAME = appInfo.get("name");
+
         Sys.STARTUP_DATE = startupDate;
         logger.info("===================>  System is start up as {} @ {}", CURRENT_ENV, DateUtil.getYyyyMmDdHhMmSs(startupDate));
     }
