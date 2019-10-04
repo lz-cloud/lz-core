@@ -40,6 +40,12 @@ public class Sys {
     public static String APPLICATION_GROUP = "CMS";
 
     /**
+     * Application Name
+     * 系统启动后会修改
+     */
+    public static String APPLICATION_NAME = "APP";
+
+    /**
      * default now, it will be changed by main class
      * 系统启动时间
      */

@@ -18,25 +18,39 @@ public class AccessLog {
      */
     private String userAgent;
 
-    /**
-     * 浏览器类型
-     */
-    private String browserType;
 
     /**
      * 浏览器名称
      */
     private String browserName;
 
-    /**
-     * 设备类型
-     */
-    private String deviceType;
 
     /**
-     * 设备名称
+     * 浏览器名称
      */
-    private String deviceName;
+    private String browserVersion;
+
+
+    /**
+     * 浏览器内核名称
+     */
+    private String engineName;
+
+
+    /**
+     * 浏览器内核名称
+     */
+    private String engineVersion;
+
+    /**
+     * 系统
+     */
+    private String userOs;
+
+    /**
+     * 平台
+     */
+    private String platform;
 
     /**
      * 服务器名称
@@ -44,7 +58,7 @@ public class AccessLog {
     private String osName;
 
     /**
-     * 服务器版本
+     * 服务器系统版本
      */
     private String osVersion;
 
@@ -190,14 +204,6 @@ public class AccessLog {
         this.userAgent = userAgent;
     }
 
-    public String getBrowserType() {
-        return browserType;
-    }
-
-    public void setBrowserType(String browserType) {
-        this.browserType = browserType;
-    }
-
     public String getBrowserName() {
         return browserName;
     }
@@ -206,20 +212,44 @@ public class AccessLog {
         this.browserName = browserName;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public String getBrowserVersion() {
+        return browserVersion;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setBrowserVersion(String browserVersion) {
+        this.browserVersion = browserVersion;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getEngineName() {
+        return engineName;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setEngineName(String engineName) {
+        this.engineName = engineName;
+    }
+
+    public String getEngineVersion() {
+        return engineVersion;
+    }
+
+    public void setEngineVersion(String engineVersion) {
+        this.engineVersion = engineVersion;
+    }
+
+    public String getUserOs() {
+        return userOs;
+    }
+
+    public void setUserOs(String userOs) {
+        this.userOs = userOs;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public String getOsName() {

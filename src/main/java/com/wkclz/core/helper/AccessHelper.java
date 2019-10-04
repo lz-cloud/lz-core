@@ -1,12 +1,11 @@
 package com.wkclz.core.helper;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.entity.AccessLog;
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.OperatingSystem;
-import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -106,16 +105,17 @@ public class AccessHelper extends BaseHelper {
         AccessLog log = new AccessLog();
 
         String userAgentHeader = req.getHeader("User-Agent");
-        if (userAgentHeader != null) {
-            UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
-            Browser browser = userAgent.getBrowser();
-            OperatingSystem os = userAgent.getOperatingSystem();
 
+
+        if (userAgentHeader != null) {
+            UserAgent ua = UserAgentUtil.parse(userAgentHeader);
             log.setUserAgent(userAgentHeader);
-            log.setBrowserType(browser.getBrowserType().getName());
-            log.setBrowserName(browser.getName());
-            log.setDeviceType(os.getDeviceType().getName());
-            log.setDeviceName(os.getName());
+            log.setBrowserName(ua.getBrowser() == null? null:ua.getBrowser().toString());
+            log.setBrowserVersion(ua.getVersion());
+            log.setEngineName(ua.getEngine() == null ? null:ua.getEngine().toString());
+            log.setEngineVersion(ua.getEngineVersion());
+            log.setUserOs(ua.getOs() == null ? null:ua.getOs().toString());
+            log.setPlatform(ua.getPlatform() == null ? null:ua.getPlatform().toString());
         }
 
         log.setOsName(System.getProperty("os.name"));
