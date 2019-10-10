@@ -73,13 +73,6 @@
             <version>10.3.0</version>
         </dependency>
 
-        <!-- TODO 下一个版本移除 jedis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
-        </dependency>
-
         <!-- 配置加密解密 -->
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
