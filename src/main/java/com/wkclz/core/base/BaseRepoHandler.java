@@ -313,7 +313,7 @@ public class BaseRepoHandler {
     private static boolean sqlInj(String str) {
         str = str.toLowerCase();
         String injStr = "'|and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;| or |-|+";
-        String injStra[] = injStr.split("\\|");
+        String[] injStra = injStr.split("\\|");
         for (int i = 0; i < injStra.length; i++) {
             String is = injStra[i];
             if (str.indexOf(is) >= 0) {

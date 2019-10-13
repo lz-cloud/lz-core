@@ -28,7 +28,7 @@ public class AccessHelper extends BaseHelper {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    private static final PathMatcher matcher = new AntPathMatcher();
+    private static final PathMatcher MATCHER = new AntPathMatcher();
     private static final String NAME_SPACE = "_ACCESS_URI";
 
     /**
@@ -82,7 +82,7 @@ public class AccessHelper extends BaseHelper {
         // PathMatcher 匹配
         for (String accessUri : accessUris) {
             if (accessUri.contains("**")) {
-                boolean match = matcher.match(accessUri, uri);
+                boolean match = MATCHER.match(accessUri, uri);
                 if (match) {
                     return true;
                 }

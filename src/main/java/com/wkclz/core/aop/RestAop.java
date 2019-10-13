@@ -50,7 +50,8 @@ public class RestAop {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAop.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private final String POINT_CUT = "execution(public * *..controller..*.*(..)) || execution(public * *..rest..*.*(..))";
+    // private final String POINT_CUT = "execution(public * *..controller..*.*(..)) || execution(public * *..rest..*.*(..))";
+    private final String POINT_CUT = "execution(public * *(..)) && (@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController))";
 
     @Autowired
     private AuthHelper authHelper;

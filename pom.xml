@@ -127,12 +127,6 @@
             <artifactId>javase</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>4.6.8</version>
-        </dependency>
-
         <!-- 网页信息抓取 -->
         <dependency>
             <groupId>org.jsoup</groupId>
