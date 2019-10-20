@@ -70,7 +70,7 @@ public class BaseRepoHandler {
      *
      * @param model
      */
-    protected static <T extends BaseModel> boolean pagePreHandle(T model) {
+    public static <T extends BaseModel> boolean pagePreHandle(T model) {
 
         BeanUtil.removeBlank(model);
 

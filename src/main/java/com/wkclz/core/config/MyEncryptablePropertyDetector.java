@@ -1,7 +1,7 @@
 package com.wkclz.core.config;
 
 import com.ulisesbocchio.jasyptspringboot.EncryptablePropertyDetector;
-import com.wkclz.core.base.Constant;
+import com.wkclz.core.constant.BaseConstant;
 
 public class MyEncryptablePropertyDetector implements EncryptablePropertyDetector {
 
@@ -10,7 +10,7 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
     @Override
     public boolean isEncrypted(String s) {
         if (null != s) {
-            return s.startsWith(Constant.CONFIG_ENCRYPTED_PREFIX);
+            return s.startsWith(BaseConstant.CONFIG_ENCRYPTED_PREFIX);
         }
         return false;
     }
@@ -18,7 +18,7 @@ public class MyEncryptablePropertyDetector implements EncryptablePropertyDetecto
     // 该方法告诉工具，如何将自定义前缀去除
     @Override
     public String unwrapEncryptedValue(String s) {
-        return s.substring(Constant.CONFIG_ENCRYPTED_PREFIX.length());
+        return s.substring(BaseConstant.CONFIG_ENCRYPTED_PREFIX.length());
     }
 }
 
