@@ -33,7 +33,7 @@ public class DaoAop {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoAop.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private final String POINT_CUT = "execution(public * *..dao..*Mapper.*(..)) || execution(public * *..mapper..*Mapper.*(..))";
+    private final String POINT_CUT = "@within(org.apache.ibatis.annotations.Mapper)";
 
 
     private final List<String> WRITE_ACTIONS = Arrays.asList(

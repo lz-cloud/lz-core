@@ -29,7 +29,7 @@ public class FeignAop {
 
     private static final Logger logger = LoggerFactory.getLogger(FeignAop.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private final String POINT_CUT = "@within(org.springframework.cloud.openfeign.FeignClient) )";
+    private final String POINT_CUT = "@within(org.springframework.cloud.openfeign.FeignClient)";
 
 
     @Pointcut(POINT_CUT)
