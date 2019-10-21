@@ -1,6 +1,5 @@
 package com.wkclz.core.base;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,39 +29,35 @@ public interface BaseRepo<Model> {
      * 对象更新数据【为空时不更新】
      *
      * @param model 数据对象
-     * @param req   请求
      * @return 更新状态
      */
-    Integer update(Model model, HttpServletRequest req);
+    Integer update(Model model);
 
     /**
      * 插入数据
      *
      * @param model 数据对象
-     * @param req   请求
      * @return 数据ID
      */
-    Long insert(Model model, HttpServletRequest req);
+    Long insert(Model model);
 
     /**
      * 插入批量数据
      *
      * @param models  数据对象
      * @param columns 指定列
-     * @param req     请求
      * @return 成功条数
      */
-    Integer insert(List<Model> models, String[] columns, HttpServletRequest req);
+    Integer insert(List<Model> models, String[] columns);
 
     /**
      * 插入批量数据
      *
      * @param models  数据对象
      * @param columns 指定列
-     * @param req     请求
      * @return 成功条数
      */
-    Integer insert(List<Model> models, List<String> columns, HttpServletRequest req);
+    Integer insert(List<Model> models, List<String> columns);
 
     /**
      * 统计数据量
@@ -83,28 +78,25 @@ public interface BaseRepo<Model> {
      * 使用主键删除数据
      *
      * @param id  主键ID
-     * @param req 请求
      * @return 删除状态
      */
-    Integer del(Long id, HttpServletRequest req);
+    Integer del(Long id);
 
     /**
      * 使用主键【字符串】删除数据
      *
      * @param ids 主键ID字符串
-     * @param req 请求
      * @return 删除状态
      */
-    Integer del(String ids, HttpServletRequest req);
+    Integer del(String ids);
 
     /**
      * 使用主键【列】删除数据
      *
      * @param ids 主键ID列
-     * @param req 请求
      * @return 删除状态
      */
-    Integer del(List<Long> ids, HttpServletRequest req);
+    Integer del(List<Long> ids);
 
     /**
      * 查询所有数据【不分页，慎用】

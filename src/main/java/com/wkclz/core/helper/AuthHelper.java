@@ -70,6 +70,9 @@ public class AuthHelper extends BaseHelper {
         Token token = new Token(user.getAuthId(), user.getUserId());
         user.setToken(token.getToken());
 
+        // 设置线程变更
+        ThreadLocals.set("user", user);
+
         // 设置 redis
         String redisKey = token.getRedisKey();
         String userStr = JSONObject.toJSONString(user);
@@ -99,6 +102,10 @@ public class AuthHelper extends BaseHelper {
      * @return
      */
     public User getSession(HttpServletRequest req) {
+        Object userObj = ThreadLocals.get("user");
+        if (userObj!=null){
+            return (User) userObj;
+        }
         if (req == null) {
             return null;
         }
@@ -113,6 +120,10 @@ public class AuthHelper extends BaseHelper {
      * @return
      */
     public User getSession(String tokenStr) {
+        Object userObj = ThreadLocals.get("user");
+        if (userObj!=null){
+            return (User) userObj;
+        }
         if (StringUtils.isBlank(tokenStr)) {
             return null;
         }
@@ -142,6 +153,7 @@ public class AuthHelper extends BaseHelper {
             req.getSession().invalidate();
             return;
         }
+        ThreadLocals.remove("user");
         Token token = Token.getToken(tokenStr);
         stringRedisTemplate.expireAt(token.getRedisKey(), new Date());
         expireCookie(req, rep, "token");

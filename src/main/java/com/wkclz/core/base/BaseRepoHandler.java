@@ -1,6 +1,5 @@
 package com.wkclz.core.base;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wkclz.core.pojo.dto.User;
@@ -9,12 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +26,10 @@ public class BaseRepoHandler {
 
     protected static final int INSERT_SIZE = 1200;
 
-    private static Long getUserId(HttpServletRequest req) {
-        if (req == null) {
-            return null;
-        }
-        Object userObj = req.getSession().getAttribute("user");
+    private static Long getUserId() {
+        Object userObj = ThreadLocals.get("user");
         if (userObj != null) {
-            User user = JSONObject.parseObject(userObj.toString(), User.class);
+            User user = (User) userObj;
             return user.getUserId();
         }
         return null;
@@ -51,16 +45,16 @@ public class BaseRepoHandler {
      * @Description:
      * @author wangkaicun @ current time
      */
-    protected static <T extends BaseModel> T setBaseInfo(T model, HttpServletRequest req) {
+    protected static <T extends BaseModel> T setBaseInfo(T model) {
 
-        Long userId = getUserId(req);
+        Long userId = getUserId();
         if (userId != null) {
             model.setLastUpdateBy(userId);
             if (model.getId() == null && model.getCreateBy() == null) {
                 model.setCreateBy(userId);
             }
         }
-        model.setLastUpdateTime(new Date());
+        // model.setLastUpdateTime(new Date()); 让数据库做更新
         return model;
     }
 

@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,14 +46,14 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         return list.get(0);
     }
 
-    public Integer update(Model model, HttpServletRequest req) {
+    public Integer update(Model model) {
         if (model.getId() == null) {
             throw new RuntimeException("id is null");
         }
         if (model.getVersion() == null) {
             throw new RuntimeException("version is null");
         }
-        model = setBaseInfo(model, req);
+        model = setBaseInfo(model);
         Model target = mapper.selectByPrimaryKey(model.getId());
         if (target == null) {
             throw new RuntimeException("id is error");
@@ -78,19 +77,19 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         return mapper.updateByPrimaryKeySelective(target);
     }
 
-    public Long insert(Model model, HttpServletRequest req) {
-        model = setBaseInfo(model, req);
+    public Long insert(Model model) {
+        model = setBaseInfo(model);
         mapper.insertSelective(model);
         return model.getId();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Integer insert(List<Model> list, String[] columns, HttpServletRequest req) {
-        return insert(list, Arrays.asList(columns), req);
+    public Integer insert(List<Model> list, String[] columns) {
+        return insert(list, Arrays.asList(columns));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Integer insert(List<Model> list, List<String> columns, HttpServletRequest req) {
+    public Integer insert(List<Model> list, List<String> columns) {
         if (list == null || list.size() == 0 || columns == null || columns.size() == 0) {
             return 0;
         }
@@ -100,7 +99,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         List<Model> tmpList = new ArrayList<>();
         for (Model model : list) {
             counter++;
-            model = setBaseInfo(model, req);
+            model = setBaseInfo(model);
             tmpList.add(model);
             if (counter % INSERT_SIZE == 0 || counter == size) {
                 seccuss += mapper.insertBatch(tmpList, getMapColumns(columns));
@@ -118,15 +117,15 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         return countByExample(model);
     }
 
-    public Integer del(Long id, HttpServletRequest req) {
-        return del(Arrays.asList(id), req);
+    public Integer del(Long id) {
+        return del(Arrays.asList(id));
     }
 
-    public Integer del(String ids, HttpServletRequest req) {
-        return del(IntegerUtil.str2LongList(ids), req);
+    public Integer del(String ids) {
+        return del(IntegerUtil.str2LongList(ids));
     }
 
-    public Integer del(List<Long> ids, HttpServletRequest req) {
+    public Integer del(List<Long> ids) {
         if (ids == null || ids.size() == 0) {
             return 0;
         }
@@ -145,7 +144,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
         }
 
 
-        model = setBaseInfo(model, req);
+        model = setBaseInfo(model);
         model.setStatus(0);
         return mapper.updateByExampleSelective(model, example);
     }
