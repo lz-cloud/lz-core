@@ -2,6 +2,7 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
+import com.wkclz.core.base.ThreadLocals;
 import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.ResultStatus;
@@ -342,9 +343,11 @@ public class AuthHelper extends BaseHelper {
         // session检测，已经有session的， token 对的，放过
         if (user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())) {
             // session 没有的情况，重新赋值
-            Object userObj = req.getSession().getAttribute("user");
+            Object userObj = ThreadLocals.get("user");
             if (userObj == null) {
-                req.getSession().setAttribute("user", JSONObject.toJSONString(user));
+                if (user != null) {
+                    ThreadLocals.set("user", user);
+                }
             }
             return true;
         }
@@ -359,14 +362,13 @@ public class AuthHelper extends BaseHelper {
      * @param req
      */
     public void checkUserSession(HttpServletRequest req) {
-        Object userObj = req.getSession().getAttribute("user");
+        Object userObj = ThreadLocals.get("user");
         if (userObj == null) {
             User user = getSession(req);
             if (user != null) {
-                req.getSession().setAttribute("user", JSONObject.toJSONString(user));
+                ThreadLocals.set("user", user);
             }
         }
-
     }
 
     private String getCookieDomain(HttpServletRequest req) {

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class DruidStatView {
 
     private String loginUsername = "admin";
-    private String loginPassword = "druidPassword";
+    private String loginKey = "druidPassword";
     private String resetEnable = "false";
 
     /**
@@ -37,7 +37,7 @@ public class DruidStatView {
         // servletRegistrationBean.addInitParameter("deny","192.168.1.1");
         // 登录查看信息的账号密码.
         servletRegistrationBean.addInitParameter("loginUsername", loginUsername);
-        servletRegistrationBean.addInitParameter("loginPassword", loginPassword);
+        servletRegistrationBean.addInitParameter("loginPassword", loginKey);
         // 是否能够重置数据.
         servletRegistrationBean.addInitParameter("resetEnable", resetEnable);
         // 慢 sql 记录
