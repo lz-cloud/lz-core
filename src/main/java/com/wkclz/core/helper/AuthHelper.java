@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.ThreadLocals;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.ResultStatus;
@@ -92,6 +93,20 @@ public class AuthHelper extends BaseHelper {
 
         tokenMap.put("token", token.base64());
         return tokenMap;
+    }
+
+
+    /**
+     * 获取 session
+     *
+     * @return
+     */
+    public User getSession() {
+        Object userObj = ThreadLocals.get("user");
+        if (userObj == null){
+            throw BizException.error("can not get user info, please login at first!");
+        }
+        return (User) userObj;
     }
 
 
