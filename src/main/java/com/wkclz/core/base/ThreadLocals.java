@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ThreadLocals {
@@ -44,6 +45,11 @@ public class ThreadLocals {
     private static Map<String, Object> getContext(){
         if (THREAD_CONTEXT == null){
             THREAD_CONTEXT = new ThreadLocal<>();
+        }
+        Map<String, Object> map = THREAD_CONTEXT.get();
+        if (map == null){
+            map = new HashMap<>();
+            THREAD_CONTEXT.set(map);
         }
         return THREAD_CONTEXT.get();
     }
