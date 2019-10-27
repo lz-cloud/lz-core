@@ -11,13 +11,14 @@ import java.util.Map;
 public class ThreadLocals {
 
     private static final Logger logger = LoggerFactory.getLogger(ThreadLocals.class);
-    private final static ThreadLocal<Map<String, Object>> THREAD_CONTEXT = new ThreadLocal<>();
+    private static ThreadLocal<Map<String, Object>> THREAD_CONTEXT = null;
 
     public static Object get(String key) {
         if (StringUtils.isBlank(key)){
             return null;
         }
-        return getContext().get(key);
+        Map<String, Object> context = getContext();
+        return context.get(key);
     }
 
     public static void set(String key, Object value) {
@@ -41,6 +42,9 @@ public class ThreadLocals {
     }
 
     private static Map<String, Object> getContext(){
+        if (THREAD_CONTEXT == null){
+            THREAD_CONTEXT = new ThreadLocal<>();
+        }
         return THREAD_CONTEXT.get();
     }
 

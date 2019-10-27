@@ -118,7 +118,7 @@ public class AuthHelper extends BaseHelper {
      */
     public User getSession(HttpServletRequest req) {
         Object userObj = ThreadLocals.get("user");
-        if (userObj!=null){
+        if (userObj != null){
             return (User) userObj;
         }
         if (req == null) {
@@ -135,10 +135,6 @@ public class AuthHelper extends BaseHelper {
      * @return
      */
     public User getSession(String tokenStr) {
-        Object userObj = ThreadLocals.get("user");
-        if (userObj!=null){
-            return (User) userObj;
-        }
         if (StringUtils.isBlank(tokenStr)) {
             return null;
         }
