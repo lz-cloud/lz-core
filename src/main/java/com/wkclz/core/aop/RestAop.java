@@ -10,17 +10,16 @@ import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.helper.InterceptorHelper;
 import com.wkclz.core.helper.OrgDomainHelper;
+import com.wkclz.core.helper.TraceHelper;
 import com.wkclz.core.pojo.dto.User;
+import com.wkclz.core.pojo.entity.TraceInfo;
 import com.wkclz.core.pojo.enums.EnvType;
-import com.wkclz.core.util.UniqueCodeUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -102,40 +101,17 @@ public class RestAop {
         }
         */
 
-
-        // traceId
-        String traceId = req.getHeader("traceId");
-        if (StringUtils.isBlank(traceId)) {
-            // 如果未生成，需要和 网关 的生成方法保持一致
-            String uuid = UniqueCodeUtil.getJavaUuid();
-            traceId = StringUtils.join(Sys.APPLICATION_GROUP.toLowerCase(), "_", uuid);
-        }
-        String mdcTraceId = MDC.get("traceId");
-        if (mdcTraceId == null){
-            MDC.put("traceId", traceId);
-        }
-
-
-        // seq
-        String seq = req.getHeader("seq");
-        if (StringUtils.isBlank(seq)) {
-            // 如果未生成，需要和 网关 的生成方法保持一致
-            seq = "0";
-        }
-        Integer newSeq = Integer.valueOf(seq) + 1;
-        MDC.put("seq", newSeq + "");
-
+        // 追踪信息
+        TraceInfo traceInfo = TraceHelper.checkTraceInfo(req);
 
         String method = req.getMethod();
         String uri = req.getRequestURI();
         Date requestTime = new Date();
-        Date responeTime = null;
-        Long costTime = null;
-
-
+        Date responeTime;
+        Long costTime;
 
         // 请求具体方法
-        Object obj = null;
+        Object obj;
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
@@ -145,10 +121,10 @@ public class RestAop {
         }
 
         // 返回参数处理
+        responeTime = new Date();
+        costTime = responeTime.getTime() - requestTime.getTime();
         if (obj != null && obj instanceof Result) {
             if (Sys.CURRENT_ENV != EnvType.PROD) {
-                responeTime = new Date();
-                costTime = responeTime.getTime() - requestTime.getTime();
                 Result result = (Result) obj;
                 result.setRequestTime(requestTime);
                 result.setResponeTime(responeTime);
@@ -163,7 +139,7 @@ public class RestAop {
             logger.error("JsonProcessingException", e);
         }
         */
-        logger.info("{}|{}|{}|{}ms|{}|{}",traceId, seq, method, costTime, uri, args);
+        logger.info("{}|{}|{}|{}ms|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args);
 
         return obj;
     }
