@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -26,7 +27,6 @@ public class Monitor {
      */
     @GetMapping("/redis")
     public Result redis(){
-
         String serverIP = IpHelper.getServerIP();
         String key = MONITOR_REDIS + Sys.CURRENT_ENV + ":" + Sys.APPLICATION_GROUP + ":" + Sys.APPLICATION_NAME + ":" + serverIP;
         long timpstramp = System.currentTimeMillis();
@@ -35,6 +35,26 @@ public class Monitor {
         String s = stringRedisTemplate.boundValueOps(key).get();
         Long aLong = Long.valueOf(s);
         return Result.data(aLong);
+    }
+
+    /**
+     * 获取服务器IP
+     * @return
+     */
+    @GetMapping("/ip")
+    public Result ip(){
+        String serverIP = IpHelper.getServerIP();
+        return Result.data(serverIP);
+    }
+
+    /**
+     * 获取服务器属性
+     * @return
+     */
+    @GetMapping("/properties")
+    public Result properties(){
+        Properties properties = System.getProperties();
+        return Result.data(properties);
     }
 
 
