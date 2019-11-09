@@ -1,4 +1,4 @@
-# cms-core
+# lz-core
 
 #### Description
 This project is only the core package of some projects.

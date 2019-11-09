@@ -11,12 +11,12 @@
     </parent>
 
     <groupId>com.wkclz</groupId>
-    <artifactId>cms-core</artifactId>
+    <artifactId>lz-core</artifactId>
     <version>3.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>cms-core</name>
-    <description>cms-core, an core project of all system</description>
+    <name>lz-core</name>
+    <description>lz-core, An core project of all system</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
