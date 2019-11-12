@@ -1,9 +1,7 @@
 package com.wkclz.core.base;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wkclz.core.pojo.enums.DateRangeType;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -39,21 +37,14 @@ public class BaseModel {
 
     private String keyword;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeFrom;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeTo;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
     private Long createBy;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date lastUpdateTime;
-    private Long lastUpdateBy;
+    private Date updateTime;
+    private Long updateBy;
 
     private DateRangeType dateRangeType;
 
@@ -243,20 +234,20 @@ public class BaseModel {
         this.createBy = createBy;
     }
 
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
-    public Long getLastUpdateBy() {
-        return lastUpdateBy;
+    public Long getUpdateBy() {
+        return updateBy;
     }
 
-    public void setLastUpdateBy(Long lastUpdateBy) {
-        this.lastUpdateBy = lastUpdateBy;
+    public void setUpdateBy(Long updateBy) {
+        this.updateBy = updateBy;
     }
 
     public DateRangeType getDateRangeType() {
@@ -306,5 +297,4 @@ public class BaseModel {
     public void setDebug(Integer debug) {
         this.debug = debug;
     }
-
 }

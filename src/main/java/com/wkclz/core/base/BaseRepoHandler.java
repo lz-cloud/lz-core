@@ -49,12 +49,12 @@ public class BaseRepoHandler {
 
         Long userId = getUserId();
         if (userId != null) {
-            model.setLastUpdateBy(userId);
+            model.setUpdateBy(userId);
             if (model.getId() == null && model.getCreateBy() == null) {
                 model.setCreateBy(userId);
             }
         }
-        // model.setLastUpdateTime(new Date()); 让数据库做更新
+        // model.setUpdateTime(new Date()); 让数据库做更新
         return model;
     }
 
