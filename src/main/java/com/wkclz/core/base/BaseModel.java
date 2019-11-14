@@ -22,34 +22,26 @@ public class BaseModel {
     private String code;
 
     private Long userId;
-    private Integer sort;
+    private String messageId;
 
-    private String comments;
-    private Integer version;
-    private Integer status;
-
+    /**
+     * 查询辅助
+     */
     private Integer isPage;
     private Integer pageNo;
     private Integer pageSize;
-
     private String orderBy;
+    private Long count;
+
+
+    /**
+     * 查询辅助
+     */
     private List<Long> ids;
-
     private String keyword;
-
     private Date timeFrom;
     private Date timeTo;
-
-    private Date createTime;
-    private Long createBy;
-
-    private Date updateTime;
-    private Long updateBy;
-
     private DateRangeType dateRangeType;
-
-    private String messageId;
-    private Long count;
 
 
     /**
@@ -61,6 +53,18 @@ public class BaseModel {
      */
     private Long currentOrgId;
 
+
+    /**
+     * 数据库规范字段
+     */
+    private Integer sort;
+    private Date createTime;
+    private Long createBy;
+    private Date updateTime;
+    private Long updateBy;
+    private String comments;
+    private Integer version;
+    private Integer status;
 
     private Integer debug;
 
