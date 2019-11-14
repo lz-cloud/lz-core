@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.wkclz</groupId>
+    <groupId>com.wkclz.core</groupId>
     <artifactId>lz-core</artifactId>
     <version>3.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
