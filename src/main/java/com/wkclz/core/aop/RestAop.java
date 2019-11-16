@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.helper.InterceptorHelper;
 import com.wkclz.core.helper.OrgDomainHelper;
@@ -71,35 +70,15 @@ public class RestAop {
      */
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            return servletRequestHandle(point, attributes);
-        } else {
-            return normalHandle(point);
-        }
+        return servletRequestHandle(point);
     }
 
-
-    private Object servletRequestHandle(ProceedingJoinPoint point, ServletRequestAttributes attributes) {
-
-        HttpServletRequest req = attributes.getRequest();
+    private Object servletRequestHandle(ProceedingJoinPoint point) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest req = requestAttributes.getRequest();
 
         // 给入参赋值
         String args = setArgs(point, req);
-        /*
-        if (req.getAttribute("isInner") == null){
-            // 权限验证
-            String authed = req.getHeader("authed");
-            if (authed == null || !"true".equals(authed)){
-                HttpServletResponse rep = attributes.getResponse();
-                boolean handle = interceptorHelper.preHandle(req, rep);
-                if (!handle){
-                    logger.warn("======> no user found, please login again!");
-                    return Result.remind("未找到登录信息，请重新登录!");
-                }
-            }
-        }
-        */
 
         // 追踪信息
         TraceInfo traceInfo = TraceHelper.checkTraceInfo(req);
@@ -116,7 +95,7 @@ public class RestAop {
             obj = point.proceed();
         } catch (Throwable throwable) {
             obj = Result.error(throwable.getMessage());
-            logger.error("Throwable: "+ throwable.getLocalizedMessage());
+            logger.error(throwable.getMessage(),throwable);
             throwable.printStackTrace();
         }
 
@@ -131,42 +110,29 @@ public class RestAop {
                 result.setCostTime(costTime);
             }
         }
-        /*
-        String value = null;
-        try {
-            value = objectMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException", e);
-        }
-        */
-        logger.info("{}|{}|{}|{}ms|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args);
 
-        return obj;
-    }
-
-    public Object normalHandle(ProceedingJoinPoint point) {
-        Object obj = null;
-
-        try {
-            obj = point.proceed();
-        } catch (Throwable throwable) {
-            // 自定义异常，转换为 Result
-            if (throwable instanceof BizException){
-                BizException bizException = (BizException)throwable;
-                Result result = new Result();
-                result.setError(bizException.getMessage());
-                if (bizException.getCode() == 0){
-                    result.setCode(0);
-                }
-                obj = result;
-            } else {
-                // 非自定义异常不处理
-                logger.error("Throwable", throwable);
+        // 日志
+        String debug = req.getParameter("debug");
+        boolean isDebug = logger.isDebugEnabled() || ( debug != null && "1".equals(debug));
+        if (isDebug){
+            String value = null;
+            try {
+                value = objectMapper.writeValueAsString(obj);
+            } catch (JsonProcessingException e) {
+                logger.error(e.getMessage(), e);
             }
+            if (logger.isDebugEnabled()){
+                logger.debug("{}|{}|{}|{}ms|{}|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args, value);
+            } else {
+                logger.info("{}|{}|{}|{}ms|{}|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args, value);
+            }
+
+        } else {
+            logger.info("{}|{}|{}|{}ms|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args);
         }
+
         return obj;
     }
-
 
     private String setArgs(ProceedingJoinPoint point, HttpServletRequest req) {
         Long userId = null;
@@ -182,29 +148,24 @@ public class RestAop {
                     BaseModel model = (BaseModel) arg;
                     userId = this.setCurrentUserId(model, req, userId);
                     orgId = this.setCurrentOrgId(model, req, orgId);
-                    baseModelArgs.add(arg);
                 }
                 if (arg instanceof ArrayList) {
                     ArrayList list = (ArrayList) arg;
-                    boolean isBaseModel = false;
                     for (Object l : list) {
                         if (l instanceof BaseModel) {
-                            isBaseModel = true;
                             BaseModel model = (BaseModel) l;
                             userId = this.setCurrentUserId(model, req, userId);
                             orgId = this.setCurrentOrgId(model, req, orgId);
                         }
                     }
-                    if (isBaseModel) {
-                        baseModelArgs.add(arg);
-                    }
                 }
+                baseModelArgs.add(arg);
             }
             if (!baseModelArgs.isEmpty()) {
                 try {
                     value = objectMapper.writeValueAsString(baseModelArgs);
                 } catch (JsonProcessingException e) {
-                    logger.error("JsonProcessingException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
