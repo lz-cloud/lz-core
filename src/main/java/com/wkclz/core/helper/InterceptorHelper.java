@@ -37,6 +37,12 @@ public class InterceptorHelper {
             return false;
         }
 
+
+        /**
+         * 用户登录检测
+         */
+
+
         // uri 拦截检测【如果检查通过，无需再检查token】
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult) {

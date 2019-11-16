@@ -5,6 +5,7 @@ import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.util.UrlUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class ApiDomainHelper extends BaseHelper {
      * @param apiDomains
      */
     public synchronized void setApiDomains(List<String> apiDomains) {
-        if (apiDomains == null || apiDomains.size() == 0) {
+        if (CollectionUtils.isEmpty(apiDomains)) {
             throw new RuntimeException("apiDomains can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
@@ -67,7 +68,7 @@ public class ApiDomainHelper extends BaseHelper {
 
     public boolean checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
         List<String> apiDomains = getApiDomains();
-        if (apiDomains == null || apiDomains.size() == 0) {
+        if (CollectionUtils.isEmpty(apiDomains)) {
             throw new RuntimeException("apiDomains must be init after system start up!");
         }
 
@@ -78,7 +79,7 @@ public class ApiDomainHelper extends BaseHelper {
             return true;
         }
 
-        logger.info("api url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
+        logger.error("api url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
         result.setMoreError(ResultStatus.API_CORS);
         return Result.responseError(rep, result);

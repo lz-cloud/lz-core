@@ -3,9 +3,9 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.pojo.enums.EnvType;
+import com.wkclz.core.base.ThreadLocals;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.enums.ResultStatus;
-import com.wkclz.core.util.RegularUtil;
 import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -69,10 +69,38 @@ public class OrgDomainHelper extends BaseHelper {
         return ORG_DOMAINS;
     }
 
+
+    /**
+     * 获取 orgId
+     * @return
+     */
+    public Long getOrgId() {
+        Object orgId = ThreadLocals.get("orgId");
+        if (orgId == null){
+            throw BizException.error("can not get OrgId");
+        }
+        return Long.valueOf(orgId.toString());
+    }
+
+    /**
+     * 获取 orgId
+     * @param req
+     * @return
+     */
     public Long getOrgId(HttpServletRequest req) {
+        Object orgIdObj = ThreadLocals.get("orgId");
+        if (orgIdObj != null){
+            return Long.valueOf(orgIdObj.toString());
+        }
+
         if (req == null) {
             return null;
         }
+        String orgIdStr = req.getHeader("orgId");
+        if (orgIdStr != null){
+            return Long.valueOf(orgIdObj.toString());
+        }
+
         String domain = UrlUtil.getDomain(req);
 
         if (StringUtils.isBlank(domain)) {
@@ -80,42 +108,33 @@ public class OrgDomainHelper extends BaseHelper {
         }
 
         Map<String, Object> orgDomains = getOrgDomains();
-        Object orgIdObj = orgDomains.get(domain);
-        if (orgIdObj == null) {
-            return null;
-        }
-        Long orgId = Long.valueOf(orgIdObj.toString());
-        return orgId;
-
-    }
-
-    public boolean checkOrgDomains(HttpServletRequest req, HttpServletResponse rep) {
-        Map<String, Object> orgDomains = getOrgDomains();
         if (orgDomains == null || orgDomains.size() == 0) {
             throw new RuntimeException("orgDomains must be init after system start up!");
         }
 
-        // 此处只检查 header
-        String url = req.getHeader("Origin");
-        // postman 请求，不会有 Origin
-        if (url == null) {
-            return true;
+        orgIdObj = orgDomains.get(domain);
+        if (orgIdObj == null) {
+            throw BizException.error("can not get OrgId from request");
         }
-        url = UrlUtil.getDomainFronUrl(url);
+        Long orgId = Long.valueOf(orgIdObj.toString());
+        ThreadLocals.set("orgId", orgId);
+        return orgId;
+    }
 
-        // 特殊情况，不检查跨域
-        if (RegularUtil.isIp(url) && Sys.CURRENT_ENV != EnvType.PROD) {
+    /**
+     * 检查 orgId
+     * @param req
+     * @param rep
+     * @return
+     */
+    public boolean checkOrgDomains(HttpServletRequest req, HttpServletResponse rep) {
+        Long orgId = getOrgId(req);
+        if (orgId != null){
             return true;
         }
-        if ("localhost".equals(url) && Sys.CURRENT_ENV != EnvType.PROD) {
-            return true;
-        }
+        String url = req.getRequestURL().toString();
 
-        if (orgDomains.get(url) != null) {
-            return true;
-        }
-
-        logger.info("origin url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
+        logger.error("origin url can not be cors, url : {}, ip: {}", url, IpHelper.getIpAddr(req));
         Result result = new Result();
         result.setMoreError(ResultStatus.ORIGIN_CORS);
         return Result.responseError(rep, result);

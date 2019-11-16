@@ -1,10 +1,10 @@
 package com.wkclz.core.config;
 
 
+import com.wkclz.core.base.ThreadLocals;
 import feign.RequestInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -13,6 +13,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -45,27 +47,41 @@ public class FeignHeadConfiguration {
                 }
 
                 // 如果放在header内通过如下方式取
+                Map<String, String> trace = new HashMap<>();
                 Enumeration<String> headerNames = request.getHeaderNames();
                 if (headerNames != null) {
                     while (headerNames.hasMoreElements()) {
                         String name = headerNames.nextElement();
                         String value = request.getHeader(name);
                         requestTemplate.header(name, value);
+                        trace.put(name, value);
                     }
                 }
-                /*  理论header 已经包含了这个值
-                // traceId
-                String mdcTraceId = MDC.get("traceId");
-                if (mdcTraceId != null){
-                    requestTemplate.header("traceId", mdcTraceId);
-                }
-                */
-                // seq 要一直变化，所以要获取新值
-                String mdcSeq = MDC.get("seq");
-                if (mdcSeq != null){
-                    requestTemplate.header("seq", mdcSeq);
-                }
 
+                if (trace.get("traceId") == null){
+                    Object traceId = ThreadLocals.get("traceId");
+                    if (traceId != null){
+                        requestTemplate.header("traceId", traceId.toString());
+                    }
+                }
+                if (trace.get("seq") == null){
+                    Object seq = ThreadLocals.get("seq");
+                    if (seq != null){
+                        requestTemplate.header("seq", seq.toString());
+                    }
+                }
+                if (trace.get("user") == null){
+                    Object user = ThreadLocals.get("user");
+                    if (user != null){
+                        requestTemplate.header("user", user.toString());
+                    }
+                }
+                if (trace.get("orgId") == null){
+                    Object orgId = ThreadLocals.get("orgId");
+                    if (orgId != null){
+                        requestTemplate.header("orgId", orgId.toString());
+                    }
+                }
             }
         };
     }

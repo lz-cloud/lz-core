@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class AccessHelper extends BaseHelper {
      * @param accessUris
      */
     public void setAccessUris(List<String> accessUris) {
-        if (accessUris == null || accessUris.size() == 0) {
+        if (CollectionUtils.isEmpty(accessUris)) {
             throw new RuntimeException("accessUris can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
@@ -71,7 +72,7 @@ public class AccessHelper extends BaseHelper {
     public boolean checkAccessUri(HttpServletRequest req) {
         List<String> accessUris = getAccessUri();
 
-        if (accessUris == null || accessUris.size() == 0) {
+        if (CollectionUtils.isEmpty(accessUris)) {
             throw new RuntimeException("accessUris must be init after system start up!");
         }
 

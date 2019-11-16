@@ -61,7 +61,7 @@ public class FeignAop {
                 obj = result;
             } else {
                 // 非自定义异常不处理
-                logger.error("Throwable", throwable);
+                logger.error(throwable.getMessage(), throwable);
             }
         }
         return obj;

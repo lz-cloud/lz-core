@@ -124,6 +124,11 @@ public class AuthHelper extends BaseHelper {
         if (req == null) {
             return null;
         }
+        String userStr = req.getHeader("user");
+        if (userStr != null){
+            User user = JSONObject.parseObject(userStr, User.class);
+            return user;
+        }
         String tokenStr = BaseHelper.getToken(req);
         return getSession(tokenStr);
     }
@@ -298,7 +303,7 @@ public class AuthHelper extends BaseHelper {
         String tokenStr = BaseHelper.getToken(req);
 
         if (StringUtils.isBlank(tokenStr)) {
-            logger.info("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
+            logger.warn("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
             Result result = new Result();
             result.setMoreError(ResultStatus.TOKEN_UNLL);
             return Result.responseError(rep, result);
@@ -310,7 +315,7 @@ public class AuthHelper extends BaseHelper {
         if (!sign.equals(token.getSign())) {
             Result result = new Result();
             invalidateSession(req, rep);
-            logger.info("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
+            logger.warn("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
             result.setMoreError(ResultStatus.TOKEN_SIGN_FAILD);
             return Result.responseError(rep, result);
         }
@@ -320,7 +325,7 @@ public class AuthHelper extends BaseHelper {
         if (user == null) {
             Result result = new Result();
             invalidateSession(req, rep);
-            logger.info("token is error, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
+            logger.warn("token is error, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
             result.setMoreError(ResultStatus.TOKEN_ERROR);
             return Result.responseError(rep, result);
             /*
