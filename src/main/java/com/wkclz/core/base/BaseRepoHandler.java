@@ -2,6 +2,7 @@ package com.wkclz.core.base;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +79,7 @@ public class BaseRepoHandler {
         String orderBy = model.getOrderBy();
         // 注入风险检测
         if (orderBy != null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && sqlInj(orderBy)) {
-            throw new RuntimeException("orderBy 有注入风险，请谨慎操作！");
+            throw BizException.error("orderBy 有注入风险，请谨慎操作！");
         }
 
         // 大小写处理
@@ -226,7 +227,7 @@ public class BaseRepoHandler {
     /*
     protected static <T> void insertEs(RestHighLevelClient client, String table, T obj) {
         if (obj == null) {
-            throw new RuntimeException("model is null");
+            throw BizException.error("model is null");
         }
         IndexRequest indexRequest = new IndexRequest(table, "doc");
         String jsonString = JSONObject.toJSONString(obj);

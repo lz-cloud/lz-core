@@ -22,9 +22,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         return interceptorHelper.preHandle(req, rep);
     }
 
+    /*
     @Override
     public void afterCompletion(HttpServletRequest req, HttpServletResponse rep, Object handler, Exception ex) {
         interceptorHelper.afterCompletion(req, rep);
     }
+    */
 
 }

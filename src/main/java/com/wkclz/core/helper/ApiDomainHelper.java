@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,7 +43,7 @@ public class ApiDomainHelper extends BaseHelper {
      */
     public synchronized void setApiDomains(List<String> apiDomains) {
         if (CollectionUtils.isEmpty(apiDomains)) {
-            throw new RuntimeException("apiDomains can not be null or empty!");
+            throw new BizException("apiDomains can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
         API_DOMAINS = apiDomains;
@@ -69,7 +70,7 @@ public class ApiDomainHelper extends BaseHelper {
     public boolean checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
         List<String> apiDomains = getApiDomains();
         if (CollectionUtils.isEmpty(apiDomains)) {
-            throw new RuntimeException("apiDomains must be init after system start up!");
+            throw new BizException("apiDomains must be init after system start up!");
         }
 
         String url = req.getRequestURL().toString();

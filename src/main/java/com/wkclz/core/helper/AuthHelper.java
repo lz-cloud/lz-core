@@ -50,7 +50,7 @@ public class AuthHelper extends BaseHelper {
     public Map<String, String> setSession(HttpServletRequest req, HttpServletResponse rep, User user) {
 
         if (user.getAuthId() == null) {
-            throw new RuntimeException("authId can not be null to setSession");
+            throw BizException.error("authId can not be null to setSession");
         }
 
         Map<String, String> tokenMap = new HashMap<>();
@@ -178,11 +178,11 @@ public class AuthHelper extends BaseHelper {
 
     public Long getOrgId(HttpServletRequest req) {
         if (req == null) {
-            throw new RuntimeException("Request is null, can not get any information of the organization!");
+            throw BizException.error("Request is null, can not get any information of the organization!");
         }
         Long orgId = orgDomainHelper.getOrgId(req);
         if (orgId == null || orgId < 1) {
-            throw new RuntimeException("Can not get any information of the organization, domain is not definition!, url is " +
+            throw BizException.error("Can not get any information of the organization, domain is not definition!, url is " +
                 UrlUtil.getDomain(req) + req.getRequestURI()
             );
         }

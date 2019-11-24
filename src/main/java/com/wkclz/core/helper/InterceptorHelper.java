@@ -71,6 +71,7 @@ public class InterceptorHelper {
         return true;
     }
 
+    @Deprecated
     public void afterCompletion(HttpServletRequest req, HttpServletResponse rep) {
         String token = req.getParameter("token");
         if (StringUtils.isBlank(token)) {

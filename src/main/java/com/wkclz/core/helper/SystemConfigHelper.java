@@ -2,6 +2,7 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class SystemConfigHelper extends BaseHelper {
      */
     public void setSystemConfig(Map<String, String> systemConfigs) {
         if (systemConfigs == null || systemConfigs.size() == 0) {
-            throw new RuntimeException("systemConfigs can not be null or empty!");
+            throw BizException.error("systemConfigs can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(systemConfigs));
         SYSTEM_CONFIG = systemConfigs;
@@ -59,11 +60,11 @@ public class SystemConfigHelper extends BaseHelper {
 
     public String getSystemConfig(String key) {
         if (key == null || key.trim().length() == 0) {
-            throw new RuntimeException("key must not be null ot empty!");
+            throw BizException.error("key must not be null ot empty!");
         }
         Map<String, String> systemConfigs = getSystemConfigs();
         if (systemConfigs == null || systemConfigs.size() == 0) {
-            throw new RuntimeException("systemConfigs must be init after system start up!");
+            throw BizException.error("systemConfigs must be init after system start up!");
         }
         String value = systemConfigs.get(key);
         return value;

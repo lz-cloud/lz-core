@@ -4,6 +4,7 @@ import com.wkclz.core.base.BaseMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.BaseRepoHandler;
 import com.wkclz.core.base.PageData;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.util.ClassUtil;
 import com.wkclz.core.util.IntegerUtil;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
 
     public Model get(Long id) {
         if (id == null) {
-            throw new RuntimeException("id is null");
+            throw BizException.error("id is null");
         }
         Model model = mapper.selectByPrimaryKey(id);
         if (model == null || model.getStatus() == 0) {
@@ -41,25 +42,25 @@ public abstract class BaseRepoImpl<Model extends BaseModel, Example> extends Bas
             return null;
         }
         if (list.size() > 1) {
-            throw new RuntimeException("查询结果不唯一，存在 " + list.size() + " 条，请确保数据完整性，或者换用 list 查询");
+            throw BizException.error("查询结果不唯一，存在 {} 条，请确保数据完整性，或者换用 list 查询", list.size());
         }
         return list.get(0);
     }
 
     public Integer update(Model model) {
         if (model.getId() == null) {
-            throw new RuntimeException("id is null");
+            throw BizException.error("id is null");
         }
         if (model.getVersion() == null) {
-            throw new RuntimeException("version is null");
+            throw BizException.error("version is null");
         }
         model = setBaseInfo(model);
         Model target = mapper.selectByPrimaryKey(model.getId());
         if (target == null) {
-            throw new RuntimeException("id is error");
+            throw BizException.error("id is error");
         }
         if (!model.getVersion().equals(target.getVersion())) {
-            throw new RuntimeException("data is not lastest, can not update more than one time without get new one");
+            throw BizException.error("data is not lastest, can not update more than one time without get new one");
         }
 
         try {

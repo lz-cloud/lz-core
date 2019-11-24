@@ -4,6 +4,7 @@ import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.entity.AccessLog;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +46,7 @@ public class AccessHelper extends BaseHelper {
      */
     public void setAccessUris(List<String> accessUris) {
         if (CollectionUtils.isEmpty(accessUris)) {
-            throw new RuntimeException("accessUris can not be null or empty!");
+            throw BizException.error("accessUris can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
         ACCESS_URI = accessUris;
@@ -73,7 +74,7 @@ public class AccessHelper extends BaseHelper {
         List<String> accessUris = getAccessUri();
 
         if (CollectionUtils.isEmpty(accessUris)) {
-            throw new RuntimeException("accessUris must be init after system start up!");
+            throw BizException.error("accessUris must be init after system start up!");
         }
 
         String uri = req.getRequestURI();

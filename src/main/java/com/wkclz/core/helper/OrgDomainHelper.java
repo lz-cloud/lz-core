@@ -45,7 +45,7 @@ public class OrgDomainHelper extends BaseHelper {
      */
     public synchronized void setOrgDomains(Map<String, Object> orgDomains) {
         if (orgDomains == null || orgDomains.size() == 0) {
-            throw new RuntimeException("orgDomains can not be null or empty!");
+            throw new BizException("orgDomains can not be null or empty!");
         }
         stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(orgDomains));
         ORG_DOMAINS = orgDomains;
@@ -77,7 +77,7 @@ public class OrgDomainHelper extends BaseHelper {
     public Long getOrgId() {
         Object orgId = ThreadLocals.get("orgId");
         if (orgId == null){
-            throw BizException.error("can not get OrgId");
+            throw BizException.error("can not get OrgId: {}", RequestHelper.getRequestUrl());
         }
         return Long.valueOf(orgId.toString());
     }
@@ -104,17 +104,17 @@ public class OrgDomainHelper extends BaseHelper {
         String domain = UrlUtil.getDomain(req);
 
         if (StringUtils.isBlank(domain)) {
-            throw new RuntimeException("Can not get domain from the request！");
+            throw BizException.error("Can not get domain from the request: {}", RequestHelper.getRequestUrl());
         }
 
         Map<String, Object> orgDomains = getOrgDomains();
         if (orgDomains == null || orgDomains.size() == 0) {
-            throw new RuntimeException("orgDomains must be init after system start up!");
+            throw BizException.error("orgDomains must be init after system start up: {}", RequestHelper.getRequestUrl());
         }
 
         orgIdObj = orgDomains.get(domain);
         if (orgIdObj == null) {
-            throw BizException.error("can not get OrgId from request");
+            throw BizException.error("can not get OrgId from request: {}", RequestHelper.getRequestUrl());
         }
         Long orgId = Long.valueOf(orgIdObj.toString());
         ThreadLocals.set("orgId", orgId);
