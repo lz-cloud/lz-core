@@ -3,11 +3,11 @@ package com.wkclz.core.base;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wkclz.core.exception.BizException;
-import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,10 +28,9 @@ public class BaseRepoHandler {
     protected static final int INSERT_SIZE = 1200;
 
     private static Long getUserId() {
-        Object userObj = ThreadLocals.get("user");
-        if (userObj != null) {
-            User user = (User) userObj;
-            return user.getUserId();
+        String userId = MDC.get("userId");
+        if (userId != null) {
+            return Long.valueOf(userId);
         }
         return null;
     }

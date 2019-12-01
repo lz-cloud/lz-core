@@ -1,4 +1,4 @@
-package com.wkclz.core.config;
+package com.wkclz.core.config.handler;
 
 import com.wkclz.core.helper.AccessHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
 // @Component
-public class AccessLogInterceptor implements HandlerInterceptor {
+public class AccessLogHandler implements HandlerInterceptor {
 
     @Autowired
     private AccessHelper accessHelper;

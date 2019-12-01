@@ -1,20 +1,15 @@
 package com.wkclz.core.config;
 
 
-import com.wkclz.core.base.ThreadLocals;
 import feign.RequestInterceptor;
+import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -34,54 +29,10 @@ public class FeignHeadConfiguration {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            if (attrs != null) {
-                HttpServletRequest request = attrs.getRequest();
-                // 如果在Cookie内通过如下方式取
-                Cookie[] cookies = request.getCookies();
-
-                if (cookies != null && cookies.length > 0) {
-                    for (Cookie cookie : cookies) {
-                        requestTemplate.header(cookie.getName(), cookie.getValue());
-                    }
-                }
-
-                // 如果放在header内通过如下方式取
-                Map<String, String> trace = new HashMap<>();
-                Enumeration<String> headerNames = request.getHeaderNames();
-                if (headerNames != null) {
-                    while (headerNames.hasMoreElements()) {
-                        String name = headerNames.nextElement();
-                        String value = request.getHeader(name);
-                        requestTemplate.header(name, value);
-                        trace.put(name, value);
-                    }
-                }
-
-                if (trace.get("traceId") == null){
-                    Object traceId = ThreadLocals.get("traceId");
-                    if (traceId != null){
-                        requestTemplate.header("traceId", traceId.toString());
-                    }
-                }
-                if (trace.get("seq") == null){
-                    Object seq = ThreadLocals.get("seq");
-                    if (seq != null){
-                        requestTemplate.header("seq", seq.toString());
-                    }
-                }
-                if (trace.get("user") == null){
-                    Object user = ThreadLocals.get("user");
-                    if (user != null){
-                        requestTemplate.header("user", user.toString());
-                    }
-                }
-                if (trace.get("orgId") == null){
-                    Object orgId = ThreadLocals.get("orgId");
-                    if (orgId != null){
-                        requestTemplate.header("orgId", orgId.toString());
-                    }
-                }
+            Map<String, Object> map = MDC.getMap();
+            Set<Map.Entry<String, Object>> entries = map.entrySet();
+            for (Map.Entry<String, Object> entry : entries) {
+                requestTemplate.header(entry.getKey(), entry.getValue().toString());
             }
         };
     }

@@ -3,14 +3,9 @@ package com.wkclz.core.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.helper.AuthHelper;
-import com.wkclz.core.helper.InterceptorHelper;
-import com.wkclz.core.helper.OrgDomainHelper;
 import com.wkclz.core.helper.TraceHelper;
-import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.entity.TraceInfo;
 import com.wkclz.core.pojo.enums.EnvType;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -25,6 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,11 +47,7 @@ public class RestAop {
     private final String POINT_CUT = "(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController))";
 
     @Autowired
-    private AuthHelper authHelper;
-    @Autowired
-    private OrgDomainHelper orgDomainHelper;
-    @Autowired
-    private InterceptorHelper interceptorHelper;
+    private TraceHelper traceHelper;
 
     @Pointcut(POINT_CUT)
     public void pointCut() {
@@ -76,12 +68,10 @@ public class RestAop {
     private Object servletRequestHandle(ProceedingJoinPoint point) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest req = requestAttributes.getRequest();
-
-        // 给入参赋值
-        String args = setArgs(point, req);
+        HttpServletResponse rep = requestAttributes.getResponse();
 
         // 追踪信息
-        TraceInfo traceInfo = TraceHelper.checkTraceInfo(req);
+        TraceInfo traceInfo = traceHelper.checkTraceInfo(req, rep);
 
         String method = req.getMethod();
         String uri = req.getRequestURI();
@@ -114,6 +104,8 @@ public class RestAop {
         // 日志
         String debug = req.getParameter("debug");
         boolean isDebug = logger.isDebugEnabled() || ( debug != null && "1".equals(debug));
+
+        String args = getArgs(point);
         if (isDebug){
             String value = null;
             try {
@@ -122,43 +114,23 @@ public class RestAop {
                 logger.error(e.getMessage(), e);
             }
             if (logger.isDebugEnabled()){
-                logger.debug("{}|{}|{}|{}ms|{}|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args, value);
+                logger.debug("{}|{}ms|{}|{}|{}", method, costTime, uri, args, value);
             } else {
-                logger.info("{}|{}|{}|{}ms|{}|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args, value);
+                logger.info("{}|{}ms|{}|{}|{}", method, costTime, uri, args, value);
             }
-
         } else {
-            logger.info("{}|{}|{}|{}ms|{}|{}",traceInfo.getTraceId(), traceInfo.getSeq(), method, costTime, uri, args);
+            logger.info("{}|{}ms|{}|{}", method, costTime, uri, args);
         }
 
         return obj;
     }
 
-    private String setArgs(ProceedingJoinPoint point, HttpServletRequest req) {
-        Long userId = null;
-        Long orgId = null;
+    private String getArgs(ProceedingJoinPoint point) {
         String value = null;
-
-        // param 赋值
         Object[] args = point.getArgs();
         if (args != null && args.length > 0) {
             List<Object> baseModelArgs = new ArrayList<>();
             for (Object arg : args) {
-                if (arg instanceof BaseModel) {
-                    BaseModel model = (BaseModel) arg;
-                    userId = this.setCurrentUserId(model, req, userId);
-                    orgId = this.setCurrentOrgId(model, req, orgId);
-                }
-                if (arg instanceof ArrayList) {
-                    ArrayList list = (ArrayList) arg;
-                    for (Object l : list) {
-                        if (l instanceof BaseModel) {
-                            BaseModel model = (BaseModel) l;
-                            userId = this.setCurrentUserId(model, req, userId);
-                            orgId = this.setCurrentOrgId(model, req, orgId);
-                        }
-                    }
-                }
                 baseModelArgs.add(arg);
             }
             if (!baseModelArgs.isEmpty()) {
@@ -171,37 +143,5 @@ public class RestAop {
         }
         return value;
     }
-
-
-    private Long setCurrentUserId(BaseModel model, HttpServletRequest req, Long userId) {
-        if (model.getCurrentUserId() == null) {
-            if (userId == null) {
-                User user = authHelper.getSession(req);
-                if (user != null) {
-                    userId = user.getUserId();
-                }
-            }
-            if (userId != null) {
-                model.setCurrentUserId(userId);
-            }
-        }
-        return userId;
-    }
-
-    private Long setCurrentOrgId(BaseModel model, HttpServletRequest req, Long orgId) {
-        if (model.getCurrentOrgId() == null) {
-            if (orgId == null) {
-                Long domainOrgId = orgDomainHelper.getOrgId(req);
-                if (domainOrgId != null) {
-                    orgId = domainOrgId;
-                }
-            }
-            if (orgId != null) {
-                model.setCurrentOrgId(orgId);
-            }
-        }
-        return orgId;
-    }
-
 
 }

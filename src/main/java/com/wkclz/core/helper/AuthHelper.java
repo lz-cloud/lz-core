@@ -2,7 +2,6 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
-import com.wkclz.core.base.ThreadLocals;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
@@ -12,6 +11,7 @@ import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class AuthHelper extends BaseHelper {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private OrgDomainHelper orgDomainHelper;
+    private TenantDomainHelper tenantDomainHelper;
     @Autowired
     private SystemConfigHelper systemConfigHelper;
     @Autowired
@@ -42,12 +42,12 @@ public class AuthHelper extends BaseHelper {
 
 
     /**
-     * 设置session 【支持 session】
+     * 设置session
      *
      * @param req
      * @return
      */
-    public Map<String, String> setSession(HttpServletRequest req, HttpServletResponse rep, User user) {
+    public Map<String, String> setUser(HttpServletRequest req, HttpServletResponse rep, User user) {
 
         if (user.getAuthId() == null) {
             throw BizException.error("authId can not be null to setSession");
@@ -56,7 +56,7 @@ public class AuthHelper extends BaseHelper {
         Map<String, String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
-        Object session = getSession(req);
+        Object session = getUser(req);
         if (session != null) {
             user = (User) session;
             if (user.getToken() != null) {
@@ -72,7 +72,7 @@ public class AuthHelper extends BaseHelper {
         user.setToken(token.getToken());
 
         // 设置线程变更
-        ThreadLocals.set("user", user);
+        MDC.put("user", JSONObject.toJSONString(user));
 
         // 设置 redis
         String redisKey = token.getRedisKey();
@@ -101,12 +101,17 @@ public class AuthHelper extends BaseHelper {
      *
      * @return
      */
-    public User getSession() {
-        Object userObj = ThreadLocals.get("user");
-        if (userObj == null){
+    public User getUser() {
+        String userStr = MDC.get("user");
+        if (userStr != null){
+            return JSONObject.parseObject(userStr, User.class);
+        }
+        HttpServletRequest req = RequestHelper.getRequest();
+        if (req == null){
             throw BizException.error("can not get user info, please login at first!");
         }
-        return (User) userObj;
+        User user = getUser(req);
+        return user;
     }
 
 
@@ -116,21 +121,22 @@ public class AuthHelper extends BaseHelper {
      * @param req
      * @return
      */
-    public User getSession(HttpServletRequest req) {
-        Object userObj = ThreadLocals.get("user");
-        if (userObj != null){
-            return (User) userObj;
+    public User getUser(HttpServletRequest req) {
+        String userStr = MDC.get("user");
+        if (userStr != null){
+            return JSONObject.parseObject(userStr, User.class);
         }
         if (req == null) {
             return null;
         }
-        String userStr = req.getHeader("user");
-        if (userStr != null){
+        userStr = req.getHeader("user");
+        if (StringUtils.isNotBlank(userStr)){
+            MDC.put("user", userStr);
             User user = JSONObject.parseObject(userStr, User.class);
             return user;
         }
         String tokenStr = BaseHelper.getToken(req);
-        return getSession(tokenStr);
+        return getUser(tokenStr);
     }
 
     /**
@@ -139,17 +145,18 @@ public class AuthHelper extends BaseHelper {
      * @param tokenStr
      * @return
      */
-    public User getSession(String tokenStr) {
+    public User getUser(String tokenStr) {
         if (StringUtils.isBlank(tokenStr)) {
-            return null;
+            throw BizException.error("can find anything to get user info, please login at first!");
         }
         Token token = Token.getToken(tokenStr);
 
         String redisKey = token.getRedisKey();
         String userStr = stringRedisTemplate.opsForValue().get(redisKey);
-        if (userStr == null) {
-            return null;
+        if (StringUtils.isBlank(userStr)) {
+            throw BizException.result(ResultStatus.TOKEN_ERROR,"can find anything to get user info, please login at first!");
         }
+        MDC.put("user", userStr);
         // 延期 redis
         stringRedisTemplate.expire(redisKey, getSessionLiveTime(), TimeUnit.SECONDS);
         User user = JSONObject.parseObject(userStr, User.class);
@@ -169,29 +176,24 @@ public class AuthHelper extends BaseHelper {
             req.getSession().invalidate();
             return;
         }
-        ThreadLocals.remove("user");
+        MDC.remove("user");
         Token token = Token.getToken(tokenStr);
         stringRedisTemplate.expireAt(token.getRedisKey(), new Date());
         expireCookie(req, rep, "token");
     }
 
-
-    public Long getOrgId(HttpServletRequest req) {
-        if (req == null) {
-            throw BizException.error("Request is null, can not get any information of the organization!");
+    public Long getTenantId() {
+        String tenantId = MDC.get("tenantId");
+        if (tenantId == null){
+            throw BizException.error("MDC tenantId is null");
         }
-        Long orgId = orgDomainHelper.getOrgId(req);
-        if (orgId == null || orgId < 1) {
-            throw BizException.error("Can not get any information of the organization, domain is not definition!, url is " +
-                UrlUtil.getDomain(req) + req.getRequestURI()
-            );
-        }
-        return orgId;
+        return Long.valueOf(tenantId);
     }
 
-    public Long getOrgIdIfNotNull(HttpServletRequest req) {
-        return orgDomainHelper.getOrgId(req);
+    public Long getTenantId(HttpServletRequest req) {
+        return tenantDomainHelper.getTenantId(req);
     }
+
 
     /**
      * 添加 cookie
@@ -262,7 +264,7 @@ public class AuthHelper extends BaseHelper {
 
 
     /**
-     * 用户 token 检测
+     * 用户 token 检测。未登录将会报错
      *
      * @param req
      * @param rep
@@ -303,7 +305,7 @@ public class AuthHelper extends BaseHelper {
         String tokenStr = BaseHelper.getToken(req);
 
         if (StringUtils.isBlank(tokenStr)) {
-            logger.warn("token is null, uri : {}", uri, IpHelper.getIpAddr(req));
+            logger.warn("token is null, uri : {}", uri, IpHelper.getOriginIp(req));
             Result result = new Result();
             result.setMoreError(ResultStatus.TOKEN_UNLL);
             return Result.responseError(rep, result);
@@ -315,17 +317,17 @@ public class AuthHelper extends BaseHelper {
         if (!sign.equals(token.getSign())) {
             Result result = new Result();
             invalidateSession(req, rep);
-            logger.warn("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getIpAddr(req), tokenStr);
+            logger.warn("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getOriginIp(req), tokenStr);
             result.setMoreError(ResultStatus.TOKEN_SIGN_FAILD);
             return Result.responseError(rep, result);
         }
 
         // 到 redis 去查找，找不到，不放过
-        User user = getSession(req);
+        User user = getUser(req);
         if (user == null) {
             Result result = new Result();
             invalidateSession(req, rep);
-            logger.warn("token is error, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
+            logger.warn("token is error, uri : {}, ip: {}", uri, IpHelper.getOriginIp(req));
             result.setMoreError(ResultStatus.TOKEN_ERROR);
             return Result.responseError(rep, result);
             /*
@@ -357,7 +359,7 @@ public class AuthHelper extends BaseHelper {
 
         // 管理后台
         String origin = req.getHeader("Origin");
-        Long orgId = getOrgIdIfNotNull(req);
+        Long orgId = getTenantId(req);
         if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")) {
             List<Long> adminIds = user.getAdminIds();
             if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)) {
@@ -371,10 +373,10 @@ public class AuthHelper extends BaseHelper {
         // session检测，已经有session的， token 对的，放过
         if (user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())) {
             // session 没有的情况，重新赋值
-            Object userObj = ThreadLocals.get("user");
-            if (userObj == null) {
+            String userStr = MDC.get("user");
+            if (userStr == null) {
                 if (user != null) {
-                    ThreadLocals.set("user", user);
+                    MDC.put("user", JSONObject.toJSONString(user));
                 }
             }
             return true;
@@ -389,14 +391,14 @@ public class AuthHelper extends BaseHelper {
      *
      * @param req
      */
-    public void checkUserSession(HttpServletRequest req) {
-        Object userObj = ThreadLocals.get("user");
-        if (userObj == null) {
-            User user = getSession(req);
-            if (user != null) {
-                ThreadLocals.set("user", user);
-            }
+    public User checkUserSession(HttpServletRequest req) {
+        User user = getUser(req);
+        if (user != null) {
+            MDC.put("userId", user.getUserId()+"");
+            MDC.put("authId", user.getAuthId()+"");
+            MDC.put("tenantId", user.getTenantId()+"");
         }
+        return user;
     }
 
     private String getCookieDomain(HttpServletRequest req) {

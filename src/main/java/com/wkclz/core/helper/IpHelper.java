@@ -16,7 +16,12 @@ import java.util.List;
 public class IpHelper {
     private static final Logger logger = LoggerFactory.getLogger(IpHelper.class);
 
-    public static String getIpAddr(HttpServletRequest req) {
+    public static String getRouterIp(HttpServletRequest req){
+        String remoteAddr = req.getRemoteAddr();
+        return remoteAddr;
+    }
+
+    public static String getOriginIp(HttpServletRequest req) {
         String ipAddress = req.getHeader("x-forwarded-for");
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = req.getHeader("Proxy-Client-IP");

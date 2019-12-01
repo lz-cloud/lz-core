@@ -1,6 +1,7 @@
 package com.wkclz.core.exception;
 
 import cn.hutool.core.util.StrUtil;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,17 @@ public class BizException extends RuntimeException {
         logger.error(msg);
         BizException bizException = new BizException(msg);
         bizException.code = -1;
+        return bizException;
+    }
+
+    /**
+     * 标准错误返回
+     */
+    public static BizException result(ResultStatus status, String msg, Object... params){
+        msg = getMsg(msg, params);
+        logger.error(msg);
+        BizException bizException = new BizException(status.getMsg());
+        bizException.code = status.getCode();
         return bizException;
     }
 

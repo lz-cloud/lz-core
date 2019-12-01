@@ -1,7 +1,6 @@
 package com.wkclz.core.aop;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.BaseModel;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -32,7 +31,7 @@ public class DaoAop {
      */
 
     private static final Logger logger = LoggerFactory.getLogger(DaoAop.class);
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    //private static ObjectMapper objectMapper = new ObjectMapper();
     private final String POINT_CUT = "@within(org.apache.ibatis.annotations.Mapper)";
 
 

@@ -1,18 +1,20 @@
-package com.wkclz.core.helper;
+package com.wkclz.core.config.handler;
 
-import org.apache.commons.lang3.StringUtils;
+import com.wkclz.core.helper.AccessHelper;
+import com.wkclz.core.helper.ApiDomainHelper;
+import com.wkclz.core.helper.AuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Description: 权限
+ * Description: 此处拦截不再加入到 WebMvcConfigurer， 真正的拦截交给网关
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
-@Component
-public class InterceptorHelper {
+// @Component
+public class AuthHandler implements HandlerInterceptor {
 
     @Autowired
     private AuthHelper authHelper;
@@ -20,8 +22,6 @@ public class InterceptorHelper {
     private AccessHelper accessHelper;
     @Autowired
     private ApiDomainHelper apiDomainHelper;
-    @Autowired
-    private OrgDomainHelper orgDomainHelper;
 
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep) {
 
@@ -31,23 +31,13 @@ public class InterceptorHelper {
             return false;
         }
 
-        // Org 安全检测
-        boolean orgDomainCheckResult = orgDomainHelper.checkOrgDomains(req, rep);
-        if (!orgDomainCheckResult) {
-            return false;
-        }
-
-
         /**
          * 用户登录检测
          */
 
-
         // uri 拦截检测【如果检查通过，无需再检查token】
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult) {
-            // 内存 session 检测【不再需要返回判断】【如果存在，不会重复设置】
-            authHelper.checkUserSession(req);
             return true;
         }
 
@@ -64,23 +54,7 @@ public class InterceptorHelper {
             return false;
         }
         */
-
-        // 内存 session 检测【不再需要返回判断】【如果存在，不会重复设置】
-        authHelper.checkUserSession(req);
-
         return true;
-    }
-
-    @Deprecated
-    public void afterCompletion(HttpServletRequest req, HttpServletResponse rep) {
-        String token = req.getParameter("token");
-        if (StringUtils.isBlank(token)) {
-            return;
-        }
-        if (!token.startsWith("temp_")) {
-            return;
-        }
-        authHelper.invalidateSession(req, rep);
     }
 
 }

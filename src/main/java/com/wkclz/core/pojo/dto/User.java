@@ -23,6 +23,11 @@ public class User<CmsUser, CmsUserAuth> {
     private String ip;
 
     /**
+     * 租户
+     */
+    private Long tenantId;
+
+    /**
      * 用户id
      */
     private Long userId;
@@ -92,6 +97,14 @@ public class User<CmsUser, CmsUserAuth> {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     public Long getUserId() {

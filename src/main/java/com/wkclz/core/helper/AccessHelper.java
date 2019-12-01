@@ -137,7 +137,7 @@ public class AccessHelper extends BaseHelper {
         log.setRequestUrl(req.getRequestURL().toString());
         log.setRequestUri(req.getRequestURI());
         log.setQueryString(req.getQueryString());
-        log.setRemoteAddr(IpHelper.getIpAddr(req));
+        log.setRemoteAddr(IpHelper.getOriginIp(req));
         log.setRemotePort(req.getRemotePort());
         log.setLocalAddr(req.getLocalAddr());
         log.setLocalName(req.getLocalName());
@@ -146,7 +146,7 @@ public class AccessHelper extends BaseHelper {
         log.setToken(BaseHelper.getToken(req));
 
         if (!StringUtils.isBlank(log.getToken())) {
-            User user = authHelper.getSession(req);
+            User user = authHelper.getUser(req);
             if (user != null) {
                 log.setAuthId(user.getAuthId());
                 log.setUserId(user.getUserId());

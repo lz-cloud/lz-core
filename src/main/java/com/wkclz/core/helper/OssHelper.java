@@ -1,7 +1,8 @@
 package com.wkclz.core.helper;
 
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.PutObjectResult;
@@ -111,12 +112,11 @@ public class OssHelper {
         // 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建
 
         // 创建ClientConfiguration实例，按照您的需要修改默认参数
-        ClientConfiguration conf = new ClientConfiguration();
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         // 开启支持CNAME选项
         conf.setSupportCname(true);
         // 创建OSSClient实例
-        OSSClient client = new OSSClient(innerEndpoint, accessKeyId, accessKeySecret, conf);
-
+        OSS client = new OSSClientBuilder().build(innerEndpoint, accessKeyId, accessKeySecret, conf);
         // 使用访问OSS
         PutObjectResult result = client.putObject(bucketName, fileFullPath, ins);
 
@@ -150,8 +150,8 @@ public class OssHelper {
         String bucketName = helper.getSystemConfig("oss_bucket_name");
 
         objectNames = removeProAndEnCode(objectNames);
+        OSS client = new OSSClientBuilder().build(innerEndpoint, accessKeyId, accessKeySecret);
 
-        OSSClient client = new OSSClient(innerEndpoint, accessKeyId, accessKeySecret);
         DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName).withKeys(objectNames);
         // 返回模式。true表示简单模式，false表示详细模式。默认为详细模式
         deleteObjectsRequest.setQuiet(true);
@@ -183,10 +183,10 @@ public class OssHelper {
 
         // 考虑还有两 / 个的情况
         if (str.startsWith("/")) {
-            str = str.substring(1, str.length());
+            str = str.substring(1);
         }
         if (str.startsWith("/")) {
-            str = str.substring(1, str.length());
+            str = str.substring(1);
         }
 
 

@@ -54,26 +54,17 @@ public class SmsHelper {
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
-        //初始化ascClient需要的几个参数
-        //短信API产品名称（短信产品名固定，无需修改）
-        final String product = "Dysmsapi";
-        //短信API产品域名（接口地址固定，无需修改）
-        final String domain = "dysmsapi.aliyuncs.com";
-
         String smsAccessKeyId = helper.getSystemConfig("sms_access_key_id");
         String smsAccessKeySecret = helper.getSystemConfig("sms_access_key_secret");
 
         try {
             //初始化ascClient,暂时不支持多region（请勿修改）
             IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", smsAccessKeyId, smsAccessKeySecret);
-            DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
             IAcsClient acsClient = new DefaultAcsClient(profile);
 
             //组装请求对象
             SendSmsRequest request = new SendSmsRequest();
 
-            //使用post提交
-            request.setMethod(MethodType.POST);
             //必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式
             request.setPhoneNumbers(mobiles);
             request.setSignName(signName);

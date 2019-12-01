@@ -1,5 +1,6 @@
 package com.wkclz.core.config;
 
+import com.wkclz.core.config.handler.TraceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,12 +14,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class AppInterceptor implements WebMvcConfigurer {
 
     @Autowired
-    private SessionInterceptor sessionInterceptor;
+    private TraceHandler traceHandler;
 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(sessionInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(traceHandler).addPathPatterns("/**");
     }
 
     /*

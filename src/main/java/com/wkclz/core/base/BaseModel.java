@@ -16,12 +16,12 @@ public class BaseModel {
     protected static final String DEFAULE_ORDER_BY = "sort, id desc";
 
     private Long id;
-    private Long orgId;
     private String mobile;
     private String email;
     private String code;
 
     private Long userId;
+    private Long tenantId;
     private String messageId;
 
     /**
@@ -42,16 +42,6 @@ public class BaseModel {
     private Date timeFrom;
     private Date timeTo;
     private DateRangeType dateRangeType;
-
-
-    /**
-     * 当前登录用户 id
-     */
-    private Long currentUserId;
-    /**
-     * 当前访问的组织 id
-     */
-    private Long currentOrgId;
 
 
     /**
@@ -86,14 +76,6 @@ public class BaseModel {
         this.id = id;
     }
 
-    public Long getOrgId() {
-        return orgId;
-    }
-
-    public void setOrgId(Long orgId) {
-        this.orgId = orgId;
-    }
-
     public String getMobile() {
         return mobile;
     }
@@ -126,36 +108,20 @@ public class BaseModel {
         this.userId = userId;
     }
 
-    public Integer getSort() {
-        return sort;
+    public Long getTenantId() {
+        return tenantId;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
-    public String getComments() {
-        return comments;
+    public String getMessageId() {
+        return messageId;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public Integer getIsPage() {
@@ -190,6 +156,14 @@ public class BaseModel {
         this.orderBy = orderBy;
     }
 
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     public List<Long> getIds() {
         return ids;
     }
@@ -220,6 +194,22 @@ public class BaseModel {
 
     public void setTimeTo(Date timeTo) {
         this.timeTo = timeTo;
+    }
+
+    public DateRangeType getDateRangeType() {
+        return dateRangeType;
+    }
+
+    public void setDateRangeType(DateRangeType dateRangeType) {
+        this.dateRangeType = dateRangeType;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     public Date getCreateTime() {
@@ -254,44 +244,28 @@ public class BaseModel {
         this.updateBy = updateBy;
     }
 
-    public DateRangeType getDateRangeType() {
-        return dateRangeType;
+    public String getComments() {
+        return comments;
     }
 
-    public void setDateRangeType(DateRangeType dateRangeType) {
-        this.dateRangeType = dateRangeType;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
-    public String getMessageId() {
-        return messageId;
+    public Integer getVersion() {
+        return version;
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
-    public Long getCount() {
-        return count;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
-    }
-
-    public Long getCurrentUserId() {
-        return currentUserId;
-    }
-
-    public void setCurrentUserId(Long currentUserId) {
-        this.currentUserId = currentUserId;
-    }
-
-    public Long getCurrentOrgId() {
-        return currentOrgId;
-    }
-
-    public void setCurrentOrgId(Long currentOrgId) {
-        this.currentOrgId = currentOrgId;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getDebug() {
