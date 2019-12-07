@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.util.RegularUtil;
 import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -96,12 +97,19 @@ public class TenantDomainHelper extends BaseHelper {
         }
 
         Object tenantIdObj = tenantDomains.get(domain);
-        if (tenantIdObj == null) {
-            throw BizException.error("can not get TenantId from request: {}", RequestHelper.getRequestUrl());
+        if (tenantIdObj != null) {
+            Long tenantId = Long.valueOf(tenantIdObj.toString());
+            MDC.put("tenantId", tenantId + "");
+            return tenantId;
         }
-        Long tenantId = Long.valueOf(tenantIdObj.toString());
-        MDC.put("tenantId", tenantId + "");
-        return tenantId;
+
+        if (RegularUtil.isIp(domain)){
+            tenantIdObj = -1L;
+            MDC.put("tenantId", tenantIdObj + "");
+            return -1L;
+        }
+
+        throw BizException.error("domain {} is undefined, can not get tenantId!", domain);
     }
 
 }

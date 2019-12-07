@@ -147,7 +147,7 @@ public class AuthHelper extends BaseHelper {
      */
     public User getUser(String tokenStr) {
         if (StringUtils.isBlank(tokenStr)) {
-            throw BizException.error("can find anything to get user info, please login at first!");
+            return null;
         }
         Token token = Token.getToken(tokenStr);
 

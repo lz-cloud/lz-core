@@ -27,14 +27,17 @@ public class TraceHelper {
 
 
         TraceInfo traceInfo = new TraceInfo();
+        traceInfo.setAuthId(-1L);
+        traceInfo.setUserId(-1L);
 
         Long tenantId = authHelper.getTenantId(req);
         User user = authHelper.checkUserSession(req);
-        user.setTenantId(tenantId);
-
         traceInfo.setTenantId(tenantId);
-        traceInfo.setAuthId(user.getAuthId());
-        traceInfo.setUserId(user.getUserId());
+        if (user != null){
+            traceInfo.setAuthId(user.getAuthId());
+            traceInfo.setUserId(user.getUserId());
+        }
+
 
         // group
         String group = MDC.get("group");
