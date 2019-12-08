@@ -146,7 +146,7 @@ public class AccessHelper extends BaseHelper {
         log.setToken(BaseHelper.getToken(req));
 
         if (!StringUtils.isBlank(log.getToken())) {
-            User user = authHelper.getUser(req);
+            User user = authHelper.getUser();
             if (user != null) {
                 log.setAuthId(user.getAuthId());
                 log.setUserId(user.getUserId());

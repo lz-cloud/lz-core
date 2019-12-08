@@ -67,18 +67,20 @@ public class TenantDomainHelper extends BaseHelper {
 
     /**
      * 获取 tenantId。成功获取之后，MDC 一定会有值
-     * @param req
      * @return
      */
-    public Long getTenantId(HttpServletRequest req) {
+    public Long getTenantId() {
         String tenantIdStr = MDC.get("tenantId");
         if (tenantIdStr != null){
             return Long.valueOf(tenantIdStr);
         }
 
+        HttpServletRequest req = RequestHelper.getRequest();
         if (req == null) {
-            return null;
+            MDC.put("tenantId", "-1");
+            return -1L;
         }
+
         tenantIdStr = req.getHeader("tenantId");
         if (tenantIdStr != null){
             MDC.put("tenantId", tenantIdStr);
@@ -88,7 +90,7 @@ public class TenantDomainHelper extends BaseHelper {
         String domain = UrlUtil.getDomain(req);
 
         if (StringUtils.isBlank(domain)) {
-            throw BizException.error("Can not get domain from the request: {}", RequestHelper.getRequestUrl());
+            throw BizException.error("can not get domain from the request: {}", RequestHelper.getRequestUrl());
         }
 
         Map<String, Object> tenantDomains = getTenantDomains();

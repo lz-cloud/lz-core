@@ -56,7 +56,7 @@ public class AuthHelper extends BaseHelper {
         Map<String, String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
-        Object session = getUser(req);
+        Object session = getUser();
         if (session != null) {
             user = (User) session;
             if (user.getToken() != null) {
@@ -96,6 +96,7 @@ public class AuthHelper extends BaseHelper {
     }
 
 
+
     /**
      * 获取 session
      *
@@ -107,25 +108,6 @@ public class AuthHelper extends BaseHelper {
             return JSONObject.parseObject(userStr, User.class);
         }
         HttpServletRequest req = RequestHelper.getRequest();
-        if (req == null){
-            throw BizException.error("can not get user info, please login at first!");
-        }
-        User user = getUser(req);
-        return user;
-    }
-
-
-    /**
-     * 获取 session
-     *
-     * @param req
-     * @return
-     */
-    public User getUser(HttpServletRequest req) {
-        String userStr = MDC.get("user");
-        if (userStr != null){
-            return JSONObject.parseObject(userStr, User.class);
-        }
         if (req == null) {
             return null;
         }
@@ -191,7 +173,7 @@ public class AuthHelper extends BaseHelper {
     }
 
     public Long getTenantId(HttpServletRequest req) {
-        return tenantDomainHelper.getTenantId(req);
+        return tenantDomainHelper.getTenantId();
     }
 
 
@@ -323,7 +305,7 @@ public class AuthHelper extends BaseHelper {
         }
 
         // 到 redis 去查找，找不到，不放过
-        User user = getUser(req);
+        User user = getUser();
         if (user == null) {
             Result result = new Result();
             invalidateSession(req, rep);
@@ -392,11 +374,17 @@ public class AuthHelper extends BaseHelper {
      * @param req
      */
     public User checkUserSession(HttpServletRequest req) {
-        User user = getUser(req);
+        User user = getUser();
         if (user != null) {
-            MDC.put("userId", user.getUserId()+"");
-            MDC.put("authId", user.getAuthId()+"");
-            MDC.put("tenantId", user.getTenantId()+"");
+            if (user.getUserId() != null){
+                MDC.put("userId", user.getUserId()+"");
+            }
+            if (user.getAuthId() != null){
+                MDC.put("authId", user.getAuthId()+"");
+            }
+            if (user.getTenantId() != null){
+                MDC.put("tenantId", user.getTenantId()+"");
+            }
         }
         return user;
     }
