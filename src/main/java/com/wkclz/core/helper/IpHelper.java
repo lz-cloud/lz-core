@@ -1,13 +1,14 @@
 package com.wkclz.core.helper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Description:
@@ -53,13 +54,13 @@ public class IpHelper {
     }
 
     public static String getServerIP() {
-        List<String> ipList = new ArrayList<>();
+        Set<String> ipList = new HashSet<>();
         //得到所有接口
         Enumeration<NetworkInterface> interfaces = null;
         try {
             interfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            logger.error("SocketException", e);
+            logger.error(e.getMessage(), e);
         }
         if (interfaces == null) {
             return null;
@@ -74,15 +75,14 @@ public class IpHelper {
                 //确定要是 ipv4的地址
                 if (inetAddress != null && inetAddress instanceof Inet4Address) {
                     String ip = inetAddress.getHostAddress();
-                    ipList.add(ip);
+                    if (!"127.0.0.1".equals(ip)){
+                        ipList.add(ip);
+                    }
                 }
             }
         }
-        StringBuffer ip = new StringBuffer();
-        for (String i : ipList) {
-            ip.append(i).append(",");
-        }
-        return ip.toString();
+        String ip = StringUtils.join(ipList, ",");
+        return ip;
     }
 
 }
