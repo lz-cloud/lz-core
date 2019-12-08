@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -133,6 +134,15 @@ public class RestAop {
         if (args != null && args.length > 0) {
             List<Object> baseModelArgs = new ArrayList<>();
             for (Object arg : args) {
+                if (arg instanceof HttpServletRequest) {
+                    continue;
+                }
+                if (arg instanceof HttpServletResponse) {
+                    continue;
+                }
+                if (arg instanceof MultipartFile) {
+                    continue;
+                }
                 baseModelArgs.add(arg);
             }
             if (!baseModelArgs.isEmpty()) {
