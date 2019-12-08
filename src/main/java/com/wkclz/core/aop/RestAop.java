@@ -44,7 +44,10 @@ public class RestAop {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAop.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private final String POINT_CUT = "(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController))";
+    private final String POINT_CUT = "(" +
+        "@within(org.springframework.stereotype.Controller) " +
+        "|| @within(org.springframework.web.bind.annotation.RestController)" +
+        ") && !execution(* org.springframework..*.*(..))";
 
     @Autowired
     private TraceHelper traceHelper;
@@ -86,7 +89,6 @@ public class RestAop {
         } catch (Throwable throwable) {
             obj = Result.error(throwable.getMessage());
             logger.error(throwable.getMessage(),throwable);
-            throwable.printStackTrace();
         }
 
         // 返回参数处理
