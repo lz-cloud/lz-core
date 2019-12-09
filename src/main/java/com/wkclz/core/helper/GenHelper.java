@@ -24,11 +24,24 @@ public class GenHelper {
     private final static Logger logger = LoggerFactory.getLogger(GenHelper.class);
 
     // 已经部署好的机器
-    private final static String GEN_ADDR_PRE = "http://gen.lz.wkclz.com/gen/";
-    private final static String GEN_RULE_PRE = "http://gen.lz.wkclz.com/gen/rule/";
+    private static String BASE_URL = "http://gen.lz.wkclz.com";
+    private static String AUTH_CODE = null;
 
 
+    @Deprecated
     public static boolean genCode(String authCode) {
+        AUTH_CODE = authCode;
+        return genCode();
+    }
+
+
+    public static boolean genCode() {
+        String authCode = AUTH_CODE;
+
+        if (StringUtils.isBlank(authCode)){
+            throw BizException.error("authCode can not be null");
+        }
+
         long start = System.currentTimeMillis();
 
         try {
@@ -193,7 +206,7 @@ public class GenHelper {
     }
 
     /**
-     * 读取生成sglf
+     * 读取生成配置
      * @return
      */
     private static List<GenTaskInfo> getRule(String authCode){
@@ -274,20 +287,21 @@ public class GenHelper {
         if (StringUtils.isBlank(authCode)){
             throw BizException.error("authCode can not be blank");
         }
-        if (authCode.startsWith("http")){
-            return authCode;
-        }
-        return GEN_ADDR_PRE + authCode;
+        return BASE_URL + "/gen/" + authCode;
     }
     private static String getGenRule(String authCode){
         if (StringUtils.isBlank(authCode)){
             throw BizException.error("authCode can not be blank");
         }
-        if (authCode.startsWith("http")){
-            return authCode;
-        }
-        return GEN_RULE_PRE + authCode;
+        return BASE_URL + "/gen/rule/" + authCode;
     }
 
 
+    public static void setBaseUrl(String baseUrl) {
+        BASE_URL = baseUrl;
+    }
+
+    public static void setAuthCode(String authCode) {
+        AUTH_CODE = authCode;
+    }
 }
