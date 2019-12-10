@@ -1,5 +1,6 @@
 package com.wkclz.core.config.handler;
 
+import com.wkclz.core.base.Result;
 import com.wkclz.core.helper.TraceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,13 @@ public class TraceHandler implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {
-        traceHelper.checkTraceInfo(req, rep);
+        try {
+            traceHelper.checkTraceInfo(req, rep);
+        } catch (Exception e){
+            Result error = Result.error(e.getMessage());
+            Result.responseError(rep, error);
+            return false;
+        }
         return true;
     }
 
