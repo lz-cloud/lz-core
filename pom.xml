@@ -135,5 +135,16 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://repo.rdc.aliyun.com/repository/39635-release-c3rPD0/</url>
+        </repository>
+        <repository>
+            <id>rdc-snapshots</id>
+            <url>https://repo.rdc.aliyun.com/repository/39635-snapshot-plF5tD/</url>
+        </repository>
+    </repositories>
+
 
 </project>
