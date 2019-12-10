@@ -24,7 +24,7 @@ public class GenHelper {
     private final static Logger logger = LoggerFactory.getLogger(GenHelper.class);
 
     // 已经部署好的机器
-    private static String BASE_URL = "http://gen.lz.wkclz.com";
+    private static String BASE_URL = "http://gen.wkclz.com";
     private static String AUTH_CODE = null;
 
 
