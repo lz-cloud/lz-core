@@ -1,5 +1,6 @@
 package com.wkclz.core.helper;
 
+import cn.hutool.core.text.StrFormatter;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
@@ -8,8 +9,6 @@ import com.wkclz.core.pojo.entity.GenTaskInfo;
 import com.wkclz.core.util.CompressUtil;
 import com.wkclz.core.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -20,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GenHelper {
-
-    private final static Logger logger = LoggerFactory.getLogger(GenHelper.class);
 
     // 已经部署好的机器
     private static String BASE_URL = "http://gen.wkclz.com/gen";
@@ -52,7 +49,7 @@ public class GenHelper {
         try {
             String urlStr = getGenAddr(authCode);
             URL url = new URL(urlStr);
-            logger.info("download addr: {}", url.getPath());
+            System.out.println(StrFormatter.format("=======> download addr: {}", url.getPath()));
 
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setConnectTimeout(3*1000);
@@ -120,12 +117,12 @@ public class GenHelper {
                     // 如果存在并定义为删除，直接删除
                     // 特例1. *Example.java 为特例，MBG 生产模型时自动生成，直接删除即可
                     if ((tagFile.exists() && deleteFlag) ||  genFile.getName().endsWith("Example.java")){
-                        logger.info(" ====> 正在删除文件: {}", tagFile.getPath());
+                        System.out.println(StrFormatter.format("=======> 正在删除文件: {}", tagFile.getPath()));
                         tagFile.delete();
                     }
                     // 若不存在（或者存在并已删除），都创建
                     if (!tagFile.exists()){
-                        logger.info(" ====> 正在复制文件: {}", tagFile.getPath());
+                        System.out.println(StrFormatter.format("=======> 正在复制文件: {}", tagFile.getPath()));
                         Files.copy(genFile.toPath(), tagFile.toPath());
                     }
                 }
@@ -135,7 +132,7 @@ public class GenHelper {
 
 
             long end = System.currentTimeMillis();
-            logger.info("=========> 完成代码生成, 耗时 {}ms <=========", (end - start));
+            System.out.println(StrFormatter.format("=======> 完成代码生成, 耗时 {}ms <=========", (end - start)));
 
 
         } catch (FileNotFoundException e) {
@@ -185,7 +182,7 @@ public class GenHelper {
             saveDir.mkdir();
         }
 
-        logger.info("save path: {}", savePath);
+        System.out.println(StrFormatter.format("=======> save path: {}", savePath));
 
         String fileName = "gen.zip";
         Map<String, List<String>> headerFields = conn.getHeaderFields();
@@ -217,7 +214,7 @@ public class GenHelper {
         try {
             String urlStr = getGenRule(authCode);
             URL url = new URL(urlStr);
-            logger.info("rule addr: {}", url.getPath());
+            System.out.println(StrFormatter.format("=======> rule addr: {}", url.getPath()));
 
             HttpURLConnection roleConn = (HttpURLConnection)url.openConnection();
             roleConn.setConnectTimeout(3*1000);
