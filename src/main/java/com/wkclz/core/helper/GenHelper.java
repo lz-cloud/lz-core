@@ -24,12 +24,13 @@ public class GenHelper {
     private final static Logger logger = LoggerFactory.getLogger(GenHelper.class);
 
     // 已经部署好的机器
-    private static String BASE_URL = "http://gen.wkclz.com";
+    private static String BASE_URL = "http://gen.wkclz.com/gen";
     private static String AUTH_CODE = null;
 
 
     @Deprecated
-    public static boolean genCode(String authCode) {
+    public static boolean genCode(String baseUrl, String authCode) {
+        BASE_URL = baseUrl;
         AUTH_CODE = authCode;
         return genCode();
     }
@@ -142,11 +143,6 @@ public class GenHelper {
         }
         return true;
     }
-
-
-
-
-
 
 
 
