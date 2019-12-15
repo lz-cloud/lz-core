@@ -28,9 +28,13 @@ public class GenHelper {
     private static String AUTH_CODE = null;
 
 
-    @Deprecated
     public static boolean genCode(String baseUrl, String authCode) {
         BASE_URL = baseUrl;
+        AUTH_CODE = authCode;
+        return genCode();
+    }
+
+    public static boolean genCode(String authCode) {
         AUTH_CODE = authCode;
         return genCode();
     }
