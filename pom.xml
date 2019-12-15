@@ -137,12 +137,12 @@
 
     <repositories>
         <repository>
-            <id>rdc-releases</id>
-            <url>https://repo.rdc.aliyun.com/repository/39635-release-c3rPD0/</url>
+            <id>wkclz-releases</id>
+            <url>https://mvn.wkclz.com/repository/</url>
         </repository>
         <repository>
-            <id>rdc-snapshots</id>
-            <url>https://repo.rdc.aliyun.com/repository/39635-snapshot-plF5tD/</url>
+            <id>wkclz-snapshots</id>
+            <url>https://mvn.wkclz.com/repository/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
