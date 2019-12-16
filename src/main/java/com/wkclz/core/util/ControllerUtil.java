@@ -16,8 +16,6 @@ public class ControllerUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ControllerUtil.class);
 
-    // 不进行读取的 uri
-    private static List<String> IGNORE_URI = Arrays.asList(new String[]{"/robotMsg", "/wechat/check/signature"});
 
     /**
      * 获取所有 uri
@@ -106,9 +104,6 @@ public class ControllerUtil {
                     }
                     if (uri != null && uri.length() > 1) {
                         uri = preFix + uri;
-                        if (IGNORE_URI.contains(uri)) {
-                            continue;
-                        }
                         String requestFun;
                         // 方法名
                         String funName = uri.substring(1, uri.length());
@@ -146,9 +141,6 @@ public class ControllerUtil {
                     continue;
                 }
                 String value = o.toString();
-                if (IGNORE_URI.contains(value)) {
-                    continue;
-                }
                 Desc desc = field.getAnnotation(Desc.class);
                 if (desc != null) {
                     String annoDesc = desc.value();
@@ -156,7 +148,7 @@ public class ControllerUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            logger.error("IllegalAccessException", e);
+            logger.error(e.getMessage(), e);
         }
         map = sortMapByKey(map);
         return map;
