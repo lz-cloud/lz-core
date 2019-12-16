@@ -67,7 +67,7 @@ public class ApiDomainHelper extends BaseHelper {
         return API_DOMAINS;
     }
 
-    public boolean checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
+    public Result checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
         List<String> apiDomains = getApiDomains();
         if (CollectionUtils.isEmpty(apiDomains)) {
             throw new BizException("apiDomains must be init after system start up!");
@@ -77,13 +77,13 @@ public class ApiDomainHelper extends BaseHelper {
         url = UrlUtil.getDomainFronUrl(url);
 
         if (apiDomains.contains(url)) {
-            return true;
+            return null;
         }
 
         logger.error("api url can not be cors, url : {}, ip: {}", url, IpHelper.getOriginIp(req));
         Result result = new Result();
         result.setMoreError(ResultStatus.API_CORS);
-        return Result.responseError(rep, result);
+        return result;
     }
 
 }

@@ -252,7 +252,7 @@ public class AuthHelper extends BaseHelper {
      * @param rep
      * @return
      */
-    public boolean checkUserToken(HttpServletRequest req, HttpServletResponse rep) {
+    public Result checkUserToken(HttpServletRequest req, HttpServletResponse rep) {
 
         String uri = req.getRequestURI();
 
@@ -265,21 +265,21 @@ public class AuthHelper extends BaseHelper {
             logger.info("heaterToken is not allow, heaterToken: {}", heaterToken);
             Result result = new Result();
             result.setMoreError(Result.TOKEN_ILLEGAL_LENGTH);
-            return Result.responseError(rep,result);
+            return result;
         }
 
         if (StringUtils.isNotBlank(parameterToken) && parameterToken.length() > 63){
             logger.info("parameterToken is not allow, parameterToken: {}", parameterToken);
             Result result = new Result();
             result.setMoreError(Result.TOKEN_ILLEGAL_LENGTH);
-            return Result.responseError(rep,result);
+            return result;
         }
 
         if ( (!StringUtils.isBlank(heaterToken) && heaterToken.startsWith("temp_")) || !StringUtils.isBlank(parameterToken) && !parameterToken.startsWith("temp_") ){
             logger.info("token illegal transfer, uri : {}, ip: {}", uri, IpHelper.getIpAddr(req));
             Result result = new Result();
             result.setMoreError(Result.TOKEN_ILLEGAL_TRANSFER);
-            return Result.responseError(rep,result);
+            return result;
         }
         */
 
@@ -290,7 +290,7 @@ public class AuthHelper extends BaseHelper {
             logger.warn("token is null, uri : {}", uri, IpHelper.getOriginIp(req));
             Result result = new Result();
             result.setMoreError(ResultStatus.TOKEN_UNLL);
-            return Result.responseError(rep, result);
+            return result;
         }
 
         Token token = Token.getToken(tokenStr);
@@ -301,7 +301,7 @@ public class AuthHelper extends BaseHelper {
             invalidateSession(req, rep);
             logger.warn("token sign faild, uri : {}, ip: {}, tokrn: {}", uri, IpHelper.getOriginIp(req), tokenStr);
             result.setMoreError(ResultStatus.TOKEN_SIGN_FAILD);
-            return Result.responseError(rep, result);
+            return result;
         }
 
         // 到 redis 去查找，找不到，不放过
@@ -311,7 +311,7 @@ public class AuthHelper extends BaseHelper {
             invalidateSession(req, rep);
             logger.warn("token is error, uri : {}, ip: {}", uri, IpHelper.getOriginIp(req));
             result.setMoreError(ResultStatus.TOKEN_ERROR);
-            return Result.responseError(rep, result);
+            return result;
             /*
             // 对开发环境直接赋值登录
             if (EnvType.DEV == EnvType.CURRENT_ENV){
@@ -322,7 +322,7 @@ public class AuthHelper extends BaseHelper {
                 authHelper.invalidateSession(req);
                 logger.info("token is error, uri : {}",uri);
                 result.setMoreError(Result.TOKEN_ERROR);
-                return Result.responseError(rep,result);
+                return result;
             }
             */
         }
@@ -335,7 +335,7 @@ public class AuthHelper extends BaseHelper {
             logger.info("client is changed, uri : {}",uri);
             Result result = new Result();
             result.setError(ErrorBase.CLIENT_CHANGE);
-            return ErrorBase.responseError(rep,result);
+            return result;
         }
         */
 
@@ -348,7 +348,7 @@ public class AuthHelper extends BaseHelper {
                 logger.info("user is not admin, uri : {}", uri);
                 Result result = new Result();
                 result.setError("非法访问管理后台");
-                return Result.responseError(rep, result);
+                return result;
             }
         }
 
@@ -361,11 +361,11 @@ public class AuthHelper extends BaseHelper {
                     MDC.put("user", JSONObject.toJSONString(user));
                 }
             }
-            return true;
+            return null;
         }
 
         // 只有返回true才会继续向下执行，返回false取消当前请求
-        return false;
+        return Result.error("鉴权不通过，未知原因");
     }
 
     /**

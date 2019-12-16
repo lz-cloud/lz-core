@@ -1,11 +1,11 @@
 package com.wkclz.core.config.handler;
 
+import com.wkclz.core.base.Result;
 import com.wkclz.core.helper.AccessHelper;
 import com.wkclz.core.helper.ApiDomainHelper;
 import com.wkclz.core.helper.AuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
 @Component
-public class AuthHandler implements HandlerInterceptor {
+public class AuthHandler {
 
     @Autowired
     private AuthHelper authHelper;
@@ -24,12 +24,12 @@ public class AuthHandler implements HandlerInterceptor {
     @Autowired
     private ApiDomainHelper apiDomainHelper;
 
-    public boolean preHandle(HttpServletRequest req, HttpServletResponse rep) {
+    public Result preHandle(HttpServletRequest req, HttpServletResponse rep) {
 
         // API 安全检测
-        boolean apiDomainCheckResult = apiDomainHelper.checkApiDomains(req, rep);
-        if (!apiDomainCheckResult) {
-            return false;
+        Result apiDomainCheckResult = apiDomainHelper.checkApiDomains(req, rep);
+        if (apiDomainCheckResult != null) {
+            return apiDomainCheckResult;
         }
 
         /**
@@ -39,13 +39,13 @@ public class AuthHandler implements HandlerInterceptor {
         // uri 拦截检测【如果检查通过，无需再检查token】
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult) {
-            return true;
+            return null;
         }
 
         // token 检测
-        boolean userTokenCheckResult = authHelper.checkUserToken(req, rep);
-        if (!userTokenCheckResult) {
-            return false;
+        Result userTokenCheckResult = authHelper.checkUserToken(req, rep);
+        if (userTokenCheckResult != null) {
+            return userTokenCheckResult;
         }
 
         // uri 权限检测 TODO
@@ -55,7 +55,7 @@ public class AuthHandler implements HandlerInterceptor {
             return false;
         }
         */
-        return true;
+        return null;
     }
 
 }

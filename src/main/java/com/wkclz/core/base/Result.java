@@ -214,10 +214,10 @@ public class Result<T> {
             rep.getWriter().print(string);
             rep.getWriter().close();
         } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException", e);
+            logger.error(e.getMessage(), e);
             return false;
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
             return false;
         }
         return false;
