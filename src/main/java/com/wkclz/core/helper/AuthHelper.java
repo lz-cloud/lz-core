@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class AuthHelper extends BaseHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(AuthHelper.class);
     @Autowired
     private TenantDomainHelper tenantDomainHelper;
     @Autowired

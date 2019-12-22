@@ -24,7 +24,7 @@ import java.util.List;
 @Component
 public class ApiDomainHelper extends BaseHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(ApiDomainHelper.class);
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 

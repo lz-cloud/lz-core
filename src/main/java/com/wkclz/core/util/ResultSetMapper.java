@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ResultSetMapper {
-    private static final Logger logger = LoggerFactory.getLogger(QrCodeUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultSetMapper.class);
 
 
     public static List<Map> toMapList(ResultSet rs) {

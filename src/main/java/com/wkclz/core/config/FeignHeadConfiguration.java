@@ -24,7 +24,7 @@ import java.util.Set;
  */
 @Configuration
 public class FeignHeadConfiguration {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(FeignHeadConfiguration.class);
 
     @Bean
     public RequestInterceptor requestInterceptor() {
