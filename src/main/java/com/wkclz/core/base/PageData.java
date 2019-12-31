@@ -12,7 +12,7 @@ import java.util.List;
 public class PageData<T> {
 
     private List<T> rows;
-    private Long totalCount;
+    private Integer totalCount;
     private Integer totalPage;
     private Integer pageNo = 1;
     private Integer pageSize = 10;
@@ -26,6 +26,13 @@ public class PageData<T> {
         this.pageSize = pageSize;
     }
 
+    public PageData(Integer pageNo, Integer pageSize, Integer totalCount, List<T> list) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.totalCount = totalCount;
+        init();
+        this.rows = list;
+    }
 
     /**
      * 自定义辅助类 分页
@@ -47,11 +54,11 @@ public class PageData<T> {
         this.rows = data;
     }
 
-    public Long getTotalCount() {
+    public Integer getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(Long totalCount) {
+    public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
         init(); // 只有设置了总数据数的时候才做分页处理
     }
@@ -88,7 +95,7 @@ public class PageData<T> {
             this.pageSize = 10;
         }
         if (this.totalCount == null) {
-            this.totalCount = 0L;
+            this.totalCount = 0;
         }
 
         this.totalPage = (int) Math.ceil((double) this.totalCount / (double) this.pageSize);

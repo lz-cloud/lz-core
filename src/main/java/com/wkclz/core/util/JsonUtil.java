@@ -134,7 +134,7 @@ public class JsonUtil {
      */
     private static String getLevelStr(int level) {
         StringBuffer levelStr = new StringBuffer();
-        for (int levelI = 0; levelI < level; levelI++) {
+        for (int leveli = 0; leveli < level; leveli++) {
             levelStr.append("\t");
         }
         return levelStr.toString();

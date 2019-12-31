@@ -58,7 +58,7 @@ public class TraceHelper {
         // serverIp
         String serverIp = MDC.get("serverIp");
         if (serverIp == null){ serverIp = req.getHeader("serverIp"); }
-        if (serverIp == null) { serverIp = IpHelper.getServerIP(); }
+        if (serverIp == null) { serverIp = IpHelper.getServerIp(); }
         if (TraceInfo.getServerIp() == null || !serverIp.equals(TraceInfo.getServerIp())){
             TraceInfo.setServerIp(serverIp);
         }

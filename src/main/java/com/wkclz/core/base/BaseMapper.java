@@ -1,80 +1,47 @@
 package com.wkclz.core.base;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import com.wkclz.core.base.annotation.Desc;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: common mapper
  * Created: wangkaicun @ 2019-01-17 14:43
+ * Updadte: wangkaicun @ 2019-12-31 23:01:47
  */
-@Mapper
-public interface BaseMapper<Model, Example> {
+public interface BaseMapper<Model> {
 
-    long countByExample(Example example);
+    @Desc("统计")
+    Integer count(Model model);
 
-    /**
-     * not recommended to use
-     * 不建议使用
-     */
-    @Deprecated
-    Long insert(Model record);
+    @Desc("用ID查找")
+    Model getById(Long id);
 
-    Long insertSelective(Model record);
+    @Desc("用 Model 查找")
+    Model getByModel(Model model);
 
-    /**
-     * only can be use when table with BLOBs
-     * not recommended to use
-     * 只有表存在 BLOB 字段时可用
-     * 不建议使用
-     */
-    @Deprecated
-    List<Model> selectByExampleWithBLOBs(Example example);
+    @Desc("查询列表，不包含Blobs")
+    List<Model> list(Model model);
 
-    List<Model> selectByExample(Example example);
+    @Desc("(选择性)插入")
+    Long insert(Model model);
 
-    Model selectByPrimaryKey(Long id);
+    @Desc("(选择性)批量插入")
+    Long insertBatch(List<Model> models);
 
-    /**
-     * not recommended to use
-     * 不建议使用
-     */
-    int updateByExampleSelective(@Param("record") Model record, @Param("example") Example example);
+    @Desc("更新(带乐观锁)")
+    Long updateAll(Model model);
 
-    /**
-     * only can be use when table with BLOBs
-     * not recommended to use
-     * 只有表存在 BLOB 字段时可用
-     * 不建议使用
-     */
-    int updateByExampleWithBLOBs(@Param("record") Model record, @Param("example") Example example);
+    @Desc("选择性更新(带乐观锁)")
+    Long updateSelective(Model model);
 
-    /**
-     * not recommended to use
-     * 不建议使用
-     */
-    int updateByExample(@Param("record") Model record, @Param("example") Example example);
+    @Desc("批量更新(不带乐观锁)")
+    Long updateBatch(List<Model> model);
 
-    int updateByPrimaryKeySelective(Model record);
+    @Desc("删除")
+    Long delete(Long id);
 
-    /**
-     * not recommended to use
-     * 不建议使用
-     */
-    @Deprecated
-    int updateByPrimaryKey(Model record);
-
-    /**
-     * only can be use when table with BLOBs
-     * not recommended to use
-     * 只有表存在 BLOB 字段时可用
-     * 不建议使用
-     */
-    @Deprecated
-    int updateByPrimaryKeyWithBLOBs(Model record);
-
-    int insertBatch(@Param("record") List<Model> record, @Param("columnsMap") Map<String, String> columnsMap);
+    @Desc("批量删除")
+    Long deleteBatch(List<Long> ids);
 
 }

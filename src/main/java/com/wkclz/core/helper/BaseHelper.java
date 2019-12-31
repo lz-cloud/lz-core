@@ -4,11 +4,17 @@ import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
+import com.wkclz.core.util.MapUtil;
+import com.wkclz.core.util.ResultSetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 /**
@@ -93,6 +99,84 @@ public class BaseHelper {
             params.put(name, valueStr);
         }
         return params;
+    }
+
+
+    /**
+     * 从 jdbc 查询
+     *
+     * @param conn
+     * @param sql
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> jdbcExecutor(Connection conn, String sql, Class<T> clazz) {
+        Statement statement = null;
+        try {
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+            List<Map> maps = ResultSetMapper.toMapList(results);
+            List<T> list = MapUtil.map2ObjList(maps, clazz);
+            return list;
+        } catch (SQLException e) {
+            logger.error("SQLException", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    logger.error("SQLException", e);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static List<Map> jdbcExecutor(Connection conn, String sql) {
+        Statement statement = null;
+        try {
+            statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+            List<Map> maps = ResultSetMapper.toMapList(results);
+            return maps;
+        } catch (SQLException e) {
+            logger.error("SQLException", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    logger.error("SQLException", e);
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 注入风险检测。默认只作用在 orderBy 上。不能用于其他地方的注入检测
+     * 注入风险：
+     * 1、orderBy 中使用 ${}。可用此方法进行检测，不可使用其他字段传入
+     * 2、MBG 的 noValue，singleValue，betweenValue，listValue 注入风险：Example 的 Criteria 产生，无注入风险
+     * 3、MBG 的 like 注入风险：like 前的由 Example 控制，后的为 #{}, 无注入风险
+     * 4、Custom 实现的 like 强制使用 AND column like concat("%",#{value},"%")
+     *
+     * @param str
+     * @return
+     */
+    private static boolean sqlInj(String str) {
+        str = str.toLowerCase();
+        String injStr = "'|and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;| or |-|+";
+        String[] injStra = injStr.split("\\|");
+        for (int i = 0; i < injStra.length; i++) {
+            String is = injStra[i];
+            if (str.indexOf(is) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

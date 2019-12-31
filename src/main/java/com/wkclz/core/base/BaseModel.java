@@ -16,13 +16,15 @@ public class BaseModel {
     protected static final String DEFAULE_ORDER_BY = "sort, id desc";
 
     private Long id;
+    /*
     private String mobile;
     private String email;
     private String code;
+    private String messageId;
+    */
 
     private Long userId;
     private Long tenantId;
-    private String messageId;
 
     /**
      * 查询辅助
@@ -33,7 +35,6 @@ public class BaseModel {
     private String orderBy;
     private Long count;
 
-
     /**
      * 查询辅助
      */
@@ -42,7 +43,6 @@ public class BaseModel {
     private Date timeFrom;
     private Date timeTo;
     private DateRangeType dateRangeType;
-
 
     /**
      * 数据库规范字段
@@ -76,30 +76,6 @@ public class BaseModel {
         this.id = id;
     }
 
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public Long getUserId() {
         return userId;
     }
@@ -114,14 +90,6 @@ public class BaseModel {
 
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
     }
 
     public Integer getIsPage() {

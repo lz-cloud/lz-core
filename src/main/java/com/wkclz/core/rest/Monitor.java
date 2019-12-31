@@ -27,8 +27,8 @@ public class Monitor {
      */
     @GetMapping("/redis")
     public Result redis(){
-        String serverIP = IpHelper.getServerIP();
-        String key = MONITOR_REDIS + Sys.CURRENT_ENV + ":" + Sys.APPLICATION_GROUP + ":" + Sys.APPLICATION_NAME + ":" + serverIP;
+        String serverIp = IpHelper.getServerIp();
+        String key = MONITOR_REDIS + Sys.CURRENT_ENV + ":" + Sys.APPLICATION_GROUP + ":" + Sys.APPLICATION_NAME + ":" + serverIp;
         long timpstramp = System.currentTimeMillis();
         stringRedisTemplate.boundValueOps(key).set(timpstramp + "");
         stringRedisTemplate.expire(key, 1, TimeUnit.DAYS);
@@ -43,8 +43,8 @@ public class Monitor {
      */
     @GetMapping("/ip")
     public Result ip(){
-        String serverIP = IpHelper.getServerIP();
-        return Result.data(serverIP);
+        String serverIp = IpHelper.getServerIp();
+        return Result.data(serverIp);
     }
 
     /**

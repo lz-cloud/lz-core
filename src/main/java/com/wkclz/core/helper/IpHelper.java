@@ -53,7 +53,7 @@ public class IpHelper {
         return ipAddress;
     }
 
-    public static String getServerIP() {
+    public static String getServerIp() {
         Set<String> ipList = new HashSet<>();
         //得到所有接口
         Enumeration<NetworkInterface> interfaces = null;
