@@ -33,7 +33,7 @@ public class BaseModel {
     private Integer pageNo;
     private Integer pageSize;
     private String orderBy;
-    private Long count;
+    private Integer count;
 
     /**
      * 查询辅助
@@ -124,11 +124,11 @@ public class BaseModel {
         this.orderBy = orderBy;
     }
 
-    public Long getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 
