@@ -26,7 +26,7 @@ public interface BaseMapper<Model> {
     @Desc("(选择性)插入")
     Long insert(Model model);
 
-    @Desc("(选择性)批量插入")
+    @Desc("全量批量插入")
     Integer insertBatch(List<Model> models);
 
     @Desc("更新(带乐观锁)")

@@ -55,7 +55,7 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
         return mapper.insert(model);
     }
 
-    @Desc("(选择性)批量插入")
+    @Desc("全量批量插入")
     public Integer insert(List<Model> models){
         return mapper.insertBatch(models);
     }
