@@ -56,22 +56,22 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
     }
 
     @Desc("(选择性)批量插入")
-    public Long insert(List<Model> models){
+    public Integer insert(List<Model> models){
         return mapper.insertBatch(models);
     }
 
     @Desc("更新(带乐观锁)")
-    public Long updateAll(Model model){
+    public Integer updateAll(Model model){
         return mapper.updateAll(model);
     }
 
     @Desc("选择性更新(带乐观锁)")
-    public Long updateSelective(Model model){
+    public Integer updateSelective(Model model){
         return mapper.updateSelective(model);
     }
 
     @Desc("批量更新(不带乐观锁)")
-    public Long update(List<Model> models){
+    public Integer update(List<Model> models){
         return mapper.updateBatch(models);
     }
 
@@ -80,17 +80,21 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
         if (model.getId() == null) {
             return mapper.insert(model);
         } else {
-            return mapper.updateSelective(model);
+            Integer rt = mapper.updateSelective(model);
+            if (rt == 1){
+                return model.getId();
+            }
+            return 0L;
         }
     }
 
     @Desc("删除")
-    public Long delete(Long id){
+    public Integer delete(Long id){
         return mapper.delete(id);
     }
 
     @Desc("批量删除")
-    public Long delete(List<Long> ids){
+    public Integer delete(List<Long> ids){
         return mapper.deleteBatch(ids);
     }
 

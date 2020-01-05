@@ -27,21 +27,21 @@ public interface BaseMapper<Model> {
     Long insert(Model model);
 
     @Desc("(选择性)批量插入")
-    Long insertBatch(List<Model> models);
+    Integer insertBatch(List<Model> models);
 
     @Desc("更新(带乐观锁)")
-    Long updateAll(Model model);
+    Integer updateAll(Model model);
 
     @Desc("选择性更新(带乐观锁)")
-    Long updateSelective(Model model);
+    Integer updateSelective(Model model);
 
     @Desc("批量更新(不带乐观锁)")
-    Long updateBatch(List<Model> model);
+    Integer updateBatch(List<Model> model);
 
     @Desc("删除")
-    Long delete(Long id);
+    Integer delete(Long id);
 
     @Desc("批量删除")
-    Long deleteBatch(List<Long> ids);
+    Integer deleteBatch(List<Long> ids);
 
 }
