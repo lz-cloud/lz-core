@@ -1,6 +1,7 @@
 package com.wkclz.core.base;
 
 import com.wkclz.core.base.annotation.Desc;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface BaseMapper<Model> {
     Integer count(Model model);
 
     @Desc("用ID查找")
-    Model getById(Long id);
+    Model getById(@Param("id") Long id);
 
     @Desc("用 Model 查找")
     Model getByModel(Model model);
@@ -27,7 +28,7 @@ public interface BaseMapper<Model> {
     Long insert(Model model);
 
     @Desc("全量批量插入")
-    Integer insertBatch(List<Model> models);
+    Integer insertBatch(@Param("list") List<Model> models);
 
     @Desc("更新(带乐观锁)")
     Integer updateAll(Model model);
@@ -36,12 +37,12 @@ public interface BaseMapper<Model> {
     Integer updateSelective(Model model);
 
     @Desc("批量更新(不带乐观锁)")
-    Integer updateBatch(List<Model> model);
+    Integer updateBatch(@Param("list") List<Model> model);
 
     @Desc("删除")
-    Integer delete(Long id);
+    Integer delete(@Param("id") Long id);
 
     @Desc("批量删除")
-    Integer deleteBatch(List<Long> ids);
+    Integer deleteBatch(@Param("ids") List<Long> ids);
 
 }
