@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-// @Configuration 完成前不启用配置
+@Configuration
 public class MybatisConfiguration {
 
     // Mapper 操作缓存，减少反射
