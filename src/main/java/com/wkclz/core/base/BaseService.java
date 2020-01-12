@@ -79,12 +79,18 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
 
     @Desc("删除")
     public Integer delete(@NotNull Long id){
-        return mapper.delete(id);
+        BaseModel baseModel = new BaseModel();
+        baseModel.setId(id);
+        Model model = (Model)baseModel;
+        return mapper.delete(model);
     }
 
     @Desc("批量删除")
     public Integer delete(@NotNull List<Long> ids){
-        return mapper.deleteBatch(ids);
+        BaseModel baseModel = new BaseModel();
+        baseModel.setIds(ids);
+        Model model = (Model)baseModel;
+        return mapper.deleteBatch(model);
     }
 
 }

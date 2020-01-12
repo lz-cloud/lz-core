@@ -40,9 +40,9 @@ public interface BaseMapper<Model> {
     Integer updateBatch(@Param("list") List<Model> model);
 
     @Desc("删除")
-    Integer delete(@Param("id") Long id);
+    Integer delete(Model model);
 
     @Desc("批量删除")
-    Integer deleteBatch(@Param("ids") List<Long> ids);
+    Integer deleteBatch(Model model);
 
 }
