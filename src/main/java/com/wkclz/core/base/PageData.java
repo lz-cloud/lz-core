@@ -21,6 +21,11 @@ public class PageData<T> {
         init();
     }
 
+    public <M extends BaseModel> PageData(M model) {
+        this.pageNo = model.getPageNo();
+        this.pageSize = model.getPageSize();
+    }
+
     public PageData(Integer pageNo, Integer pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
