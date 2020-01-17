@@ -15,10 +15,10 @@ public class PageHandle<T extends BaseModel> {
         PageHelper.startPage(model.getPageNo(), model.getPageSize());
     }
 
-    public PageData<T> page(List<T> list){
-        Page<T> listPage = (Page<T>) list;
+    public PageData page(List list){
+        Page listPage = (Page) list;
         long total = listPage.getTotal();
-        PageData<T> pageData = new PageData<T>(model);
+        PageData pageData = new PageData<>(model);
         pageData.setTotalCount(Long.valueOf(total).intValue());
         pageData.setRows(list);
         return pageData;
