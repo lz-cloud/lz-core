@@ -50,6 +50,9 @@ public class MybatisUpdateInterceptor implements Interceptor {
                 clearPatameter.setId(null);
                 clearPatameter.setVersion(null);
                 clearPatameter.setCreateBy(userId);
+                if (clearPatameter.getSort() == null){
+                    clearPatameter.setSort(0);
+                }
             }
             // update 时 id, version 不能为空
             if (commandType == SqlCommandType.UPDATE) {
@@ -81,6 +84,9 @@ public class MybatisUpdateInterceptor implements Interceptor {
                         clearPatameter.setId(null);
                         clearPatameter.setVersion(null);
                         clearPatameter.setCreateBy(userId);
+                        if (clearPatameter.getSort() == null){
+                            clearPatameter.setSort(0);
+                        }
                     }
                     // update 时 id 不能为空, 批量更新不处理 version
                     if (commandType == SqlCommandType.UPDATE) {
