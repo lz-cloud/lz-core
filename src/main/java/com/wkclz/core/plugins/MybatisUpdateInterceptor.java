@@ -13,7 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
@@ -71,41 +72,44 @@ public class MybatisUpdateInterceptor implements Interceptor {
             }
         }
 
-        // 参数为 List
-        if (parameter instanceof List) {
-            List parameters = (List) parameter;
-            for (Object p : parameters) {
-                if (p instanceof BaseModel) {
-                    BaseModel clearPatameter = (BaseModel) p;
-                    // insert, upadte, delete 修改人
-                    clearPatameter.setUpdateBy(userId);
-                    // insert 时需要附加创建人
-                    if (commandType == SqlCommandType.INSERT) {
-                        clearPatameter.setId(null);
-                        clearPatameter.setVersion(null);
-                        clearPatameter.setCreateBy(userId);
-                        if (clearPatameter.getSort() == null){
-                            clearPatameter.setSort(0);
+        // 参数为 List 【在 Map 里面】
+        if (parameter instanceof Map){
+            Map parameterMap = (Map)parameter;
+            Object parameterObj = parameterMap.get("list");
+            if (parameterObj != null && parameterObj instanceof Collection){
+                Collection parameters = (Collection)parameterObj;
+                for (Object p:parameters) {
+                    if (p instanceof BaseModel) {
+                        BaseModel clearPatameter = (BaseModel) p;
+                        // insert, upadte, delete 修改人
+                        clearPatameter.setUpdateBy(userId);
+                        // insert 时需要附加创建人
+                        if (commandType == SqlCommandType.INSERT) {
+                            clearPatameter.setId(null);
+                            clearPatameter.setVersion(null);
+                            clearPatameter.setCreateBy(userId);
+                            if (clearPatameter.getSort() == null){
+                                clearPatameter.setSort(0);
+                            }
                         }
-                    }
-                    // update 时 id 不能为空, 批量更新不处理 version
-                    if (commandType == SqlCommandType.UPDATE) {
-                        if (clearPatameter.getId() == null) {
-                            throw BizException.error("id can not be null if update");
+                        // update 时 id 不能为空, 批量更新不处理 version
+                        if (commandType == SqlCommandType.UPDATE) {
+                            if (clearPatameter.getId() == null) {
+                                throw BizException.error("id can not be null if update");
+                            }
                         }
-                    }
-                    // delete 时 id, ids 不能同时为空, 删除不校验 version
-                    if (commandType == SqlCommandType.DELETE) {
-                        if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
-                            throw BizException.error("id and ids can not be null at the same time if delete");
+                        // delete 时 id, ids 不能同时为空, 删除不校验 version
+                        if (commandType == SqlCommandType.DELETE) {
+                            if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
+                                throw BizException.error("id and ids can not be null at the same time if delete");
+                            }
                         }
+                    } else {
+                        break;
                     }
-                } else {
-                    break;
                 }
             }
         }
-
         logger.debug("mybatis.update.interceptor: operate user: {}", userId);
 
         Object proceedReslut = invocation.proceed();
