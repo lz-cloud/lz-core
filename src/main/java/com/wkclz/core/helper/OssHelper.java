@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 public class OssHelper {
     private static final Logger logger = LoggerFactory.getLogger(OssHelper.class);
 
-    private static SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-
     /**
      * 生产上传文件名
      *
@@ -87,6 +85,7 @@ public class OssHelper {
         } catch (IOException e) {
             logger.error("IOException", e);
         }
+        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
         String outerEndpoint = helper.getSystemConfig("oss_outer_endpoint");
 
         // 此处返回外网地址
@@ -104,6 +103,7 @@ public class OssHelper {
      */
     public static void uploadFiles(InputStream ins, String fileFullPath) {
 
+        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
         String innerEndpoint = helper.getSystemConfig("oss_inner_endpoint");
         String accessKeyId = helper.getSystemConfig("oss_access_key_id");
         String accessKeySecret = helper.getSystemConfig("oss_access_key_secret");
@@ -144,6 +144,7 @@ public class OssHelper {
      */
     public static Integer deleteFiles(List<String> objectNames) {
 
+        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
         String innerEndpoint = helper.getSystemConfig("oss_inner_endpoint");
         String accessKeyId = helper.getSystemConfig("oss_access_key_id");
         String accessKeySecret = helper.getSystemConfig("oss_access_key_secret");

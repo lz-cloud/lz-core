@@ -116,6 +116,9 @@ public class Sys {
     }
 
     public static <T> T getBean(Class<T> clazz) {
+        if (applicationContext == null){
+            return null;
+        }
         return applicationContext.getBean(clazz);
     }
 

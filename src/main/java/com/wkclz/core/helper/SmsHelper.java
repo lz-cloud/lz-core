@@ -21,8 +21,6 @@ public class SmsHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsHelper.class);
 
-    private static SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-
 
     /**
      * @param templateCode
@@ -54,6 +52,7 @@ public class SmsHelper {
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
+        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
         String smsAccessKeyId = helper.getSystemConfig("sms_access_key_id");
         String smsAccessKeySecret = helper.getSystemConfig("sms_access_key_secret");
 

@@ -88,7 +88,6 @@ public class ClassUtil {
                 } else if ("jar".equals(protocol)) {
                     // 如果是jar包文件
                     // 定义一个JarFile
-                    // System.err.println("jar类型的扫描");
                     JarFile jar;
                     try {
                         // 获取jar
@@ -121,9 +120,11 @@ public class ClassUtil {
                                         String className = name.substring(packageName.length() + 1, name.length() - 6);
                                         try {
                                             // 添加到classes
-                                            classes.add(Class.forName(packageName + '.' + className));
+                                            String clazzName = packageName + '.' + className;
+                                            Class clazz = Class.forName(clazzName);
+                                            classes.add(clazz);
                                         } catch (ClassNotFoundException e) {
-                                            logger.error("ClassNotFoundException", e);
+                                            logger.error(e.getMessage(), e);
                                         }
                                     }
                                 }
@@ -131,12 +132,12 @@ public class ClassUtil {
                         }
                     } catch (IOException e) {
                         // log.error("在扫描用户定义视图时从jar包获取文件出错");
-                        logger.error("IOException", e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         }
 
         return classes;
