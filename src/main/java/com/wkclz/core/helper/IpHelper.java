@@ -38,7 +38,7 @@ public class IpHelper {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    logger.error("UnknownHostException", e);
+                    logger.error(e.getMessage(), e);
                 }
                 ipAddress = inet == null ? null : inet.getHostAddress();
             }

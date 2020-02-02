@@ -215,9 +215,9 @@ public class MailUtil {
             // 发送邮件
             Transport.send(mimeMessage);
         } catch (MessagingException e) {
-            logger.error("MessagingException", e);
+            logger.error(e.getMessage(), e);
         } catch (GeneralSecurityException e) {
-            logger.error("GeneralSecurityException", e);
+            logger.error(e.getMessage(), e);
         }
     }
 

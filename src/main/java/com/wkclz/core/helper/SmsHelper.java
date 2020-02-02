@@ -86,11 +86,10 @@ public class SmsHelper {
                 logger.error("短信发送失败：{}", sendSmsResponseToString(sendSmsResponse));
                 return "短信发送失败：" + sendSmsResponseToString(sendSmsResponse);
             }
-        } catch (ClientException ce) {
-            logger.error("短信功能异常：{}", ce);
-            return "短信功能异常：" + ce.toString();
+        } catch (ClientException e) {
+            logger.error(e.getMessage(), e);
         }
-
+        return "短信发送失败，未知错误";
     }
 
 

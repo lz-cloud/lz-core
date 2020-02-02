@@ -76,13 +76,13 @@ public class FreeMarkerTemplateUtil {
             Template tpl = stringConfig.getTemplate("_template_", "utf-8");
             return org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processTemplateIntoString(tpl, params);
         } catch (TemplateNotFoundException e) {
-            logger.error("TemplateNotFoundException", e);
+            logger.error(e.getMessage(), e);
         } catch (ParseException e) {
-            logger.error("ParseException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } catch (TemplateException e) {
-            logger.error("TemplateException", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

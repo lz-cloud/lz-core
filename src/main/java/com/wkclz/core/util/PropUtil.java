@@ -24,15 +24,15 @@ public class PropUtil {
             in = new BufferedInputStream(new FileInputStream(file));
             props.load(in);
         } catch (FileNotFoundException e) {
-            logger.error("FileNotFoundException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -57,7 +57,7 @@ public class PropUtil {
                     logger.info("file exist: {}", file.getAbsolutePath());
                 }
             } catch (IOException e) {
-                logger.error("IOException", e);
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -66,13 +66,13 @@ public class PropUtil {
             fw = new FileWriter(propertiesPath);
             sortProp.store(fw, "此属性文件由程序自动管理，请不要手动编辑");
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (fw != null) {
                 try {
                     fw.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -104,9 +104,9 @@ public class PropUtil {
                 field.set(obj, prop.get(field.getName()));
             }
         } catch (InstantiationException e) {
-            logger.error("InstantiationException", e);
+            logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            logger.error("IllegalAccessException", e);
+            logger.error(e.getMessage(), e);
         }
         return obj;
     }

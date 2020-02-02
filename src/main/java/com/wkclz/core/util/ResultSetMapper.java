@@ -34,7 +34,7 @@ public class ResultSetMapper {
                 list.add(map);
             }
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         } finally {
             // do nothing
         }

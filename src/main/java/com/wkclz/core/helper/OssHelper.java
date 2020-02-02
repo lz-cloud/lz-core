@@ -83,7 +83,7 @@ public class OssHelper {
         try {
             uploadFiles(file.getInputStream(), fileFullPath);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         }
         SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
         String outerEndpoint = helper.getSystemConfig("oss_outer_endpoint");
@@ -202,7 +202,7 @@ public class OssHelper {
                     }
                 }
             } catch (UnsupportedEncodingException e) {
-                logger.error("UnsupportedEncodingException", e);
+                logger.error(e.getMessage(), e);
 
             }
             str = sb.toString();

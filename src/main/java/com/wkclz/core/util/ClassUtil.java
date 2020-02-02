@@ -184,7 +184,7 @@ public class ClassUtil {
                         Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
                     // log.error("添加用户自定义视图类错误 找不到此类的.class文件");
-                    logger.error("ClassNotFoundException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

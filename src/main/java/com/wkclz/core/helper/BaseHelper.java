@@ -120,13 +120,13 @@ public class BaseHelper {
             List<T> list = MapUtil.map2ObjList(maps, clazz);
             return list;
         } catch (SQLException e) {
-            logger.error("SQLException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    logger.error("SQLException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -141,13 +141,13 @@ public class BaseHelper {
             List<Map> maps = ResultSetMapper.toMapList(results);
             return maps;
         } catch (SQLException e) {
-            logger.error("SQLException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    logger.error("SQLException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

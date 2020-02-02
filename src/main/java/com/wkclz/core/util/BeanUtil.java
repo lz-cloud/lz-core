@@ -44,7 +44,7 @@ public class BeanUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         }
         return obj;
     }
@@ -86,9 +86,9 @@ public class BeanUtil {
                 list.add(t);
             }
         } catch (InstantiationException e) {
-            logger.error("InstantiationException", e);
+            logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            logger.error("IllegalAccessException", e);
+            logger.error(e.getMessage(), e);
         }
         return list;
     }

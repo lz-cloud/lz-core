@@ -47,7 +47,7 @@ public class DataSource {
                 dataConns.put(hex, conn);
             }
         } catch (SQLException e) {
-            logger.error("SQLException", e);
+            logger.error(e.getMessage(), e);
         }
         return conn;
     }

@@ -72,22 +72,22 @@ public class FileUtil {
             bReader.close();
             return sb.toString();
         } catch (FileNotFoundException e) {
-            logger.error("FileNotFoundException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             if (bReader != null) {
                 try {
                     bReader.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

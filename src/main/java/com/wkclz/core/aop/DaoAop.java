@@ -106,7 +106,7 @@ public class DaoAop {
             */
 
         } catch (Throwable throwable) {
-            logger.error("Throwable", throwable);
+            logger.error(throwable.getMessage(), throwable);
         }
 
         logger.debug("@Around环绕通知执行结束");

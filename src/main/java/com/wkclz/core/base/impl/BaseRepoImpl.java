@@ -68,11 +68,11 @@
 //            Method copyIfNotNull = clazz.getDeclaredMethod("copyIfNotNull", new Class[]{clazz, clazz});
 //            copyIfNotNull.invoke(null, model, target);
 //        } catch (IllegalAccessException e) {
-//            logger.error("IllegalAccessException", e);
+//            logger.error(e.getMessage(), e);
 //        } catch (InvocationTargetException e) {
-//            logger.error("InvocationTargetException", e);
+//            logger.error(e.getMessage(), e);
 //        } catch (NoSuchMethodException e) {
-//            logger.error("NoSuchMethodException", e);
+//            logger.error(e.getMessage(), e);
 //        }
 //        target.setVersion(target.getVersion() + 1);
 //        return mapper.updateByPrimaryKeySelective(target);
@@ -137,11 +137,11 @@
 //            Method createDelExample = modelClazz.getDeclaredMethod("createDelExample", new Class[]{List.class});
 //            example = (Example) createDelExample.invoke(null, ids);
 //        } catch (IllegalAccessException e) {
-//            logger.error("IllegalAccessException", e);
+//            logger.error(e.getMessage(), e);
 //        } catch (InvocationTargetException e) {
-//            logger.error("InvocationTargetException", e);
+//            logger.error(e.getMessage(), e);
 //        } catch (NoSuchMethodException e) {
-//            logger.error("NoSuchMethodException", e);
+//            logger.error(e.getMessage(), e);
 //        }
 //
 //
@@ -203,9 +203,9 @@
 //            example = (Example) createExample.invoke(null, model);
 //            return example;
 //        } catch (IllegalAccessException e) {
-//            logger.error("IllegalAccessException", e);
+//            logger.error(e.getMessage(), e);
 //        } catch (InvocationTargetException e) {
-//            logger.error("InvocationTargetException", e);
+//            logger.error(e.getMessage(), e);
 //        }
 //        return null;
 //    }

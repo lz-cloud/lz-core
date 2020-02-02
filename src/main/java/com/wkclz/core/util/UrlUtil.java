@@ -50,7 +50,7 @@ public class UrlUtil {
             String host = url1.getHost();
             return host;
         } catch (MalformedURLException e) {
-            logger.error("MalformedURLException", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

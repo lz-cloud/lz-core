@@ -109,11 +109,11 @@ public class MapUtil {
             obj = clazz.newInstance();
             BeanUtils.populate(obj, map);
         } catch (InstantiationException e) {
-            logger.error("InstantiationException", e);
+            logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            logger.error("IllegalAccessException", e);
+            logger.error(e.getMessage(), e);
         } catch (InvocationTargetException e) {
-            logger.error("InvocationTargetException", e);
+            logger.error(e.getMessage(), e);
         }
         return obj;
     }

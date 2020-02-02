@@ -107,9 +107,9 @@ public class EnumUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            logger.error("IllegalAccessException", e);
+            logger.error(e.getMessage(), e);
         } catch (InvocationTargetException e) {
-            logger.error("InvocationTargetException", e);
+            logger.error(e.getMessage(), e);
         }
         return dictEntities;
     }

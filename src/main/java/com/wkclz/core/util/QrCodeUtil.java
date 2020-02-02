@@ -39,9 +39,9 @@ public class QrCodeUtil {
             ImageIO.write(bufferedImage, "jpg", Base64.getEncoder().wrap(os));
             return "data:image/jpg;base64," + os.toString();
         } catch (WriterException e) {
-            logger.error("WriterException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -61,9 +61,9 @@ public class QrCodeUtil {
             ImageIO.write(bufferedImage, "jpg", Base64.getEncoder().wrap(os));
             return "data:image/jpg;base64," + os.toString();
         } catch (WriterException e) {
-            logger.error("WriterException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+
         }
         return null;
     }
@@ -90,13 +90,13 @@ public class QrCodeUtil {
                 baos.write(byteChunk, 0, n);
             }
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

@@ -73,7 +73,7 @@ public class Token {
             Token token = JSONObject.parseObject(new String(base64Decode), Token.class);
             return token;
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

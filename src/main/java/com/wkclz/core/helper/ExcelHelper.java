@@ -38,20 +38,20 @@ public class ExcelHelper {
             fops.close();
 
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (fops != null) {
                 try {
                     fops.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

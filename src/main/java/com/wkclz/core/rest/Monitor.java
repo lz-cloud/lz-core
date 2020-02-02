@@ -6,14 +6,12 @@ import com.wkclz.core.helper.IpHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/monitor")
 public class Monitor {
 
     private final static String MONITOR_REDIS = "monitor_redis:";
@@ -25,7 +23,7 @@ public class Monitor {
      * 测试 redis 读写，返回服务器时间
      * @return
      */
-    @GetMapping("/redis")
+    @GetMapping(Routes.MONITOR_REDIS)
     public Result redis(){
         String serverIp = IpHelper.getServerIp();
         String key = MONITOR_REDIS + Sys.CURRENT_ENV + ":" + Sys.APPLICATION_GROUP + ":" + Sys.APPLICATION_NAME + ":" + serverIp;
@@ -41,7 +39,7 @@ public class Monitor {
      * 获取服务器IP
      * @return
      */
-    @GetMapping("/ip")
+    @GetMapping(Routes.MONITOR_IP)
     public Result ip(){
         String serverIp = IpHelper.getServerIp();
         return Result.data(serverIp);
@@ -51,7 +49,7 @@ public class Monitor {
      * 获取服务器属性
      * @return
      */
-    @GetMapping("/properties")
+    @GetMapping(Routes.MONITOR_PROPERTIES)
     public Result properties(){
         Properties properties = System.getProperties();
         return Result.data(properties);

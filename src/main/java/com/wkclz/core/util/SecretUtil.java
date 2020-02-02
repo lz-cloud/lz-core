@@ -50,7 +50,7 @@ public class SecretUtil {
         try {
             encryptPassword = aesEncrypt(pwdStr, salt);
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         }
         return encryptPassword;
     }
@@ -71,7 +71,7 @@ public class SecretUtil {
         try {
             decryptPassword = aesDecrypt(encryptPwdStr, salt);
         } catch (Exception e) {
-            logger.error("Exception", e);
+            logger.error(e.getMessage(), e);
         }
         return decryptPassword;
     }

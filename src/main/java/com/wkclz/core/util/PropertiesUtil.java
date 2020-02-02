@@ -45,15 +45,15 @@ public class PropertiesUtil {
             in = new BufferedInputStream(new FileInputStream(new File(fileStr)));
             prop.load(in);
         } catch (FileNotFoundException e) {
-            logger.error("FileNotFoundException", e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("IOException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

@@ -62,7 +62,7 @@ public class JsonUtil {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
 

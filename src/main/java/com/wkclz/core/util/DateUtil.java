@@ -138,7 +138,7 @@ public class DateUtil {
                 Date date = sdfYmdhms.parse(dateStr);
                 return date;
             } catch (ParseException e) {
-                logger.error("ParseException", e);
+                logger.error(e.getMessage(), e);
             }
         }
         throw new RuntimeException("Error DateTime string");

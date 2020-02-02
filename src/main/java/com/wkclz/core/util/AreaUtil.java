@@ -306,27 +306,27 @@ public class AreaUtil {
                 System.out.println("失败尝试次数：" + RETRY_TIMES + ", 地址为： " + urlStr);
                 return getDoc(urlStr);
             }
-            logger.error("JsonProcessingException", e);
+            logger.error(e.getMessage(), e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             if (osw != null) {
                 try {
                     osw.close();
                 } catch (IOException e) {
-                    logger.error("IOException", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
