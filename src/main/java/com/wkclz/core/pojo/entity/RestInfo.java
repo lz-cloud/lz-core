@@ -4,23 +4,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public class RestInfo {
 
-    private String prefix;
-
     private RequestMethod requestMethod;
 
     private String uri;
 
     private String restName;
 
-    private String clazz;
+    private String functionPath;
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
+    private String desc;
 
     public RequestMethod getRequestMethod() {
         return requestMethod;
@@ -46,11 +38,19 @@ public class RestInfo {
         this.restName = restName;
     }
 
-    public String getClazz() {
-        return clazz;
+    public String getFunctionPath() {
+        return functionPath;
     }
 
-    public void setClazz(String clazz) {
-        this.clazz = clazz;
+    public void setFunctionPath(String functionPath) {
+        this.functionPath = functionPath;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

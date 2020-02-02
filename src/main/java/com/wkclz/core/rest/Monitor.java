@@ -55,9 +55,4 @@ public class Monitor {
         return Result.data(properties);
     }
 
-
-
-
-
-
 }
