@@ -109,7 +109,7 @@ public class RestUtil {
                     restInfo.setRequestMethod(requestMethod);
                     restInfo.setUri(uri);
                     restInfo.setFunctionPath(clazz.getName() + "." + method.getName());
-                    restInfo.setDesc(desc);
+                    restInfo.setRestDesc(desc);
 
                     // 方法名
                     String restName = uri.substring(1);
@@ -148,7 +148,7 @@ public class RestUtil {
         for (RestInfo rest : rests) {
             String desc = uriDescs.get(rest.getUri());
             if (StringUtils.isNotBlank(desc)){
-                rest.setDesc(desc);
+                rest.setRestDesc(desc);
             }
         }
 

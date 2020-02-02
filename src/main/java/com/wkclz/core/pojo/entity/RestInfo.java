@@ -12,7 +12,7 @@ public class RestInfo {
 
     private String functionPath;
 
-    private String desc;
+    private String restDesc;
 
     public RequestMethod getRequestMethod() {
         return requestMethod;
@@ -46,11 +46,11 @@ public class RestInfo {
         this.functionPath = functionPath;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getRestDesc() {
+        return restDesc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setRestDesc(String restDesc) {
+        this.restDesc = restDesc;
     }
 }
