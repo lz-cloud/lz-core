@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public class RestInfo {
 
-    private RequestMethod requestMethod;
+    private String requestMethod;
 
     private String uri;
 
@@ -14,11 +14,11 @@ public class RestInfo {
 
     private String restDesc;
 
-    public RequestMethod getRequestMethod() {
+    public String getRequestMethod() {
         return requestMethod;
     }
 
-    public void setRequestMethod(RequestMethod requestMethod) {
+    public void setRequestMethod(String requestMethod) {
         this.requestMethod = requestMethod;
     }
 

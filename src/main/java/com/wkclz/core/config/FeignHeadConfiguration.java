@@ -32,6 +32,9 @@ public class FeignHeadConfiguration {
             Map<String, Object> map = MDC.getMap();
             Set<Map.Entry<String, Object>> entries = map.entrySet();
             for (Map.Entry<String, Object> entry : entries) {
+                if ("Content-Type".equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
                 requestTemplate.header(entry.getKey(), entry.getValue().toString());
             }
         };

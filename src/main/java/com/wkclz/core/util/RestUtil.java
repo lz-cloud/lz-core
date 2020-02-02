@@ -106,7 +106,7 @@ public class RestUtil {
                 // 确定是 rest 接口，提取信息
                 if (requestMethod != null) {
                     RestInfo restInfo = new RestInfo();
-                    restInfo.setRequestMethod(requestMethod);
+                    restInfo.setRequestMethod(requestMethod.name());
                     restInfo.setUri(uri);
                     restInfo.setFunctionPath(clazz.getName() + "." + method.getName());
                     restInfo.setRestDesc(desc);
