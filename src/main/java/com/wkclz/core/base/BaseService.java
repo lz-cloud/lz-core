@@ -1,6 +1,7 @@
 package com.wkclz.core.base;
 
 import com.wkclz.core.base.annotation.Desc;
+import com.wkclz.core.helper.BaseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotNull;
@@ -86,10 +87,10 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
     }
 
     @Desc("批量删除")
-    public Integer delete(@NotNull List<Long> ids){
+    public Integer delete(@NotNull Model model){
         BaseModel baseModel = new BaseModel();
+        List<Long> ids = BaseHelper.getIdsFromBaseModel(model);
         baseModel.setIds(ids);
-        Model model = (Model)baseModel;
         return mapper.deleteBatch(model);
     }
 

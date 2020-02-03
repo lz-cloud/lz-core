@@ -43,6 +43,6 @@ public interface BaseMapper<Model> {
     Integer delete(Model model);
 
     @Desc("批量删除")
-    Integer deleteBatch(Model model);
+    Integer deleteBatch(@Param("ids") Model model);
 
 }
