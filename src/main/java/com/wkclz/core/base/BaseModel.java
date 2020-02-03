@@ -25,6 +25,7 @@ public class BaseModel {
 
     private Long userId;
     private Long tenantId;
+    private String secretKey;
 
     /**
      * 查询辅助
@@ -90,6 +91,14 @@ public class BaseModel {
 
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 
     public Integer getIsPage() {
