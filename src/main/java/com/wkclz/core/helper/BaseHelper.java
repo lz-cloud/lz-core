@@ -50,15 +50,6 @@ public class BaseHelper {
         return ids;
     }
 
-    public static Result removeCheck(BaseModel model) {
-        Result result = new Result();
-        List<Long> ids = getIdsFromBaseModel(model);
-        if (ids.isEmpty()) {
-            result.setError("id or ids can not be null at the same time");
-        }
-        return result;
-    }
-
     public static String getToken(HttpServletRequest req) {
         String token = null;
         Cookie[] cookies = req.getCookies();
