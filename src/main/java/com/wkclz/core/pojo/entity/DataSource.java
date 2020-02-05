@@ -81,6 +81,8 @@ public class DataSource {
         db.setValidationQuery("SELECT 'x'");
         db.setTestWhileIdle(true);
         db.setTestOnBorrow(true);
+        db.setBreakAfterAcquireFailure(true);
+        db.setConnectionErrorRetryAttempts(0);
 
         return db;
     }
