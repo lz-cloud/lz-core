@@ -2,6 +2,7 @@ package com.wkclz.core.pojo.entity;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.util.SecretUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class DataSource {
 
     private String url;
 
-    private String driverClassName = "com.mysql.jdbc.Driver";
+    private String driverClassName = "com.mysql.cj.jdbc.Driver";
 
     private String username;
 
@@ -41,15 +42,19 @@ public class DataSource {
         String hex = SecretUtil.md5(url);
         DruidPooledConnection conn = dataConns.get(hex);
         try {
-            if (conn == null || conn.isClosed()) {
-                DruidDataSource druidDataSource = getDruidDataSource(dataSource);
-                conn = druidDataSource.getConnection();
-                dataConns.put(hex, conn);
+
+            if (conn != null && !conn.isClosed() && !conn.isAbandonded()){
+                return conn;
             }
+
+            DruidDataSource druidDataSource = getDruidDataSource(dataSource);
+            conn = druidDataSource.getConnection();
+            dataConns.put(hex, conn);
+            return conn;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
+            throw BizException.error("can not get conn from {}, err: {}", url, e.getMessage());
         }
-        return conn;
     }
 
     private static DruidDataSource getDruidDataSource(DataSource dataSource) {
