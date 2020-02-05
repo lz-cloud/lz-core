@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class RestUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(ControllerUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestUtil.class);
 
     /**
      * 读取 controller
