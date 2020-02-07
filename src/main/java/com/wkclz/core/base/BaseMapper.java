@@ -37,12 +37,9 @@ public interface BaseMapper<Model> {
     Integer updateSelective(Model model);
 
     @Desc("批量更新(不带乐观锁)")
-    Integer updateBatch(@Param("list") List<Model> model);
+    Integer updateBatch(@Param("list") List<Model> models);
 
     @Desc("删除")
     Integer delete(Model model);
-
-    @Desc("批量删除")
-    Integer deleteBatch(@Param("ids") List<Long> ids);
 
 }

@@ -2,7 +2,7 @@ package com.wkclz.core.base;
 
 import com.wkclz.core.base.annotation.Desc;
 import com.wkclz.core.exception.BizException;
-import com.wkclz.core.helper.BaseHelper;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotNull;
@@ -88,12 +88,49 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
     }
 
     @Desc("批量删除")
+    public Integer delete(@NotNull List<Model> models){
+        if (CollectionUtils.isEmpty(models)){
+            throw BizException.error("models can not be null");
+        }
+        List<Long> ids = new ArrayList<>();
+        models.forEach(model -> {
+            Long tmpId = model.getId();
+            List<Long> tmpIds = model.getIds();
+            if (tmpId != null){
+                ids.add(tmpId);
+            }
+            if (CollectionUtils.isNotEmpty(tmpIds)){
+                ids.addAll(tmpIds);
+            }
+        });
+        Model model = models.get(0);
+        model.setId(null);
+        model.setIds(ids);
+        return mapper.delete(model);
+    }
+    @Desc("批量删除")
     public Integer delete(@NotNull Model model){
-        List<Long> ids = BaseHelper.getIdsFromBaseModel(model);
-        if (ids.isEmpty()) {
+        List<Long> ids = new ArrayList<>();
+        Long tmpId = model.getId();
+        List<Long> tmpIds = model.getIds();
+        if (tmpId != null){
+            ids.add(tmpId);
+        }
+        if (CollectionUtils.isNotEmpty(tmpIds)){
+            ids.addAll(tmpIds);
+        }
+        if (CollectionUtils.isEmpty(ids)){
             throw BizException.error("id or ids can not be null at the same time");
         }
-        return mapper.deleteBatch(ids);
+        // id 和 ids 保证只有一个存在
+        if (ids.size() == 1){
+            model.setId(ids.get(0));
+            model.setIds(null);
+        } else {
+            model.setId(null);
+            model.setIds(ids);
+        }
+        return mapper.delete(model);
     }
 
 }
