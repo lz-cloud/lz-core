@@ -42,70 +42,22 @@ public class MybatisUpdateInterceptor implements Interceptor {
         SqlCommandType commandType = MybatisConfiguration.getCommandType(id, sqlCommandType);
 
         // 参数为对象
-        if (parameter instanceof BaseModel) {
-            BaseModel clearPatameter = (BaseModel) parameter;
-            // insert, upadte, delete 修改人
-            clearPatameter.setUpdateBy(userId);
-            // insert 时需要附加创建人
-            if (commandType == SqlCommandType.INSERT) {
-                clearPatameter.setId(null);
-                clearPatameter.setVersion(null);
-                clearPatameter.setCreateBy(userId);
-                if (clearPatameter.getSort() == null){
-                    clearPatameter.setSort(0);
-                }
-            }
-            // update 时 id, version 不能为空
-            if (commandType == SqlCommandType.UPDATE) {
-                if (clearPatameter.getId() == null) {
-                    throw BizException.error("id can not be null if update");
-                }
-                if (clearPatameter.getVersion() == null) {
-                    throw BizException.error("version can not be null if update");
-                }
-            }
-            // delete 时 id, ids 不能同时为空, 删除不校验 version
-            if (commandType == SqlCommandType.DELETE) {
-                if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
-                    throw BizException.error("id and ids can not be null at the same time if delete");
-                }
-            }
+        if (parameter != null && parameter instanceof BaseModel) {
+            setModel(parameter, commandType, userId, false);
         }
 
         // 参数为 List 【在 Map 里面】
-        if (parameter instanceof Map){
+        if (parameter != null && parameter instanceof Map){
             Map parameterMap = (Map)parameter;
-            Object parameterObj = parameterMap.get("list");
-            if (parameterObj != null && parameterObj instanceof Collection){
-                Collection parameters = (Collection)parameterObj;
-                for (Object p:parameters) {
-                    if (p instanceof BaseModel) {
-                        BaseModel clearPatameter = (BaseModel) p;
-                        // insert, upadte, delete 修改人
-                        clearPatameter.setUpdateBy(userId);
-                        // insert 时需要附加创建人
-                        if (commandType == SqlCommandType.INSERT) {
-                            clearPatameter.setId(null);
-                            clearPatameter.setVersion(null);
-                            clearPatameter.setCreateBy(userId);
-                            if (clearPatameter.getSort() == null){
-                                clearPatameter.setSort(0);
-                            }
+            Collection values = parameterMap.values();
+            for (Object parameterObj : values) {
+                if (parameterObj != null && parameterObj instanceof Collection){
+                    Collection parameters = (Collection)parameterObj;
+                    for (Object p:parameters) {
+                        boolean isBaseModel = setModel(p, commandType, userId, true);
+                        if (!isBaseModel) {
+                            break;
                         }
-                        // update 时 id 不能为空, 批量更新不处理 version
-                        if (commandType == SqlCommandType.UPDATE) {
-                            if (clearPatameter.getId() == null) {
-                                throw BizException.error("id can not be null if update");
-                            }
-                        }
-                        // delete 时 id, ids 不能同时为空, 删除不校验 version
-                        if (commandType == SqlCommandType.DELETE) {
-                            if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
-                                throw BizException.error("id and ids can not be null at the same time if delete");
-                            }
-                        }
-                    } else {
-                        break;
                     }
                 }
             }
@@ -124,5 +76,40 @@ public class MybatisUpdateInterceptor implements Interceptor {
     @Override
     public void setProperties(Properties properties) {
 
+    }
+
+    private static boolean setModel(Object paramter, SqlCommandType commandType, Long userId, boolean isBatch){
+        if (!(paramter instanceof BaseModel)) {
+            return false;
+        }
+        BaseModel clearPatameter = (BaseModel) paramter;
+        // insert, upadte, delete 修改人
+        clearPatameter.setUpdateBy(userId);
+        // insert 时需要附加创建人
+        if (commandType == SqlCommandType.INSERT) {
+            clearPatameter.setId(null);
+            clearPatameter.setVersion(null);
+            clearPatameter.setCreateBy(userId);
+            if (clearPatameter.getSort() == null){
+                clearPatameter.setSort(0);
+            }
+        }
+        // update 时 id 不能为空
+        if (commandType == SqlCommandType.UPDATE) {
+            if (clearPatameter.getId() == null) {
+                throw BizException.error("id can not be null if update");
+            }
+            // 批量更新不处理 version
+            if (!isBatch && clearPatameter.getVersion() == null) {
+                throw BizException.error("version can not be null if update");
+            }
+        }
+        // delete 时 id, ids 不能同时为空, 删除不校验 version
+        if (commandType == SqlCommandType.DELETE) {
+            if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
+                throw BizException.error("id and ids can not be null at the same time if delete");
+            }
+        }
+        return true;
     }
 }
