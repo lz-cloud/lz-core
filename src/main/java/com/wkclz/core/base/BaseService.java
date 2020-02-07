@@ -89,13 +89,11 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
 
     @Desc("批量删除")
     public Integer delete(@NotNull Model model){
-        BaseModel baseModel = new BaseModel();
         List<Long> ids = BaseHelper.getIdsFromBaseModel(model);
         if (ids.isEmpty()) {
             throw BizException.error("id or ids can not be null at the same time");
         }
-        baseModel.setIds(ids);
-        return mapper.deleteBatch(model);
+        return mapper.deleteBatch(ids);
     }
 
 }
