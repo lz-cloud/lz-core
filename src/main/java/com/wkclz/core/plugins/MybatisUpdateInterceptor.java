@@ -4,6 +4,7 @@ import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.pojo.dto.User;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -97,17 +98,17 @@ public class MybatisUpdateInterceptor implements Interceptor {
         // update 时 id 不能为空
         if (commandType == SqlCommandType.UPDATE) {
             if (clearPatameter.getId() == null) {
-                throw BizException.error("id can not be null if update");
+                throw BizException.error(ResultStatus.UPDATE_NO_VERSION);
             }
             // 批量更新不处理 version
             if (!isBatch && clearPatameter.getVersion() == null) {
-                throw BizException.error("version can not be null if update");
+                throw BizException.error(ResultStatus.UPDATE_NO_VERSION);
             }
         }
         // delete 时 id, ids 不能同时为空, 删除不校验 version
         if (commandType == SqlCommandType.DELETE) {
             if (clearPatameter.getId() == null && CollectionUtils.isEmpty(clearPatameter.getIds())) {
-                throw BizException.error("id and ids can not be null at the same time if delete");
+                throw BizException.error(ResultStatus.UPDATE_NO_ID);
             }
         }
         return true;

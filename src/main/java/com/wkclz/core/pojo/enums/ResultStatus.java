@@ -20,9 +20,16 @@ public enum ResultStatus {
     CAPTCHA_NEED(30003, "需要图片验证码"),
     MOBILE_CAPTCHA_ERROR(30004, "短信验证码错误"),
 
-    ORDER_TIMEOUT(40001, "订单支付超时已自动取消，请重新下单！"),
-    ORDER_PAYD(40002, "订单已完成支付，请不要重复支付！"),
-    ORDER_ERROR(40003, "订单状态异常，不能支付！"),
+    RECORD_NOT_EXIST_OR_OUT_OF_DATE(40001, "数据不存在或已不是最新的！"),
+    UPDATE_NO_ID(40002, "操作需要带数据标识！"),
+    UPDATE_NO_VERSION(40003, "操作需要带数据版本号！"),
+
+//    public static final String SYSTEM_ERROR = "System error, we have turned to the Admin of this website";
+//    public static final String REDIS_IS_DISABLED = "Redis config or Redis server is error! no Redis will be support!";
+
+    ORDER_TIMEOUT(50001, "订单支付超时已自动取消，请重新下单！"),
+    ORDER_PAYD(50002, "订单已完成支付，请不要重复支付！"),
+    ORDER_ERROR(50003, "订单状态异常，不能支付！"),
     ;
 
     private Integer code;

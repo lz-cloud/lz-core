@@ -30,7 +30,6 @@ public class BizException extends RuntimeException {
         bizException.code = 0;
         return bizException;
     }
-
     public static BizException error(String msg, Object... params){
         msg = getMsg(msg, params);
         logger.error(msg);
@@ -38,6 +37,15 @@ public class BizException extends RuntimeException {
         bizException.code = -1;
         return bizException;
     }
+
+    public static BizException error(ResultStatus status){
+        String msg = status.getMsg();
+        logger.error(msg);
+        BizException bizException = new BizException(msg);
+        bizException.code = status.getCode();
+        return bizException;
+    }
+
 
     /**
      * 标准错误返回

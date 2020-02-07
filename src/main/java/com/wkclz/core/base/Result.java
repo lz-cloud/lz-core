@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,6 @@ import java.util.Date;
 public class Result<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(Result.class);
-
-    public static final String SYSTEM_ERROR = "System error, we have turned to the Admin of this website";
-    public static final String REDIS_IS_DISABLED = "Redis config or Redis server is error! no Redis will be support!";
 
     /**
      * 代码执行状态
@@ -129,6 +127,13 @@ public class Result<T> {
         Result result = new Result();
         result.error = concatStr(error);
         result.code = -1;
+        return result;
+    }
+
+    public static Result error(BizException e) {
+        Result result = new Result();
+        result.error = e.getMessage();
+        result.code = e.getCode();
         return result;
     }
 

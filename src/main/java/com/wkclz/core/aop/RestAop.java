@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.TraceHelper;
 import com.wkclz.core.pojo.entity.TraceInfo;
 import com.wkclz.core.pojo.enums.EnvType;
@@ -84,11 +85,16 @@ public class RestAop {
         Long costTime;
 
         // 请求具体方法
-        Object obj;
+        Object obj = null;
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            obj = Result.error(throwable.getMessage());
+            BizException bizException = getBizException(throwable);
+            if (bizException != null){
+                obj = Result.error(bizException);
+            } else {
+                obj = Result.error(throwable.getMessage());
+            }
             logger.error(throwable.getMessage(),throwable);
         }
 
@@ -154,6 +160,35 @@ public class RestAop {
             }
         }
         return value;
+    }
+
+    /**
+     * Throwable 找 BizException，找二级原因
+     * @param throwable
+     * @return
+     */
+    private static BizException getBizException(Throwable throwable){
+        if (throwable == null){
+            return null;
+        }
+        if (throwable instanceof BizException){
+            return (BizException) throwable;
+        }
+        Throwable cause = throwable.getCause();
+        if (cause == null){
+            return null;
+        }
+        if (cause instanceof BizException){
+            return (BizException) cause;
+        }
+        cause = cause.getCause();
+        if (cause == null){
+            return null;
+        }
+        if (cause instanceof BizException){
+            return (BizException) cause;
+        }
+        return null;
     }
 
 }

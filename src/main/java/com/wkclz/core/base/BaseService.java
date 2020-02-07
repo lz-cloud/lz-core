@@ -2,6 +2,7 @@ package com.wkclz.core.base;
 
 import com.wkclz.core.base.annotation.Desc;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,12 +67,20 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
 
     @Desc("更新(带乐观锁)")
     public Integer updateAll(@NotNull Model model){
-        return mapper.updateAll(model);
+        Integer update = mapper.updateAll(model);
+        if (update == 0){
+            throw BizException.error(ResultStatus.RECORD_NOT_EXIST_OR_OUT_OF_DATE);
+        }
+        return update;
     }
 
     @Desc("选择性更新(带乐观锁)")
     public Integer updateSelective(@NotNull Model model){
-        return mapper.updateSelective(model);
+        Integer update = mapper.updateSelective(model);
+        if (update == 0){
+            throw BizException.error(ResultStatus.RECORD_NOT_EXIST_OR_OUT_OF_DATE);
+        }
+        return update;
     }
 
     @Desc("批量更新(不带乐观锁)")
@@ -130,7 +139,11 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
             model.setId(null);
             model.setIds(ids);
         }
-        return mapper.delete(model);
+        Integer delete = mapper.delete(model);
+        if (delete == 0){
+            throw BizException.error(ResultStatus.RECORD_NOT_EXIST_OR_OUT_OF_DATE);
+        }
+        return delete;
     }
 
 }
