@@ -1,5 +1,6 @@
 package com.wkclz.core.helper;
 
+import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
 import org.slf4j.Logger;
@@ -7,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description:
@@ -30,6 +29,19 @@ public class BaseHelper {
     private static final Integer JAVA_CACHE_LIVE_TIME_SIT = 30;
     private static final Integer JAVA_CACHE_LIVE_TIME_UAT = 1800;
     private static final Integer JAVA_CACHE_LIVE_TIME_PROD = 1800;
+
+
+    public static List<Long> getIdsFromBaseModel(BaseModel model) {
+        List<Long> ids = model.getIds();
+        if (model.getIds() == null) {
+            ids = new ArrayList<>();
+        }
+        if (model.getId() != null) {
+            ids.add(model.getId());
+        }
+        model.setIds(ids);
+        return ids;
+    }
 
     public static String getToken(HttpServletRequest req) {
         String token = null;
