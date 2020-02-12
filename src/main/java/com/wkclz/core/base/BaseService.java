@@ -96,6 +96,14 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
         return mapper.delete(model);
     }
 
+    @Desc("删除")
+    public Integer delete(@NotNull List<Long> ids){
+        BaseModel baseModel = new BaseModel();
+        baseModel.setIds(ids);
+        Model model = (Model)baseModel;
+        return mapper.delete(model);
+    }
+    /*
     @Desc("批量删除")
     public Integer delete(@NotNull List<Model> models){
         if (CollectionUtils.isEmpty(models)){
@@ -117,6 +125,7 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
         model.setIds(ids);
         return mapper.delete(model);
     }
+    */
     @Desc("批量删除")
     public Integer delete(@NotNull Model model){
         List<Long> ids = new ArrayList<>();
