@@ -25,11 +25,13 @@ public class TraceHandler implements HandlerInterceptor {
         try {
             traceHelper.checkTraceInfo(req, rep);
         } catch (Exception e){
+            Result error;
             BizException bizException = getBizException(e);
             if (bizException != null){
-                throw bizException;
+                error = Result.error(bizException);
+            } else {
+                error = Result.error(e.getMessage());
             }
-            Result error = Result.error(e.getMessage());
             Result.responseError(rep, error);
             return false;
         }
