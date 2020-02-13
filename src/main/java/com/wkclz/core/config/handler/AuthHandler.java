@@ -39,6 +39,7 @@ public class AuthHandler {
         // uri 拦截检测【如果检查通过，无需再检查token】
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult) {
+            req.setAttribute("access","true");
             return null;
         }
 
@@ -56,6 +57,18 @@ public class AuthHandler {
         }
         */
         return null;
+    }
+
+    public static boolean isAccess(HttpServletRequest req){
+        String access = req.getHeader("access");
+        if (access != null && "true".equals(access)){
+            return true;
+        }
+        Object accessObj = req.getAttribute("access");
+        if (accessObj != null && "true".equals(accessObj)){
+            return true;
+        }
+        return false;
     }
 
 }
