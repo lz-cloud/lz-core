@@ -39,6 +39,8 @@ public class AuthHelper extends BaseHelper {
     private SystemConfigHelper systemConfigHelper;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private AccessHelper accessHelper;
 
 
     /**
@@ -117,6 +119,12 @@ public class AuthHelper extends BaseHelper {
             User user = JSONObject.parseObject(userStr, User.class);
             return user;
         }
+        // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户
+        boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
+        if (checkAccessUriResult){
+            return null;
+        }
+
         String tokenStr = BaseHelper.getToken(req);
         return getUser(tokenStr);
     }
@@ -136,7 +144,8 @@ public class AuthHelper extends BaseHelper {
         String redisKey = token.getRedisKey();
         String userStr = stringRedisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isBlank(userStr)) {
-            throw BizException.result(ResultStatus.TOKEN_ERROR,"can find anything to get user info, please login at first!");
+            logger.error("can find anything to get user info, please login at first!");
+            return null;
         }
         MDC.put("user", userStr);
         // 延期 redis

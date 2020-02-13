@@ -1,6 +1,7 @@
 package com.wkclz.core.config.handler;
 
 import com.wkclz.core.base.Result;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.TraceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,11 +25,45 @@ public class TraceHandler implements HandlerInterceptor {
         try {
             traceHelper.checkTraceInfo(req, rep);
         } catch (Exception e){
+            BizException bizException = getBizException(e);
+            if (bizException != null){
+                throw bizException;
+            }
             Result error = Result.error(e.getMessage());
             Result.responseError(rep, error);
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * 获取真实的原因
+     * @param exception
+     * @return
+     */
+    private static BizException getBizException(Exception exception){
+        if (exception == null){
+            return null;
+        }
+        if (exception instanceof BizException){
+            return (BizException) exception;
+        }
+        Throwable cause = exception.getCause();
+        if (cause == null){
+            return null;
+        }
+        if (cause instanceof BizException){
+            return (BizException) cause;
+        }
+        cause = cause.getCause();
+        if (cause == null){
+            return null;
+        }
+        if (cause instanceof BizException){
+            return (BizException) cause;
+        }
+        return null;
     }
 
 }

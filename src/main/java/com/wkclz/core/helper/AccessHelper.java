@@ -71,6 +71,12 @@ public class AccessHelper extends BaseHelper {
     }
 
     public boolean checkAccessUri(HttpServletRequest req) {
+        // 防止重复检测
+        boolean access = isAccess(req);
+        if (access){
+            return true;
+        }
+
         List<String> accessUris = getAccessUri();
 
         if (CollectionUtils.isEmpty(accessUris)) {
@@ -79,6 +85,7 @@ public class AccessHelper extends BaseHelper {
 
         String uri = req.getRequestURI();
         if (accessUris.contains(uri)) {
+            req.setAttribute("access","true");
             return true;
         }
         // PathMatcher 匹配
@@ -86,9 +93,27 @@ public class AccessHelper extends BaseHelper {
             if (accessUri.contains("**")) {
                 boolean match = MATCHER.match(accessUri, uri);
                 if (match) {
+                    req.setAttribute("access","true");
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    /**
+     * 检测通过标识
+     * @param req
+     * @return
+     */
+    public static boolean isAccess(HttpServletRequest req){
+        String access = req.getHeader("access");
+        if (access != null && "true".equals(access)){
+            return true;
+        }
+        Object accessObj = req.getAttribute("access");
+        if (accessObj != null && "true".equals(accessObj)){
+            return true;
         }
         return false;
     }
