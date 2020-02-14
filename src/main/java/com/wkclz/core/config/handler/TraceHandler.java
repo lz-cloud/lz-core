@@ -3,6 +3,7 @@ package com.wkclz.core.config.handler;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.TraceHelper;
+import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,6 +24,7 @@ public class TraceHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {
         try {
+            MDC.clear();
             traceHelper.checkTraceInfo(req, rep);
         } catch (Exception e){
             Result error;
