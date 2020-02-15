@@ -30,9 +30,9 @@ public class BaseModel {
     /**
      * 查询辅助
      */
-    private Integer isPage;
     private Integer pageNo;
     private Integer pageSize;
+    private Integer offSet;
     private String orderBy;
     private Integer count;
 
@@ -66,6 +66,7 @@ public class BaseModel {
         if (this.pageSize == null || this.pageSize < 1) {
             this.pageSize = 10;
         }
+        this.offSet = (this.pageNo -1 ) * this.pageSize;
     }
 
 
@@ -101,14 +102,6 @@ public class BaseModel {
         this.secretKey = secretKey;
     }
 
-    public Integer getIsPage() {
-        return isPage;
-    }
-
-    public void setIsPage(Integer isPage) {
-        this.isPage = isPage;
-    }
-
     public Integer getPageNo() {
         return pageNo;
     }
@@ -123,6 +116,14 @@ public class BaseModel {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(Integer offSet) {
+        this.offSet = offSet;
     }
 
     public String getOrderBy() {

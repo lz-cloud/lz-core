@@ -16,6 +16,7 @@ public class PageData<T> {
     private Integer totalPage;
     private Integer pageNo = 1;
     private Integer pageSize = 10;
+    private Integer offSet = 0;
 
     public PageData() {
         init();
@@ -24,11 +25,17 @@ public class PageData<T> {
     public <M extends BaseModel> PageData(M model) {
         this.pageNo = model.getPageNo();
         this.pageSize = model.getPageSize();
+        if (this.pageNo != null && this.pageSize != null){
+            this.offSet = (this.pageNo -1) * this.pageSize;
+        }
     }
 
     public PageData(Integer pageNo, Integer pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+        if (this.pageNo != null && this.pageSize != null){
+            this.offSet = (this.pageNo -1) * this.pageSize;
+        }
     }
 
     public PageData(Integer pageNo, Integer pageSize, Integer totalCount, List<T> list) {
@@ -48,6 +55,7 @@ public class PageData<T> {
         this.pageSize = oldPageData.getPageSize();
         this.totalCount = oldPageData.getTotalCount();
         this.totalPage = oldPageData.getTotalPage();
+        this.offSet = oldPageData.getOffSet();
         this.rows = pageList;
     }
 
@@ -92,6 +100,14 @@ public class PageData<T> {
         this.pageSize = pageSize;
     }
 
+    public Integer getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(Integer offSet) {
+        this.offSet = offSet;
+    }
+
     private void init() {
         if (this.pageNo == null || this.pageNo < 1) {
             this.pageNo = 1;
@@ -108,6 +124,7 @@ public class PageData<T> {
             this.totalPage = 1;
         }
         this.pageNo = this.pageNo > this.totalPage ? this.totalPage : this.pageNo;
+        this.offSet = (this.pageNo -1 ) * this.pageSize;
         /*
         this.url = "?pageNo="+pageNo+"&pageSize="+pageSize;
         this.prevUrl = "?pageNo="+(this.pageNo > 1 ? this.pageNo - 1 : 1)+"&pageSize="+pageSize;

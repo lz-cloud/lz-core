@@ -44,7 +44,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
 
         // 参数为对象
         if (parameter != null && parameter instanceof BaseModel) {
-            setModel(parameter, commandType, userId, false);
+            checkModel(parameter, commandType, userId, false);
         }
 
         // 参数为 List 【在 Map 里面】
@@ -55,7 +55,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
                 if (parameterObj != null && parameterObj instanceof Collection){
                     Collection parameters = (Collection)parameterObj;
                     for (Object p:parameters) {
-                        boolean isBaseModel = setModel(p, commandType, userId, true);
+                        boolean isBaseModel = checkModel(p, commandType, userId, true);
                         if (!isBaseModel) {
                             break;
                         }
@@ -76,10 +76,9 @@ public class MybatisUpdateInterceptor implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
-
     }
 
-    private static boolean setModel(Object paramter, SqlCommandType commandType, Long userId, boolean isBatch){
+    private static boolean checkModel(Object paramter, SqlCommandType commandType, Long userId, boolean isBatch){
         if (!(paramter instanceof BaseModel)) {
             return false;
         }

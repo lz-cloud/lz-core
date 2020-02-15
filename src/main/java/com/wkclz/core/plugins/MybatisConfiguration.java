@@ -30,7 +30,7 @@ public class MybatisConfiguration {
         return new MybatisPrepareInterceptor();
     }
 
-    // @Bean 没法拦截，没找到原因
+    @Bean
     public MybatisQueryInterceptor queryInterceptor() {
         return new MybatisQueryInterceptor();
     }
