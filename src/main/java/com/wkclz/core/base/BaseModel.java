@@ -32,7 +32,7 @@ public class BaseModel {
      */
     private Integer pageNo;
     private Integer pageSize;
-    private Integer offSet;
+    private Integer offset;
     private String orderBy;
     private Integer count;
 
@@ -66,7 +66,7 @@ public class BaseModel {
         if (this.pageSize == null || this.pageSize < 1) {
             this.pageSize = 10;
         }
-        this.offSet = (this.pageNo -1 ) * this.pageSize;
+        this.offset = (this.pageNo -1 ) * this.pageSize;
     }
 
 
@@ -118,12 +118,12 @@ public class BaseModel {
         this.pageSize = pageSize;
     }
 
-    public Integer getOffSet() {
-        return offSet;
+    public Integer getOffset() {
+        return offset;
     }
 
-    public void setOffSet(Integer offSet) {
-        this.offSet = offSet;
+    public void setOffset(Integer offset) {
+        this.offset = offset;
     }
 
     public String getOrderBy() {
