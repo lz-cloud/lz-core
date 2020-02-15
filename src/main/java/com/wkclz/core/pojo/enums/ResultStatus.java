@@ -20,9 +20,9 @@ public enum ResultStatus {
     CAPTCHA_NEED(30003, "需要图片验证码"),
     MOBILE_CAPTCHA_ERROR(30004, "短信验证码错误"),
 
-    RECORD_NOT_EXIST_OR_OUT_OF_DATE(40001, "数据不存在或已不是最新的！"),
-    UPDATE_NO_ID(40002, "操作需要带数据标识！"),
-    UPDATE_NO_VERSION(40003, "操作需要带数据版本号！"),
+    UPDATE_NO_VERSION(40001, "操作需要带数据版本号！"),
+    RECORD_NOT_EXIST_OR_OUT_OF_DATE(40002, "数据不存在或已不是最新的！"),
+    UPDATE_NO_ID(40003, "操作需要带数据标识！"),
 
 //    public static final String SYSTEM_ERROR = "System error, we have turned to the Admin of this website";
 //    public static final String REDIS_IS_DISABLED = "Redis config or Redis server is error! no Redis will be support!";
