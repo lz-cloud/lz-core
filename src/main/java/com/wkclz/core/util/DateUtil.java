@@ -147,10 +147,10 @@ public class DateUtil {
     /**
      * 时间范围处理。枚举转时间范围
      *
-     * @param dto
+     * @param model
      */
-    public static void formatDateRange(BaseModel dto) {
-        DateRangeType type = dto.getDateRangeType();
+    public static void formatDateRange(BaseModel model) {
+        DateRangeType type = model.getDateRangeType();
         if (type == null) {
             return;
         }
@@ -176,8 +176,8 @@ public class DateUtil {
             c.add(Calendar.YEAR, -1);
         }
         Date timeFrom = c.getTime();
-        dto.setTimeFrom(timeFrom);
-        dto.setTimeTo(timeTo);
+        model.setTimeFrom(timeFrom);
+        model.setTimeTo(timeTo);
     }
 
 

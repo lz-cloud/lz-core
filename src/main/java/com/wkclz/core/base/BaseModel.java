@@ -13,7 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseModel {
 
-    protected static final String DEFAULE_ORDER_BY = "sort, id desc";
+    public static final String DEFAULE_ORDER_BY = "sort, id desc";
 
     private Long id;
     /*

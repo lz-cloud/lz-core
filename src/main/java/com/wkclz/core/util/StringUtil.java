@@ -125,7 +125,7 @@ public class StringUtil {
             return str;
         }
         String lower = str.substring(index, index + toLower.length());
-        str = str.substring(0, index) + lower.toLowerCase() + str.substring(index + toLower.length(), str.length());
+        str = str.substring(0, index) + lower.toLowerCase() + str.substring(index + toLower.length());
         return check2LowerCase(str, toLower);
     }
 

@@ -31,9 +31,7 @@ public class Result<T> {
      */
     private Integer code = -1;
 
-    private String error;
-
-    private String remind;
+    private String msg;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date requestTime;
@@ -64,22 +62,22 @@ public class Result<T> {
         this.code = code;
     }
 
-    public String getError() {
-        return error;
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public Result setError(String... error) {
-        this.error = concatStr(error);
+        this.msg = concatStr(error);
         this.code = -1;
         return this;
     }
 
-    public String getRemind() {
-        return remind;
-    }
-
     public Result setRemind(String... remind) {
-        this.remind = concatStr(remind);
+        this.msg = concatStr(remind);
         this.code = 0;
         return this;
     }
@@ -125,21 +123,21 @@ public class Result<T> {
 
     public static Result error(String... error) {
         Result result = new Result();
-        result.error = concatStr(error);
+        result.msg = concatStr(error);
         result.code = -1;
         return result;
     }
 
     public static Result error(BizException e) {
         Result result = new Result();
-        result.error = e.getMessage();
+        result.msg = e.getMessage();
         result.code = e.getCode();
         return result;
     }
 
     public static Result remind(String... remind) {
         Result result = new Result();
-        result.remind = concatStr(remind);
+        result.msg = concatStr(remind);
         result.code = 0;
         return result;
     }
@@ -172,13 +170,13 @@ public class Result<T> {
 
     public Result setMoreError(ResultStatus status) {
         this.code = status.getCode();
-        this.error = status.getMsg();
+        this.msg = status.getMsg();
         return this;
     }
 
     public Result setMoreRemind(ResultStatus status) {
         this.code = status.getCode();
-        this.error = status.getMsg();
+        this.msg = status.getMsg();
         return this;
     }
 

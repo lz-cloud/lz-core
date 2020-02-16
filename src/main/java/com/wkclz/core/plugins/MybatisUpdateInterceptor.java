@@ -85,6 +85,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
         BaseModel clearPatameter = (BaseModel) paramter;
         // insert, upadte, delete 修改人
         clearPatameter.setUpdateBy(userId);
+        clearPatameter.setStatus(1);
         // insert 时需要附加创建人
         if (commandType == SqlCommandType.INSERT) {
             clearPatameter.setId(null);

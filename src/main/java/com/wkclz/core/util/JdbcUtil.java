@@ -176,7 +176,7 @@ public class JdbcUtil {
      * @param str
      * @return
      */
-    private static boolean sqlInj(String str) {
+    public static boolean sqlInj(String str) {
         str = str.toLowerCase();
         String injStr = "'|and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;| or |-|+";
         String[] injStra = injStr.split("\\|");

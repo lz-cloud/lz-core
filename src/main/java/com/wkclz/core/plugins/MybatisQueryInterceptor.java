@@ -1,6 +1,12 @@
 package com.wkclz.core.plugins;
 
 import com.wkclz.core.base.BaseModel;
+import com.wkclz.core.exception.BizException;
+import com.wkclz.core.util.BeanUtil;
+import com.wkclz.core.util.DateUtil;
+import com.wkclz.core.util.JdbcUtil;
+import com.wkclz.core.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -73,8 +79,28 @@ public class MybatisQueryInterceptor implements Interceptor {
         if (!(paramter instanceof BaseModel)) {
             return false;
         }
-        BaseModel clearPatameter = (BaseModel) paramter;
-        clearPatameter.init();
+        BaseModel model = (BaseModel) paramter;
+        model.init();
+
+        BeanUtil.removeBlank(model);
+        String orderBy = model.getOrderBy();
+        // 注入风险检测
+        if (orderBy != null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && JdbcUtil.sqlInj(orderBy)) {
+            throw BizException.error("orderBy 有注入风险，请谨慎操作！");
+        }
+
+        // 大小写处理
+        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "DESC"));
+        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "ASC"));
+        // 驼峰处理
+        model.setOrderBy(StringUtil.camelToUnderline(orderBy));
+        // keyword 查询处理
+        if (StringUtils.isNotBlank(model.getKeyword())) {
+            model.setKeyword("%" + model.getKeyword() + "%");
+        }
+        // 时间范围查询处理
+        DateUtil.formatDateRange(model);
+
         return true;
     }
 
