@@ -52,9 +52,9 @@ public class MybatisConfiguration {
             Class<BaseMapper> baseMapperClass = BaseMapper.class;
             Method[] methods = baseMapperClass.getDeclaredMethods();
             for (Method method : methods) {
-                String className = method.getDeclaringClass().getName();
+                // String className = method.getDeclaringClass().getName();
                 String methodName = method.getName();
-                String key = className + "." + methodName;
+                // String key = className + "." + methodName;
                 SqlCommandType value = SqlCommandType.SELECT;
                 if ("insert".equals(methodName) || "insertBatch".equals(methodName)) {
                     value = SqlCommandType.INSERT;
@@ -62,12 +62,18 @@ public class MybatisConfiguration {
                 if ("updateAll".equals(methodName) || "updateSelective".equals(methodName) || "updateBatch".equals(methodName)) {
                     value = SqlCommandType.UPDATE;
                 }
-                if ("delete".equals(methodName) || "deleteBatch".equals(methodName)) {
+                if ("delete".equals(methodName)) {
                     value = SqlCommandType.DELETE;
                 }
-                SQL_COMMAND_TYPE_MAPT.put(key, value);
+                SQL_COMMAND_TYPE_MAPT.put(methodName, value);
             }
         }
+
+        int lastIndex = mappedStatementId.lastIndexOf(".");
+        if (lastIndex < 0){
+            return type;
+        }
+        mappedStatementId = mappedStatementId.substring(lastIndex +1);
         SqlCommandType sqlCommandType = SQL_COMMAND_TYPE_MAPT.get(mappedStatementId);
         return sqlCommandType == null ? type : sqlCommandType;
     }
