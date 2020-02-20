@@ -9,11 +9,6 @@ public class GenTaskInfo {
     private Long projectId;
 
     /**
-     * 项目域
-     */
-    private String projectDomain;
-
-    /**
      * 模板ID
      */
     private Long tempId;
@@ -65,14 +60,6 @@ public class GenTaskInfo {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
-    }
-
-    public String getProjectDomain() {
-        return projectDomain;
-    }
-
-    public void setProjectDomain(String projectDomain) {
-        this.projectDomain = projectDomain;
     }
 
     public Long getTempId() {

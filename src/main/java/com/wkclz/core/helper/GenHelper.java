@@ -99,8 +99,7 @@ public class GenHelper {
                 boolean deleteFlag = (taskInfo.getNeedDelete()!=null && taskInfo.getNeedDelete() == 1)? true:false;
                 String relativePath = ""
                     + "/" + taskInfo.getProjectBasePath()
-                    + "/" + taskInfo.getProjectDomain().replace(".", "/")
-                    + "/" + taskInfo.getPackagePath().replace(".", "/");
+                    + "/" + taskInfo.getPackagePath().replaceAll("\\.", "/");
 
                 String genPath = genSrc + relativePath;
                 File genPathDirectory = new File(genPath);
