@@ -133,7 +133,6 @@ public class AccessHelper extends BaseHelper {
 
         String userAgentHeader = req.getHeader("User-Agent");
 
-
         if (userAgentHeader != null) {
             UserAgent ua = UserAgentUtil.parse(userAgentHeader);
             log.setUserAgent(userAgentHeader);
@@ -178,6 +177,11 @@ public class AccessHelper extends BaseHelper {
                 log.setNickName(user.getUsername());
             }
         }
+
+        // 访问的租户
+        Long tenantId = authHelper.getTenantId();
+        log.setTenantId(tenantId);
+
 
         // 防止太长
         if (log.getUserAgent() != null && log.getUserAgent().length() > 1000) {

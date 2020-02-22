@@ -30,7 +30,7 @@ public class TraceHelper {
         traceInfo.setAuthId(-1L);
         traceInfo.setUserId(-1L);
 
-        Long tenantId = authHelper.getTenantId(req);
+        Long tenantId = authHelper.getTenantId();
         User user = authHelper.checkUserSession(req);
         traceInfo.setTenantId(tenantId);
         if (user != null){

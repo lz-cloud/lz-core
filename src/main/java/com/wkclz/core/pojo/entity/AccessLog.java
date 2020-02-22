@@ -43,12 +43,12 @@ public class AccessLog {
     private String engineVersion;
 
     /**
-     * 系统
+     * 用户系统
      */
     private String userOs;
 
     /**
-     * 平台
+     * 用户平台
      */
     private String platform;
 
@@ -181,6 +181,11 @@ public class AccessLog {
      * 用户ID
      */
     private Long userId;
+
+    /**
+     * 租户ID
+     */
+    private Long tenantId;
 
     /**
      * 用户昵称
@@ -458,6 +463,14 @@ public class AccessLog {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getNickName() {

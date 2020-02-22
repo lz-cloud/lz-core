@@ -173,15 +173,8 @@ public class AuthHelper extends BaseHelper {
         expireCookie(req, rep, "token");
     }
 
-    public Long getTenantId() {
-        String tenantId = MDC.get("tenantId");
-        if (tenantId == null){
-            throw BizException.error("MDC tenantId is null");
-        }
-        return Long.valueOf(tenantId);
-    }
 
-    public Long getTenantId(HttpServletRequest req) {
+    public Long getTenantId() {
         return tenantDomainHelper.getTenantId();
     }
 
@@ -350,10 +343,10 @@ public class AuthHelper extends BaseHelper {
 
         // 管理后台
         String origin = req.getHeader("Origin");
-        Long orgId = getTenantId(req);
-        if (StringUtils.isNotBlank(origin) && orgId != null && origin.contains("admin.")) {
+        Long tenantId = getTenantId();
+        if (StringUtils.isNotBlank(origin) && tenantId != null && origin.contains("admin.")) {
             List<Long> adminIds = user.getAdminIds();
-            if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(orgId)) {
+            if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(tenantId)) {
                 logger.info("user is not admin, uri : {}", uri);
                 Result result = new Result();
                 result.setError("非法访问管理后台");
