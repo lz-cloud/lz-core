@@ -8,7 +8,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 
-// 消息生产：stringRedisTemplate.convertAndSend("string-topic", msg);
+// 消息发布：stringRedisTemplate.convertAndSend("string-topic", msg);
+// 所有订阅者均会消费一次
 
 
 @Configuration
