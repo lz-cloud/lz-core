@@ -7,13 +7,9 @@ import com.wkclz.core.util.DateUtil;
 import com.wkclz.core.util.JdbcUtil;
 import com.wkclz.core.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +17,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
-
+/*
 @Intercepts({
     @Signature(type = Executor.class,method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
     @Signature(type = Executor.class,method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})
 })
+*
+ */
 public class MybatisQueryInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(MybatisQueryInterceptor.class);

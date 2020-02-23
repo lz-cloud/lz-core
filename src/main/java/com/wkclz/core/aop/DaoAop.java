@@ -2,23 +2,26 @@ package com.wkclz.core.aop;
 
 
 import com.wkclz.core.base.BaseModel;
+import com.wkclz.core.exception.BizException;
+import com.wkclz.core.util.BeanUtil;
+import com.wkclz.core.util.DateUtil;
+import com.wkclz.core.util.JdbcUtil;
+import com.wkclz.core.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.stereotype.Component;
 
 /**
  * RestAop
  * wangkc @ 2019-07-28 23:56:25
  */
-// @Aspect
-// @Component
+@Aspect
+@Component
 public class DaoAop {
 
     /**
@@ -31,22 +34,7 @@ public class DaoAop {
      */
 
     private static final Logger logger = LoggerFactory.getLogger(DaoAop.class);
-    //private static ObjectMapper objectMapper = new ObjectMapper();
     private final String POINT_CUT = "@within(org.apache.ibatis.annotations.Mapper)";
-
-
-    private final List<String> WRITE_ACTIONS = Arrays.asList(
-        "insert",
-        "insertSelective",
-        "updateByExampleSelective",
-        "updateByExampleWithBLOBs",
-        "updateByExample",
-        "updateByPrimaryKeySelective",
-        "updateByPrimaryKey",
-        "updateByPrimaryKeyWithBLOBs",
-        "insertBatch"
-    );
-
 
     @Pointcut(POINT_CUT)
     public void pointCut() {
@@ -62,83 +50,51 @@ public class DaoAop {
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point) {
 
-
-        MethodSignature signature = (MethodSignature) point.getSignature();
-        logger.debug("@Around环绕通知：" + signature.toString());
-
-        Method method = signature.getMethod();
-        Class<?> returnType = method.getReturnType();
-
-
         Object[] args = point.getArgs();
-
-        /*
-        boolean isPage = false;
-        // 分页查询方法，自动处理分页
-        if (PageData.class == returnType){
-            BaseModel model = getFirstModelParam(args);
-            model.setIsPage(1);
-            isPage = true;
-            BaseRepoHandler.pagePreHandle(model);
+        if (args != null){
+            for (Object arg : args) {
+                check(arg);
+            }
         }
-        */
-
-
-        // 插入，更新方法，自动处理最后更新人，最后更新时间
-        String name = method.getName();
-        if (WRITE_ACTIONS.contains(name)) {
-            // TODO 完成具体的操作
-        }
-
 
         // 请求具体方法
         Object obj = null;
         try {
-
             obj = point.proceed();
-            /*
-            if (isPage){
-                List<Object> list = (List)point.proceed();
-                obj = list;
-            } else {
-                obj = point.proceed();
-            }
-            */
-
         } catch (Throwable throwable) {
             logger.error(throwable.getMessage(), throwable);
         }
-
-        logger.debug("@Around环绕通知执行结束");
         return obj;
     }
 
+    private static void check(Object arg){
+        if (arg == null){
+            return;
+        }
+        if (!(arg instanceof BaseModel)){
+            return;
+        }
 
-    /**
-     * 获取第一个 BaseModel 的参数
-     *
-     * @param args
-     * @param <T>
-     * @return
-     */
-    private static <T extends BaseModel> T getFirstModelParam(Object[] args) {
-        T t = null;
-        if (args == null) {
-            BaseModel baseModel = new BaseModel();
-            t = (T) baseModel;
-            return t;
+        BaseModel model = (BaseModel) arg;
+        model.init();
+
+        BeanUtil.removeBlank(model);
+        String orderBy = model.getOrderBy();
+        // 注入风险检测
+        if (orderBy != null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && JdbcUtil.sqlInj(orderBy)) {
+            throw BizException.error("orderBy 有注入风险，请谨慎操作！");
         }
-        for (Object object : args) {
-            if (object instanceof BaseModel) {
-                t = (T) object;
-                break;
-            }
+        // 大小写处理
+        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "DESC"));
+        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "ASC"));
+        // 驼峰处理
+        model.setOrderBy(StringUtil.camelToUnderline(orderBy));
+        // keyword 查询处理
+        if (StringUtils.isNotBlank(model.getKeyword())) {
+            model.setKeyword("%" + model.getKeyword() + "%");
         }
-        if (t == null) {
-            BaseModel baseModel = new BaseModel();
-            t = (T) baseModel;
-        }
-        return t;
+        // 时间范围查询处理
+        DateUtil.formatDateRange(model);
     }
 
 }

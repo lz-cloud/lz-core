@@ -1,6 +1,7 @@
 package com.wkclz.core.base;
 
 import com.wkclz.core.base.annotation.Desc;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
  * Created: wangkaicun @ 2019-01-17 14:43
  * Updadte: wangkaicun @ 2019-12-31 23:01:47
  */
+// 这个 Mapper 注解没啥子用，只是为方便 AOP
+@Mapper
 public interface BaseMapper<Model> {
 
     @Desc("统计")
