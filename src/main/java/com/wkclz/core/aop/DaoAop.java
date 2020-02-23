@@ -76,7 +76,6 @@ public class DaoAop {
         }
 
         BaseModel model = (BaseModel) arg;
-        model.init();
 
         BeanUtil.removeBlank(model);
         String orderBy = model.getOrderBy();

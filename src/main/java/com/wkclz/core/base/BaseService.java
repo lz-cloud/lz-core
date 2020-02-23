@@ -42,6 +42,7 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
 
     @Desc("查询列分页，不包含Blobs")
     public PageData<Model> page(@NotNull Model model){
+        model.init();
         Integer count = mapper.count(model);
         List<Model> list = null;
         if (count > 0){
