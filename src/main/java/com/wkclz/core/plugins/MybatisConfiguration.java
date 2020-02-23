@@ -30,7 +30,7 @@ public class MybatisConfiguration {
         return new MybatisPrepareInterceptor();
     }
 
-    @Bean
+    // @Bean
     public MybatisQueryInterceptor queryInterceptor() {
         return new MybatisQueryInterceptor();
     }
