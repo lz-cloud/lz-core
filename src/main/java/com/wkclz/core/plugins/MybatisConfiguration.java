@@ -2,6 +2,7 @@ package com.wkclz.core.plugins;
 
 import com.wkclz.core.base.BaseMapper;
 import org.apache.ibatis.mapping.SqlCommandType;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +12,9 @@ import java.util.Map;
 
 @Configuration
 public class MybatisConfiguration {
+
+    protected static final String CHECH_ID = "chech_id";
+    protected static final String CHECH_VERSION = "chech_version";
 
     // Mapper 操作缓存，减少反射
     private static Map<String, SqlCommandType> SQL_COMMAND_TYPE_MAPT = null;
@@ -52,20 +56,28 @@ public class MybatisConfiguration {
             Class<BaseMapper> baseMapperClass = BaseMapper.class;
             Method[] methods = baseMapperClass.getDeclaredMethods();
             for (Method method : methods) {
-                // String className = method.getDeclaringClass().getName();
                 String methodName = method.getName();
-                // String key = className + "." + methodName;
-                SqlCommandType value = SqlCommandType.SELECT;
                 if ("insert".equals(methodName) || "insertBatch".equals(methodName)) {
-                    value = SqlCommandType.INSERT;
+                    SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.INSERT);
+                    continue;
                 }
-                if ("updateAll".equals(methodName) || "updateSelective".equals(methodName) || "updateBatch".equals(methodName)) {
-                    value = SqlCommandType.UPDATE;
+                if ("updateAll".equals(methodName) || "updateSelective".equals(methodName)) {
+                    SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.UPDATE);
+                    // 需要检查乐观锁, 使用完后要去除，保证线程安全
+                    MDC.put(CHECH_VERSION, "1");
+                    MDC.put(CHECH_ID, "1");
+                    continue;
+                }
+                if ("updateBatch".equals(methodName)) {
+                    SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.UPDATE);
+                    MDC.put(CHECH_ID, "1");
+                    continue;
                 }
                 if ("delete".equals(methodName)) {
-                    value = SqlCommandType.DELETE;
+                    SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.DELETE);
+                    continue;
                 }
-                SQL_COMMAND_TYPE_MAPT.put(methodName, value);
+                SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.SELECT);
             }
         }
 
