@@ -62,8 +62,15 @@ public class RestUtil {
                 String desc = null;
                 RequestMethod requestMethod = null;
                 for (Annotation annotation : annotations) {
-                    if (GetMapping.class == annotation.annotationType() || RequestMapping.class == annotation.annotationType()) {
+                    if (GetMapping.class == annotation.annotationType() ) {
                         GetMapping get = (GetMapping) annotation;
+                        requestMethod = RequestMethod.GET;
+                        String[] values = get.value();
+                        uri = values.length == 0 ? null : values[0];
+                        continue;
+                    }
+                    if (RequestMapping.class == annotation.annotationType()) {
+                        RequestMapping get = (RequestMapping) annotation;
                         requestMethod = RequestMethod.GET;
                         String[] values = get.value();
                         uri = values.length == 0 ? null : values[0];
