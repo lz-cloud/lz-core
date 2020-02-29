@@ -36,9 +36,9 @@ public class Apis {
         for (RestInfo mapping :mappings) {
             String funTemp;
             if (RequestMethod.GET.name().equals(mapping.getRequestMethod())) {
-                funTemp = "export function %s(params) { return request({ url: '%s', method: 'get', params: params }) } // %s";
+                funTemp = "export function {}(params) { return request({ url: '{}', method: 'get', params: params }) } // {}";
             } else {
-                funTemp = "export function %s(data) { return request({ url: '%s', method: 'post', data: data }) } // %s";
+                funTemp = "export function {}(data) { return request({ url: '{}', method: 'post', data: data }) } // {}";
             }
             String fun = StrUtil.format(funTemp, mapping.getRestName(), router + mapping.getUri(), mapping.getRestDesc());
             sb.append(fun).append(lineSeparator);
