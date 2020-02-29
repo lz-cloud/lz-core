@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,13 +91,19 @@ public class RestAop {
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
+            String message = throwable.getMessage();
+            if (message == null || "".equals(message.trim()) || "null".equals(message)){
+                StringWriter out = new StringWriter();
+                throwable.printStackTrace(new PrintWriter(out));
+                message = out.toString();
+            }
             BizException bizException = getBizException(throwable);
             if (bizException != null){
                 obj = Result.error(bizException);
             } else {
-                obj = Result.error(throwable.getMessage());
+                obj = Result.error(message);
             }
-            logger.error(throwable.getMessage(),throwable);
+            logger.error(message,throwable);
         }
 
         // 返回参数处理

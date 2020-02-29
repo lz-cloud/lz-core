@@ -10,6 +10,7 @@ public enum ResultStatus {
     TOKEN_ILLEGAL_TRANSFER(10003, "非法传输 token！"),
     TOKEN_ILLEGAL_LENGTH(10004, "非法长度的 token！"),
     TOKEN_SIGN_FAILD(10005, "token 签名效验失败！"),
+    LOGIN_TIMEOUT(10006, "登录已失效，请重新登录！"),
 
     CLIENT_CHANGE(20001, "用户登录环境改变！"),
     API_CORS(20002, "api url can not be cors"),

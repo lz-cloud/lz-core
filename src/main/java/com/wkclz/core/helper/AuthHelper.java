@@ -98,13 +98,21 @@ public class AuthHelper extends BaseHelper {
     }
 
 
+    public User getUser() {
+        User user = getUserIfLogin();
+        if (user == null){
+            throw BizException.error(ResultStatus.LOGIN_TIMEOUT);
+        }
+        return user;
+    }
+
 
     /**
      * 获取 session
      *
      * @return
      */
-    public User getUser() {
+    public User getUserIfLogin() {
         String userStr = MDC.get("user");
         if (userStr != null){
             return JSONObject.parseObject(userStr, User.class);
@@ -135,7 +143,7 @@ public class AuthHelper extends BaseHelper {
      * @param tokenStr
      * @return
      */
-    public User getUser(String tokenStr) {
+    private User getUser(String tokenStr) {
         if (StringUtils.isBlank(tokenStr)) {
             return null;
         }
