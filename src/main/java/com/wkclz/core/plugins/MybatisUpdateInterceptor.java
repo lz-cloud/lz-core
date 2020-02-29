@@ -29,7 +29,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
-        User user = authHelper.getUser();
+        User user = authHelper.getUserIfLogin();
         Long userId = -1L;
         if (user != null) {
             userId = user.getUserId();

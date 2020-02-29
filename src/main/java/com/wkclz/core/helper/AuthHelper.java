@@ -58,7 +58,7 @@ public class AuthHelper extends BaseHelper {
         Map<String, String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
-        Object session = getUser();
+        Object session = getUserIfLogin();
         if (session != null) {
             user = (User) session;
             if (user.getToken() != null) {
@@ -384,7 +384,7 @@ public class AuthHelper extends BaseHelper {
      * @param req
      */
     public User checkUserSession(HttpServletRequest req) {
-        User user = getUser();
+        User user = getUserIfLogin();
         if (user != null) {
             if (user.getUserId() != null){
                 MDC.put("userId", user.getUserId()+"");
