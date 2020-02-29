@@ -1,6 +1,6 @@
 package com.wkclz.core.rest;
 
-import com.sun.javafx.binding.StringFormatter;
+import cn.hutool.core.util.StrUtil;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.pojo.entity.RestInfo;
 import com.wkclz.core.util.RestUtil;
@@ -40,7 +40,7 @@ public class Apis {
             } else {
                 funTemp = "export function %s(data) { return request({ url: '%s', method: 'post', data: data }) } // %s";
             }
-            String fun = StringFormatter.format(funTemp, mapping.getRestName(), router + mapping.getUri(), mapping.getRestDesc()).getValue();
+            String fun = StrUtil.format(funTemp, mapping.getRestName(), router + mapping.getUri(), mapping.getRestDesc());
             sb.append(fun).append(lineSeparator);
         }
         return sb.toString();
