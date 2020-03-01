@@ -83,11 +83,17 @@ public class DaoAop {
         if (orderBy != null && !orderBy.equals(BaseModel.DEFAULE_ORDER_BY) && JdbcUtil.sqlInj(orderBy)) {
             throw BizException.error("orderBy 有注入风险，请谨慎操作！");
         }
+
+        if (StringUtils.isBlank(orderBy)){
+            orderBy = BaseModel.DEFAULE_ORDER_BY;
+        }
         // 大小写处理
-        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "DESC"));
-        model.setOrderBy(StringUtil.check2LowerCase(orderBy, "ASC"));
+        orderBy = StringUtil.check2LowerCase(orderBy, "DESC");
+        orderBy = StringUtil.check2LowerCase(orderBy, "ASC");
         // 驼峰处理
-        model.setOrderBy(StringUtil.camelToUnderline(orderBy));
+        orderBy = StringUtil.camelToUnderline(orderBy);
+
+        model.setOrderBy(orderBy);
         // keyword 查询处理
         if (StringUtils.isNotBlank(model.getKeyword())) {
             model.setKeyword("%" + model.getKeyword() + "%");
