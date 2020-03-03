@@ -48,7 +48,7 @@ public class DaoAop {
      * 环绕通知第一个参数必须是org.aspectj.lang.ProceedingJoinPoint类型
      */
     @Around(value = POINT_CUT)
-    public Object doAroundAdvice(ProceedingJoinPoint point) {
+    public Object doAroundAdvice(ProceedingJoinPoint point) throws Throwable {
 
         Object[] args = point.getArgs();
         if (args != null){
@@ -58,12 +58,7 @@ public class DaoAop {
         }
 
         // 请求具体方法
-        Object obj = null;
-        try {
-            obj = point.proceed();
-        } catch (Throwable throwable) {
-            logger.error(throwable.getMessage(), throwable);
-        }
+        Object obj = point.proceed();
         return obj;
     }
 

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.TraceHelper;
-import com.wkclz.core.pojo.entity.TraceInfo;
 import com.wkclz.core.pojo.enums.EnvType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -23,8 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,17 +64,17 @@ public class RestAop {
      * 环绕通知第一个参数必须是org.aspectj.lang.ProceedingJoinPoint类型
      */
     @Around(value = POINT_CUT)
-    public Object doAroundAdvice(ProceedingJoinPoint point) {
+    public Object doAroundAdvice(ProceedingJoinPoint point) throws Throwable {
         return servletRequestHandle(point);
     }
 
-    private Object servletRequestHandle(ProceedingJoinPoint point) {
+    private Object servletRequestHandle(ProceedingJoinPoint point) throws Throwable {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest req = requestAttributes.getRequest();
         HttpServletResponse rep = requestAttributes.getResponse();
 
         // 追踪信息
-        TraceInfo traceInfo = traceHelper.checkTraceInfo(req, rep);
+        traceHelper.checkTraceInfo(req, rep);
 
         String method = req.getMethod();
         String uri = req.getRequestURI();
@@ -88,34 +84,21 @@ public class RestAop {
 
         // 请求具体方法
         Object obj = null;
+        Throwable tb = null;
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            String message = throwable.getMessage();
-            if (message == null || "".equals(message.trim()) || "null".equals(message)){
-                StringWriter out = new StringWriter();
-                throwable.printStackTrace(new PrintWriter(out));
-                message = out.toString();
-            }
-            BizException bizException = getBizException(throwable);
-            if (bizException != null){
-                obj = Result.error(bizException);
-            } else {
-                obj = Result.error(message);
-            }
-            logger.error(message,throwable);
+            tb = throwable;
         }
 
         // 返回参数处理
         responeTime = new Date();
         costTime = responeTime.getTime() - requestTime.getTime();
-        if (obj != null && obj instanceof Result) {
-            if (Sys.CURRENT_ENV != EnvType.PROD) {
-                Result result = (Result) obj;
-                result.setRequestTime(requestTime);
-                result.setResponeTime(responeTime);
-                result.setCostTime(costTime);
-            }
+        if (obj != null && obj instanceof Result && Sys.CURRENT_ENV != EnvType.PROD) {
+            Result result = (Result) obj;
+            result.setRequestTime(requestTime);
+            result.setResponeTime(responeTime);
+            result.setCostTime(costTime);
         }
 
         // 日志
@@ -126,7 +109,7 @@ public class RestAop {
         if (isDebug){
             String value = null;
             try {
-                value = objectMapper.writeValueAsString(obj);
+                value = obj == null ? null : objectMapper.writeValueAsString(obj);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -137,6 +120,10 @@ public class RestAop {
             }
         } else {
             logger.info("{}|{}ms|{}|{}", method, costTime, uri, args);
+        }
+
+        if (tb != null){
+            throw tb;
         }
 
         return obj;
@@ -168,35 +155,6 @@ public class RestAop {
             }
         }
         return value;
-    }
-
-    /**
-     * Throwable 找 BizException，找二级原因
-     * @param throwable
-     * @return
-     */
-    private static BizException getBizException(Throwable throwable){
-        if (throwable == null){
-            return null;
-        }
-        if (throwable instanceof BizException){
-            return (BizException) throwable;
-        }
-        Throwable cause = throwable.getCause();
-        if (cause == null){
-            return null;
-        }
-        if (cause instanceof BizException){
-            return (BizException) cause;
-        }
-        cause = cause.getCause();
-        if (cause == null){
-            return null;
-        }
-        if (cause instanceof BizException){
-            return (BizException) cause;
-        }
-        return null;
     }
 
 }

@@ -5,6 +5,7 @@ import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.entity.TraceInfo;
 import com.wkclz.core.pojo.enums.EnvType;
 import com.wkclz.core.util.UniqueCodeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,40 @@ public class TraceHelper {
     private AuthHelper authHelper;
 
     public TraceInfo checkTraceInfo(HttpServletRequest req, HttpServletResponse rep){
+
+        // 如果已经存在，不再请求第二次，直接返回结果
+        String name = MDC.get("applicationName");
+        if (StringUtils.isNotBlank(name)){
+            TraceInfo traceInfo = new TraceInfo();
+            traceInfo.setTraceId(MDC.get("traceId"));
+            traceInfo.setOriginIp(MDC.get("originIp"));
+            traceInfo.setRouterIp(MDC.get("routerIp"));
+
+            String spanId = MDC.get("spanId");
+            if (StringUtils.isNotBlank(spanId)){
+                Integer integer = Integer.valueOf(spanId);
+                traceInfo.setSpanId(integer);
+            }
+
+            String tenantId = MDC.get("tenantId");
+            if (StringUtils.isNotBlank(tenantId)){
+                Long l = Long.valueOf(tenantId);
+                traceInfo.setTenantId(l);
+            }
+
+            String authId = MDC.get("authId");
+            if (StringUtils.isNotBlank(authId)){
+                Long l = Long.valueOf(authId);
+                traceInfo.setAuthId(l);
+            }
+
+            String userId = MDC.get("userId");
+            if (StringUtils.isNotBlank(userId)){
+                Long l = Long.valueOf(userId);
+                traceInfo.setUserId(l);
+            }
+            return traceInfo;
+        }
 
 
         TraceInfo traceInfo = new TraceInfo();
