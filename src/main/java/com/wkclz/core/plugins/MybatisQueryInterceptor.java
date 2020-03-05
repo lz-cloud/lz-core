@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
-// 已在 MybatisConfiguration 配置不拦截
+// 已在 MybatisConfiguration 配置不拦截,拦截了也没法在预编译前
 @Intercepts({
     @Signature(type = Executor.class,method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
     @Signature(type = Executor.class,method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})

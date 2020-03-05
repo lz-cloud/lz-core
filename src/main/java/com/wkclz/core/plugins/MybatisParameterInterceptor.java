@@ -5,6 +5,7 @@ import org.apache.ibatis.plugin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.util.Properties;
 
@@ -18,12 +19,9 @@ public class MybatisParameterInterceptor implements Interceptor {
 
         logger.info("mybatis.setParameters.interceptor");
 
-        /*
-        ParameterHandler parameterHandler = (ParameterHandler) invocation.getTarget();
-        //PreparedStatement preparedStatement = (PreparedStatement) invocation.getArgs()[0];
-        Object parameterObject = parameterHandler.getParameterObject();
-        */
-
+        Object[] args = invocation.getArgs();
+        Object target = invocation.getTarget();
+        Method method = invocation.getMethod();
         Object proceedReslut = invocation.proceed();
         return proceedReslut;
     }
