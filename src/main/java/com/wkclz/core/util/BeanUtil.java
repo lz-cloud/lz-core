@@ -7,13 +7,12 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Description:
@@ -21,7 +20,8 @@ import java.util.Set;
  */
 public class BeanUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(BeanUtil.class);
+    private final static Map<String, List<PropertyDescriptor>> PROPERTY_DESCRIPTORS = new HashMap<>();
 
     /**
      * remove the blank string in the  Object
@@ -33,8 +33,7 @@ public class BeanUtil {
             return null;
         }
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptor(obj.getClass());
             for (PropertyDescriptor property : propertyDescriptors) {
                 Method getter = property.getReadMethod();
                 Object value = getter.invoke(obj);
@@ -43,12 +42,34 @@ public class BeanUtil {
                     setter.invoke(obj, new Object[]{null});
                 }
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
         return obj;
     }
 
+    private static List<PropertyDescriptor> getPropertyDescriptor(Class clazz){
+        List<PropertyDescriptor> propertyDescriptors = PROPERTY_DESCRIPTORS.get(clazz.getName());
+        if (propertyDescriptors != null){
+            return propertyDescriptors;
+        }
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+            PropertyDescriptor[] propertyDescriptorsArr = beanInfo.getPropertyDescriptors();
+            List<PropertyDescriptor> list = new ArrayList<>();
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptorsArr) {
+                list.add(propertyDescriptor);
+            }
+            PROPERTY_DESCRIPTORS.put(clazz.getName(), list);
+            return list;
+        } catch (IntrospectionException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+
+    }
 
     /**
      * Bean 复制【 copyProperties，效率极低，推荐使用】
