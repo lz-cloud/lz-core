@@ -1,6 +1,7 @@
 package com.wkclz.core.aop;
 
 
+import com.wkclz.core.base.BaseMapper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.util.BeanUtil;
@@ -8,13 +9,24 @@ import com.wkclz.core.util.DateUtil;
 import com.wkclz.core.util.JdbcUtil;
 import com.wkclz.core.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * RestAop
@@ -23,6 +35,10 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class DaoAop {
+
+    @Autowired
+    private SqlSession sqlSession;
+    private static Map<String, SqlCommandType> MAPPED_STATEMENTS = null;
 
     /**
      * : @Around环绕通知
@@ -50,10 +66,14 @@ public class DaoAop {
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point) throws Throwable {
 
-        Object[] args = point.getArgs();
-        if (args != null){
-            for (Object arg : args) {
-                check(arg);
+        SqlCommandType sqlCommandType = getSqlCommandType(point);
+
+        if (SqlCommandType.SELECT == sqlCommandType ){
+            Object[] args = point.getArgs();
+            if (args != null){
+                for (Object arg : args) {
+                    check(arg);
+                }
             }
         }
 
@@ -96,5 +116,61 @@ public class DaoAop {
         // 时间范围查询处理
         DateUtil.formatDateRange(model);
     }
+
+
+    private SqlCommandType getSqlCommandType(ProceedingJoinPoint point){
+        Signature signature = point.getSignature();
+        String declaringTypeName = signature.getDeclaringTypeName();
+        String name = signature.getName();
+        String pointId = declaringTypeName + "." + name;
+        if (MAPPED_STATEMENTS == null){
+            MAPPED_STATEMENTS = new HashMap<>();
+
+            // 非父类
+            Configuration configuration = sqlSession.getConfiguration();
+            Collection mappedStatements = configuration.getMappedStatements();
+            for (Object mappedStatementObj : mappedStatements) {
+                if (mappedStatementObj instanceof  MappedStatement){
+                    MappedStatement mappedStatement = (MappedStatement)mappedStatementObj;
+                    String id = mappedStatement.getId();
+                    SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
+                    MAPPED_STATEMENTS.put(id, sqlCommandType);
+                }
+            }
+
+            // 父类【在父类里面，MappedStatement 是 Configuration 的私类的私类，无法直接获取，只能用另外的方式】
+            Class<BaseMapper> baseMapperClass = BaseMapper.class;
+            Method[] methods = baseMapperClass.getDeclaredMethods();
+            String clazzName = baseMapperClass.getName() + ".";
+            for (Method method : methods) {
+                String methodName = method.getName();
+                if ("insert".equals(methodName) || "insertBatch".equals(methodName)) {
+                    MAPPED_STATEMENTS.put(clazzName + methodName, SqlCommandType.INSERT);
+                    continue;
+                }
+                if ("updateAll".equals(methodName) || "updateSelective".equals(methodName)) {
+                    MAPPED_STATEMENTS.put(clazzName + methodName, SqlCommandType.UPDATE);
+                    continue;
+                }
+                if ("updateBatch".equals(methodName)) {
+                    MAPPED_STATEMENTS.put(clazzName + methodName, SqlCommandType.UPDATE);
+                    continue;
+                }
+                if ("delete".equals(methodName)) {
+                    MAPPED_STATEMENTS.put(clazzName + methodName, SqlCommandType.UPDATE);
+                    continue;
+                }
+                MAPPED_STATEMENTS.put(clazzName + methodName, SqlCommandType.SELECT);
+            }
+
+        }
+        SqlCommandType sqlCommandType = MAPPED_STATEMENTS.get(pointId);
+        if (sqlCommandType != null){
+            return sqlCommandType;
+        }
+
+        throw BizException.error("unknown dao operation: {}", pointId);
+    }
+
 
 }
