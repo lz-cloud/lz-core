@@ -29,6 +29,8 @@ public interface Routes {
     String MONITOR_IP = "/monitor/ip";
     @Desc("3. 监控-服务器属性")
     String MONITOR_PROPERTIES = "/monitor/properties";
+    @Desc("4. 监控-调用链")
+    String MONITOR_TRACE = "/monitor/trace";
 
 
 

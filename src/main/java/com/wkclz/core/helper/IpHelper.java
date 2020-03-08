@@ -17,7 +17,7 @@ import java.util.Set;
 public class IpHelper {
     private static final Logger logger = LoggerFactory.getLogger(IpHelper.class);
 
-    public static String getRouterIp(HttpServletRequest req){
+    public static String getUpstreamIp(HttpServletRequest req){
         String remoteAddr = req.getRemoteAddr();
         return remoteAddr;
     }

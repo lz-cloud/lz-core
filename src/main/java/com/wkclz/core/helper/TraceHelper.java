@@ -8,12 +8,15 @@ import com.wkclz.core.util.UniqueCodeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 仅在应用入口处可用此功能
@@ -21,18 +24,27 @@ import java.util.Enumeration;
 @Component
 public class TraceHelper {
 
+    public final static String SERVICE_ID = "serviceId";
+    public final static String INSTANCE_ID = "instanceId";
+    public final static String UPSTREAM_SERVICE_ID = "upstreamServiceId";
+    public final static String UPSTREAM_INSTANCE_ID = "upstreamInstanceId";
+
+    public final static Map<String, TraceInfo> SERVICE_TRACES = new HashMap<>();
+
     @Autowired
     private AuthHelper authHelper;
+    @Autowired(required = false)
+    private ServiceInstance serviceInstance;
 
     public TraceInfo checkTraceInfo(HttpServletRequest req, HttpServletResponse rep){
 
         // 如果已经存在，不再请求第二次，直接返回结果
-        String name = MDC.get("applicationName");
+        String name = MDC.get("serviceId");
         if (StringUtils.isNotBlank(name)){
             TraceInfo traceInfo = new TraceInfo();
             traceInfo.setTraceId(MDC.get("traceId"));
             traceInfo.setOriginIp(MDC.get("originIp"));
-            traceInfo.setRouterIp(MDC.get("routerIp"));
+            traceInfo.setUpstreamIp(MDC.get("upstreamIp"));
 
             String spanId = MDC.get("spanId");
             if (StringUtils.isNotBlank(spanId)){
@@ -60,7 +72,6 @@ public class TraceHelper {
             return traceInfo;
         }
 
-
         TraceInfo traceInfo = new TraceInfo();
         traceInfo.setAuthId(-1L);
         traceInfo.setUserId(-1L);
@@ -82,12 +93,15 @@ public class TraceHelper {
             TraceInfo.setApplicationGroup(group);
         }
 
-        // applicationName
-        String applicationName = MDC.get("applicationName");
-        if (applicationName == null){ applicationName = req.getHeader("applicationName"); }
-        if (applicationName == null) { applicationName = Sys.APPLICATION_NAME; }
-        if (TraceInfo.getApplicationName() == null || !applicationName.equals(TraceInfo.getApplicationName())){
-            TraceInfo.setApplicationName(applicationName);
+        // serviceId
+        if (TraceInfo.getServiceId() == null && serviceInstance != null){
+            TraceInfo.setServiceId(serviceInstance.getServiceId());
+        }
+
+        // instanceId
+        if (TraceInfo.getInstanceId() == null && serviceInstance != null){
+            String instanceId = serviceInstance.getInstanceId();
+            TraceInfo.setInstanceId(instanceId);
         }
 
         // serverIp
@@ -121,13 +135,25 @@ public class TraceHelper {
         traceInfo.setSpanId(newSpanId);
 
         traceInfo.setOriginIp(IpHelper.getOriginIp(req));
-        traceInfo.setRouterIp(IpHelper.getRouterIp(req));
+        traceInfo.setUpstreamIp(IpHelper.getUpstreamIp(req));
 
         // 检查 cookie, header
         Enumeration<String> headerNames = req.getHeaderNames();
         if (headerNames != null){
             while (headerNames.hasMoreElements()){
                 String s = headerNames.nextElement();
+                if (TraceHelper.SERVICE_ID.equalsIgnoreCase(s)){
+                    continue;
+                }
+                if (TraceHelper.INSTANCE_ID.equalsIgnoreCase(s)){
+                    continue;
+                }
+                if (TraceHelper.UPSTREAM_SERVICE_ID.equalsIgnoreCase(s)){
+                    continue;
+                }
+                if (TraceHelper.UPSTREAM_INSTANCE_ID.equalsIgnoreCase(s)){
+                    continue;
+                }
                 MDC.put(s, req.getHeader(s));
             }
         }
@@ -139,16 +165,46 @@ public class TraceHelper {
         }
 
 
+
+        // zuul, gateway, feign 请求开始时，附加 upstream 信息
+        // HandlerInterceptor 请接收请求，获取 upstream 信息【当前位置】
+        getTraceInfo(req, traceInfo);
+
+
         MDC.put("applicationGroup", TraceInfo.getApplicationGroup());
-        MDC.put("applicationName", TraceInfo.getApplicationName());
         MDC.put("serverIp", TraceInfo.getServerIp());
         MDC.put("envType", TraceInfo.getEnvType().name());
 
         MDC.put("traceId", traceId);
         MDC.put("spanId", spanId);
+        MDC.put("upstreamIp", traceInfo.getUpstreamIp());
         MDC.put("originIp", traceInfo.getOriginIp());
-        MDC.put("routerIp", traceInfo.getRouterIp());
+
+        MDC.put("serviceId", TraceInfo.getServiceId());
+        MDC.put("instanceId", TraceInfo.getInstanceId());
 
         return traceInfo;
     }
+
+
+    /**
+     * 尝试获取 upstream 信息
+     */
+    public static void getTraceInfo(HttpServletRequest req, TraceInfo traceInfo){
+
+        String upstreamServiceId = req.getHeader(TraceHelper.UPSTREAM_SERVICE_ID);
+        String upstreamInstanceId = req.getHeader(TraceHelper.UPSTREAM_INSTANCE_ID);
+
+        if (upstreamServiceId != null && upstreamInstanceId != null){
+            TraceInfo traceInfoHistory = SERVICE_TRACES.get(upstreamInstanceId);
+            if (traceInfoHistory == null){
+                traceInfoHistory = new TraceInfo();
+                traceInfoHistory.setUpstreamServiceId(upstreamServiceId);
+                traceInfoHistory.setUpstreamInstanceId(upstreamInstanceId);
+                SERVICE_TRACES.put(upstreamInstanceId, traceInfoHistory);
+            }
+            traceInfoHistory.setUpstreamRequestTime(System.currentTimeMillis());
+        }
+    }
+
 }

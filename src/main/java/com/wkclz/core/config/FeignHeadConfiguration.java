@@ -1,6 +1,8 @@
 package com.wkclz.core.config;
 
 
+import com.wkclz.core.helper.TraceHelper;
+import com.wkclz.core.pojo.entity.TraceInfo;
 import feign.RequestInterceptor;
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
@@ -35,8 +37,25 @@ public class FeignHeadConfiguration {
                 if ("Content-Type".equalsIgnoreCase(entry.getKey())){
                     continue;
                 }
+                if (TraceHelper.SERVICE_ID.equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
+                if (TraceHelper.INSTANCE_ID.equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
+                if (TraceHelper.UPSTREAM_SERVICE_ID.equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
+                if (TraceHelper.UPSTREAM_INSTANCE_ID.equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
                 requestTemplate.header(entry.getKey(), entry.getValue().toString());
             }
+
+            // zuul, gateway, feign 请求开始时，附加 upstream 信息【当前位置】
+            // HandlerInterceptor 请接收请求，获取 upstream 信息
+            requestTemplate.header(TraceHelper.UPSTREAM_SERVICE_ID, TraceInfo.getServiceId());
+            requestTemplate.header(TraceHelper.UPSTREAM_INSTANCE_ID, TraceInfo.getInstanceId());
         };
     }
 }

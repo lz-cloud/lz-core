@@ -3,7 +3,37 @@ package com.wkclz.core.pojo.entity;
 
 import com.wkclz.core.pojo.enums.EnvType;
 
+
+/**
+ * 追踪信息
+ */
 public class TraceInfo {
+
+    // 以下为服务调用关系信息
+
+    /**
+     * 来源应用名称
+     */
+    private String upstreamServiceId;
+    /**
+     * 来源应用名称
+     */
+    private String upstreamInstanceId;
+    /**
+     * 来源请求时间
+     */
+    private Long upstreamRequestTime;
+
+
+
+
+    // 以下为跟踪信息
+
+    /**
+     * 路由IP
+     */
+    private String upstreamIp;
+
 
     /**
      * 应用组
@@ -12,7 +42,11 @@ public class TraceInfo {
     /**
      * 应用名称
      */
-    private static String applicationName = null;
+    private static String serviceId = null;
+    /**
+     * 应用名称
+     */
+    private static String instanceId = null;
     /**
      * 所在服务IP
      */
@@ -22,6 +56,10 @@ public class TraceInfo {
      */
     private static EnvType envType = null;
 
+    /**
+     * 路由IP
+     */
+    private String originIp;
 
     /**
      * 跟踪ID
@@ -31,14 +69,6 @@ public class TraceInfo {
      * 跟踪序列号
      */
     private Integer spanId;
-    /**
-     * 源IP
-     */
-    private String originIp;
-    /**
-     * 路由IP
-     */
-    private String routerIp;
 
     /**
      * 租户ID
@@ -62,12 +92,20 @@ public class TraceInfo {
         TraceInfo.applicationGroup = applicationGroup;
     }
 
-    public static String getApplicationName() {
-        return applicationName;
+    public static String getServiceId() {
+        return serviceId;
     }
 
-    public static void setApplicationName(String applicationName) {
-        TraceInfo.applicationName = applicationName;
+    public static void setServiceId(String serviceId) {
+        TraceInfo.serviceId = serviceId;
+    }
+
+    public static String getInstanceId() {
+        return instanceId;
+    }
+
+    public static void setInstanceId(String instanceId) {
+        TraceInfo.instanceId = instanceId;
     }
 
     public static String getServerIp() {
@@ -86,6 +124,22 @@ public class TraceInfo {
         TraceInfo.envType = envType;
     }
 
+    public String getUpstreamIp() {
+        return upstreamIp;
+    }
+
+    public void setUpstreamIp(String upstreamIp) {
+        this.upstreamIp = upstreamIp;
+    }
+
+    public String getOriginIp() {
+        return originIp;
+    }
+
+    public void setOriginIp(String originIp) {
+        this.originIp = originIp;
+    }
+
     public String getTraceId() {
         return traceId;
     }
@@ -100,22 +154,6 @@ public class TraceInfo {
 
     public void setSpanId(Integer spanId) {
         this.spanId = spanId;
-    }
-
-    public String getOriginIp() {
-        return originIp;
-    }
-
-    public void setOriginIp(String originIp) {
-        this.originIp = originIp;
-    }
-
-    public String getRouterIp() {
-        return routerIp;
-    }
-
-    public void setRouterIp(String routerIp) {
-        this.routerIp = routerIp;
     }
 
     public Long getTenantId() {
@@ -140,5 +178,30 @@ public class TraceInfo {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+
+    public String getUpstreamServiceId() {
+        return upstreamServiceId;
+    }
+
+    public void setUpstreamServiceId(String upstreamServiceId) {
+        this.upstreamServiceId = upstreamServiceId;
+    }
+
+    public String getUpstreamInstanceId() {
+        return upstreamInstanceId;
+    }
+
+    public void setUpstreamInstanceId(String upstreamInstanceId) {
+        this.upstreamInstanceId = upstreamInstanceId;
+    }
+
+    public Long getUpstreamRequestTime() {
+        return upstreamRequestTime;
+    }
+
+    public void setUpstreamRequestTime(Long upstreamRequestTime) {
+        this.upstreamRequestTime = upstreamRequestTime;
     }
 }
