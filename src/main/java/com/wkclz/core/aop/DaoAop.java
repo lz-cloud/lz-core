@@ -36,7 +36,7 @@ import java.util.Map;
 @Component
 public class DaoAop {
 
-    @Autowired
+    @Autowired(required = false)
     private SqlSession sqlSession;
     private static Map<String, SqlCommandType> MAPPED_STATEMENTS = null;
 
