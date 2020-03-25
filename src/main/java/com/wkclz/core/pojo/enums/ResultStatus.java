@@ -25,12 +25,16 @@ public enum ResultStatus {
     RECORD_NOT_EXIST_OR_OUT_OF_DATE(40002, "数据不存在或已不是最新的！"),
     UPDATE_NO_ID(40003, "操作需要带数据标识！"),
 
+    NETWORK_ERROR(50001, "network error！"),
+    NO_AVAILABLE_SERVER(50002, "no available server！"),
+    UNKNOWN_RIBBON_ERROR(50003, "unknown ribbon error！"),
+
 //    public static final String SYSTEM_ERROR = "System error, we have turned to the Admin of this website";
 //    public static final String REDIS_IS_DISABLED = "Redis config or Redis server is error! no Redis will be support!";
 
-    ORDER_TIMEOUT(50001, "订单支付超时已自动取消，请重新下单！"),
-    ORDER_PAYD(50002, "订单已完成支付，请不要重复支付！"),
-    ORDER_ERROR(50003, "订单状态异常，不能支付！"),
+    ORDER_TIMEOUT(60001, "订单支付超时已自动取消，请重新下单！"),
+    ORDER_PAYD(60002, "订单已完成支付，请不要重复支付！"),
+    ORDER_ERROR(60003, "订单状态异常，不能支付！"),
     ;
 
     private Integer code;

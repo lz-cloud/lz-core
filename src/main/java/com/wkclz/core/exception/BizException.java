@@ -58,6 +58,13 @@ public class BizException extends RuntimeException {
         return bizException;
     }
 
+    public static BizException result(Integer code, String msg){
+        logger.error(msg);
+        BizException bizException = new BizException(msg);
+        bizException.code = code;
+        return bizException;
+    }
+
 
     private static String getMsg(String msg, Object... params){
         msg = StringUtils.isBlank(msg)?DEFAULT_ERR_MSG:msg;

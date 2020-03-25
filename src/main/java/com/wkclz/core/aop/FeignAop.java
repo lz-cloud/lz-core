@@ -2,20 +2,24 @@ package com.wkclz.core.aop;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.client.ClientException;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * FeignAop
  * wangkc @ 2019-08-25 20:33:55
  */
-//@Aspect
-//@Component
+@Aspect
+@Component
 public class FeignAop {
 
     /**
@@ -50,22 +54,30 @@ public class FeignAop {
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            // 自定义异常，转换为 Result
-            if (throwable instanceof BizException){
-                BizException bizException = (BizException)throwable;
-                Result result = new Result();
-                result.setError(bizException.getMessage());
-                if (bizException.getCode() == 0){
-                    result.setCode(0);
-                }
-                obj = result;
-            } else {
-                // 非自定义异常不处理
-                logger.error(throwable.getMessage(), throwable);
+            logger.error(throwable.getMessage(), throwable);
+            // feign 可判别异常
+            if (throwable instanceof RuntimeException && throwable.getCause() instanceof ClientException){
+                throw BizException.result(ResultStatus.NO_AVAILABLE_SERVER.getCode(), throwable.getMessage());
+            }
+
+            // 其他异常
+            throw BizException.error(ResultStatus.UNKNOWN_RIBBON_ERROR);
+        }
+
+        // 请求成功，解析请求结果
+        if (obj == null){
+            return obj;
+        }
+        if (obj instanceof Result){
+            Result result = (Result) obj;
+            Integer code = result.getCode();
+            if (code != 1 ) {
+                BizException error = BizException.error(result.getMsg());
+                error.setCode(code);
+                throw error;
             }
         }
         return obj;
-
     }
 
 }

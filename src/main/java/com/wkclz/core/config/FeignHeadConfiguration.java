@@ -37,6 +37,12 @@ public class FeignHeadConfiguration {
                 if ("Content-Type".equalsIgnoreCase(entry.getKey())){
                     continue;
                 }
+                if ("Content-Length".equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
+                if ("user".equalsIgnoreCase(entry.getKey())){
+                    continue;
+                }
                 if (TraceHelper.SERVICE_ID.equalsIgnoreCase(entry.getKey())){
                     continue;
                 }

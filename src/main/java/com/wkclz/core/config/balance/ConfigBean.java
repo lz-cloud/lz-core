@@ -3,6 +3,7 @@ package com.wkclz.core.config.balance;
 import com.netflix.loadbalancer.IRule;
 import org.springframework.context.annotation.Bean;
 
+
 // @Configuration
 public class ConfigBean  {
     /*
