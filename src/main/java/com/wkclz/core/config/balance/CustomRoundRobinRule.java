@@ -19,6 +19,15 @@ public class CustomRoundRobinRule extends AbstractLoadBalancerRule {
     private AtomicInteger nextServerCyclicCounter;
     private static Logger log = LoggerFactory.getLogger(CustomRoundRobinRule.class);
 
+    public CustomRoundRobinRule() {
+        nextServerCyclicCounter = new AtomicInteger(0);
+    }
+
+    public CustomRoundRobinRule(ILoadBalancer lb) {
+        this();
+        setLoadBalancer(lb);
+    }
+
     public Server choose(ILoadBalancer lb, Object key) {
         if (lb == null) {
             log.warn("no load balancer");
