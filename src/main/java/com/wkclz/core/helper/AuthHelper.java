@@ -121,12 +121,14 @@ public class AuthHelper extends BaseHelper {
         if (req == null) {
             return null;
         }
+        /* user 不再放到 header 中,数据传输量较大,json 还会报错
         userStr = req.getHeader("user");
         if (StringUtils.isNotBlank(userStr)){
             MDC.put("user", userStr);
             User user = JSONObject.parseObject(userStr, User.class);
             return user;
         }
+        */
         // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult){

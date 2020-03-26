@@ -40,6 +40,7 @@ public class FeignHeadConfiguration {
                 if ("Content-Length".equalsIgnoreCase(entry.getKey())){
                     continue;
                 }
+                // user 不再放到 header 中,数据传输量较大,json 还会报错
                 if ("user".equalsIgnoreCase(entry.getKey())){
                     continue;
                 }
