@@ -121,14 +121,13 @@ public class AuthHelper extends BaseHelper {
         if (req == null) {
             return null;
         }
-        /* user 不再放到 header 中,数据传输量较大,json 还会报错
+        // user
         userStr = req.getHeader("user");
         if (StringUtils.isNotBlank(userStr)){
             MDC.put("user", userStr);
             User user = JSONObject.parseObject(userStr, User.class);
             return user;
         }
-        */
         // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户
         boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
         if (checkAccessUriResult){
@@ -388,14 +387,14 @@ public class AuthHelper extends BaseHelper {
     public User checkUserSession(HttpServletRequest req) {
         User user = getUserIfLogin();
         if (user != null) {
+            if (user.getTenantId() != null){
+                MDC.put(LogTraceHelper.TENANT_ID, user.getTenantId()+"");
+            }
             if (user.getUserId() != null){
-                MDC.put("userId", user.getUserId()+"");
+                MDC.put(LogTraceHelper.USER_ID, user.getUserId()+"");
             }
             if (user.getAuthId() != null){
-                MDC.put("authId", user.getAuthId()+"");
-            }
-            if (user.getTenantId() != null){
-                MDC.put("tenantId", user.getTenantId()+"");
+                MDC.put(LogTraceHelper.AUTH_ID, user.getAuthId()+"");
             }
         }
         return user;

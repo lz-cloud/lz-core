@@ -70,20 +70,20 @@ public class TenantDomainHelper extends BaseHelper {
      * @return
      */
     public Long getTenantId() {
-        String tenantIdStr = MDC.get("tenantId");
+        String tenantIdStr = MDC.get(LogTraceHelper.TENANT_ID);
         if (tenantIdStr != null){
             return Long.valueOf(tenantIdStr);
         }
 
         HttpServletRequest req = RequestHelper.getRequest();
         if (req == null) {
-            MDC.put("tenantId", "-1");
+            MDC.put(LogTraceHelper.TENANT_ID, "-1");
             return -1L;
         }
 
-        tenantIdStr = req.getHeader("tenantId");
+        tenantIdStr = req.getHeader(LogTraceHelper.TENANT_ID);
         if (tenantIdStr != null){
-            MDC.put("tenantId", tenantIdStr);
+            MDC.put(LogTraceHelper.TENANT_ID, tenantIdStr);
             return Long.valueOf(tenantIdStr);
         }
 
@@ -101,13 +101,13 @@ public class TenantDomainHelper extends BaseHelper {
         Object tenantIdObj = tenantDomains.get(domain);
         if (tenantIdObj != null) {
             Long tenantId = Long.valueOf(tenantIdObj.toString());
-            MDC.put("tenantId", tenantId + "");
+            MDC.put(LogTraceHelper.TENANT_ID, tenantId + "");
             return tenantId;
         }
 
         if (RegularUtil.isIp(domain)){
             tenantIdObj = -1L;
-            MDC.put("tenantId", tenantIdObj + "");
+            MDC.put(LogTraceHelper.TENANT_ID, tenantIdObj + "");
             return -1L;
         }
 

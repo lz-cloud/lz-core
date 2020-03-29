@@ -106,13 +106,15 @@ public class MapUtil {
         }
         T obj = null;
         try {
-            obj = clazz.newInstance();
+            obj = clazz.getDeclaredConstructor().newInstance();
             BeanUtils.populate(obj, map);
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
             logger.error(e.getMessage(), e);
         } catch (InvocationTargetException e) {
+            logger.error(e.getMessage(), e);
+        } catch (NoSuchMethodException e) {
             logger.error(e.getMessage(), e);
         }
         return obj;

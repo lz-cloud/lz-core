@@ -2,8 +2,8 @@ package com.wkclz.core.config.handler;
 
 import com.wkclz.core.base.Result;
 import com.wkclz.core.exception.BizException;
-import com.wkclz.core.helper.TraceHelper;
-import org.jboss.logging.MDC;
+import com.wkclz.core.helper.LogTraceHelper;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,16 +16,16 @@ import javax.servlet.http.HttpServletResponse;
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
 @Component
-public class TraceHandler implements HandlerInterceptor {
+public class LogTraceHandler implements HandlerInterceptor {
 
     @Autowired
-    private TraceHelper traceHelper;
+    private LogTraceHelper logTraceHelper;
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {
         try {
             MDC.clear();
-            traceHelper.checkTraceInfo(req, rep);
+            logTraceHelper.checkTraceInfo(req, rep);
         } catch (Exception e){
             Result error;
             BizException bizException = getBizException(e);

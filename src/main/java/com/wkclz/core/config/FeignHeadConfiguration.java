@@ -1,17 +1,15 @@
 package com.wkclz.core.config;
 
 
-import com.wkclz.core.helper.TraceHelper;
-import com.wkclz.core.pojo.entity.TraceInfo;
+import com.wkclz.core.helper.LogTraceHelper;
 import feign.RequestInterceptor;
-import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -31,38 +29,36 @@ public class FeignHeadConfiguration {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            Map<String, Object> map = MDC.getMap();
-            Set<Map.Entry<String, Object>> entries = map.entrySet();
-            for (Map.Entry<String, Object> entry : entries) {
-                if ("Content-Type".equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                if ("Content-Length".equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                // user 不再放到 header 中,数据传输量较大,json 还会报错
-                if ("user".equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                if (TraceHelper.SERVICE_ID.equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                if (TraceHelper.INSTANCE_ID.equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                if (TraceHelper.UPSTREAM_SERVICE_ID.equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                if (TraceHelper.UPSTREAM_INSTANCE_ID.equalsIgnoreCase(entry.getKey())){
-                    continue;
-                }
-                requestTemplate.header(entry.getKey(), entry.getValue().toString());
+            Map<String, String> map = MDC.getCopyOfContextMap();
+
+            // 日志跟踪信息
+            if (map.get(LogTraceHelper.ORIGIN_IP) != null){
+                requestTemplate.header(LogTraceHelper.ORIGIN_IP, map.get(LogTraceHelper.ORIGIN_IP));
+            }
+            if (map.get(LogTraceHelper.UPSTREAM_IP) != null){
+                requestTemplate.header(LogTraceHelper.UPSTREAM_IP, map.get(LogTraceHelper.UPSTREAM_IP));
+            }
+            if (map.get(LogTraceHelper.TRACE_ID) != null){
+                requestTemplate.header(LogTraceHelper.TRACE_ID, map.get(LogTraceHelper.TRACE_ID));
+            }
+            if (map.get(LogTraceHelper.SPAN_ID) != null){
+                requestTemplate.header(LogTraceHelper.SPAN_ID, map.get(LogTraceHelper.SPAN_ID));
             }
 
-            // zuul, gateway, feign 请求开始时，附加 upstream 信息【当前位置】
-            // HandlerInterceptor 请接收请求，获取 upstream 信息
-            requestTemplate.header(TraceHelper.UPSTREAM_SERVICE_ID, TraceInfo.getServiceId());
-            requestTemplate.header(TraceHelper.UPSTREAM_INSTANCE_ID, TraceInfo.getInstanceId());
+            if (map.get(LogTraceHelper.SPAN_ID) != null){
+                requestTemplate.header(LogTraceHelper.SPAN_ID, map.get(LogTraceHelper.SPAN_ID));
+            }
+
+            // 用户跟踪信息
+            if (map.get(LogTraceHelper.TENANT_ID) != null){
+                requestTemplate.header(LogTraceHelper.TENANT_ID, map.get(LogTraceHelper.TENANT_ID));
+            }
+            if (map.get(LogTraceHelper.AUTH_ID) != null){
+                requestTemplate.header(LogTraceHelper.AUTH_ID, map.get(LogTraceHelper.AUTH_ID));
+            }
+            if (map.get(LogTraceHelper.USER_ID) != null){
+                requestTemplate.header(LogTraceHelper.USER_ID, map.get(LogTraceHelper.USER_ID));
+            }
         };
     }
 }

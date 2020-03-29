@@ -102,13 +102,17 @@ public class BeanUtil {
         List<T> list = new ArrayList<>();
         try {
             for (S s : source) {
-                T t = clazz.newInstance();
+                T t = clazz.getDeclaredConstructor().newInstance();
                 cp(s, t);
                 list.add(t);
             }
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        } catch (NoSuchMethodException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
         return list;

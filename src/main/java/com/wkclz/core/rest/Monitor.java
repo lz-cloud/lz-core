@@ -3,18 +3,13 @@ package com.wkclz.core.rest;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.helper.IpHelper;
-import com.wkclz.core.helper.TraceHelper;
-import com.wkclz.core.pojo.entity.TraceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @RestController
 public class Monitor {
@@ -59,17 +54,5 @@ public class Monitor {
         Properties properties = System.getProperties();
         return Result.data(properties);
     }
-
-    /**
-     * 4. 监控-调用链
-     * @return
-     */
-    @GetMapping(Routes.MONITOR_TRACE)
-    public Result monitorTrace(){
-        Map<String, TraceInfo> serviceTracesMap = TraceHelper.SERVICE_TRACES;
-        List<TraceInfo> serviceTraces = serviceTracesMap.values().stream().collect(Collectors.toList());
-        return Result.data(serviceTraces);
-    }
-
 
 }

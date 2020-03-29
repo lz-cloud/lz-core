@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
@@ -93,7 +94,7 @@ public class PropUtil {
         }
         Object obj = null;
         try {
-            obj = clazz.newInstance();
+            obj = clazz.getDeclaredConstructor().newInstance();
             Field[] declaredFields = obj.getClass().getDeclaredFields();
             for (Field field : declaredFields) {
                 int mod = field.getModifiers();
@@ -106,6 +107,10 @@ public class PropUtil {
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        } catch (NoSuchMethodException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
         return obj;

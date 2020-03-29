@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
-import com.wkclz.core.helper.TraceHelper;
 import com.wkclz.core.pojo.enums.EnvType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,7 +12,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -49,9 +47,6 @@ public class RestAop {
         "|| @within(org.springframework.web.bind.annotation.RestController)" +
         ") && !execution(* org.springframework..*.*(..))";
 
-    @Autowired
-    private TraceHelper traceHelper;
-
     @Pointcut(POINT_CUT)
     public void pointCut() {
     }
@@ -71,10 +66,7 @@ public class RestAop {
     private Object servletRequestHandle(ProceedingJoinPoint point) throws Throwable {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest req = requestAttributes.getRequest();
-        HttpServletResponse rep = requestAttributes.getResponse();
-
-        // 追踪信息
-        traceHelper.checkTraceInfo(req, rep);
+        // HttpServletResponse rep = requestAttributes.getResponse();
 
         String method = req.getMethod();
         String uri = req.getRequestURI();
