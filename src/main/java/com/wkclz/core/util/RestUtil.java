@@ -62,30 +62,24 @@ public class RestUtil {
                 String desc = null;
                 RequestMethod requestMethod = null;
                 for (Annotation annotation : annotations) {
-                    if (GetMapping.class == annotation.annotationType() ) {
-                        GetMapping get = (GetMapping) annotation;
-                        requestMethod = RequestMethod.GET;
-                        String[] values = get.value();
+                    if (RequestMapping.class == annotation.annotationType()) {
+                        RequestMapping request = (RequestMapping) annotation;
+                        RequestMethod[] requestMethods = request.method();
+                        requestMethod = requestMethods.length > 0 ? requestMethods[0]:RequestMethod.GET;
+                        String[] values = request.value();
                         uri = values.length == 0 ? null : values[0];
                         continue;
                     }
-                    if (RequestMapping.class == annotation.annotationType()) {
-                        RequestMapping get = (RequestMapping) annotation;
+                    if (GetMapping.class == annotation.annotationType() ) {
+                        GetMapping request = (GetMapping) annotation;
                         requestMethod = RequestMethod.GET;
-                        String[] values = get.value();
+                        String[] values = request.value();
                         uri = values.length == 0 ? null : values[0];
                         continue;
                     }
                     if (PostMapping.class == annotation.annotationType()) {
-                        PostMapping post = (PostMapping) annotation;
+                        PostMapping request = (PostMapping) annotation;
                         requestMethod = RequestMethod.POST;
-                        String[] values = post.value();
-                        uri = values.length == 0 ? null : values[0];
-                        continue;
-                    }
-                    if (DeleteMapping.class == annotation.annotationType()) {
-                        DeleteMapping request = (DeleteMapping) annotation;
-                        requestMethod = RequestMethod.DELETE;
                         String[] values = request.value();
                         uri = values.length == 0 ? null : values[0];
                         continue;
@@ -93,6 +87,13 @@ public class RestUtil {
                     if (PutMapping.class == annotation.annotationType()) {
                         PutMapping request = (PutMapping) annotation;
                         requestMethod = RequestMethod.PUT;
+                        String[] values = request.value();
+                        uri = values.length == 0 ? null : values[0];
+                        continue;
+                    }
+                    if (DeleteMapping.class == annotation.annotationType()) {
+                        DeleteMapping request = (DeleteMapping) annotation;
+                        requestMethod = RequestMethod.DELETE;
                         String[] values = request.value();
                         uri = values.length == 0 ? null : values[0];
                         continue;
@@ -106,10 +107,18 @@ public class RestUtil {
                     }
 
                     // 不是rest 接口的注解
-                    if (null != uri || requestMethod == null) {
+                    if (StringUtils.isBlank(uri) || requestMethod == null) {
                         continue;
                     }
                 }
+
+                if (uri == null){
+                    continue;
+                }
+                if (!uri.startsWith("/")){
+                    uri = "/" + uri;
+                }
+
                 // 确定是 rest 接口，提取信息
                 if (requestMethod != null) {
                     RestInfo restInfo = new RestInfo();
