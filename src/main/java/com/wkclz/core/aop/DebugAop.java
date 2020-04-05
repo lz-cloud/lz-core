@@ -1,13 +1,19 @@
 package com.wkclz.core.aop;
 
+import com.wkclz.core.base.annotation.Debug;
 import com.wkclz.core.helper.DebugHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * FeignAop
@@ -27,7 +33,7 @@ public class DebugAop {
      */
 
     private static final Logger logger = LoggerFactory.getLogger(DebugAop.class);
-    private final String POINT_CUT = "@within(com.wkclz.core.base.annotation.Debug)";
+    private final String POINT_CUT = "@annotation(com.wkclz.core.base.annotation.Debug)";
 
 
     @Pointcut(POINT_CUT)
@@ -43,15 +49,35 @@ public class DebugAop {
      */
     @Around(value = POINT_CUT)
     public Object doAroundAdvice(ProceedingJoinPoint point) throws Throwable {
-        DebugHelper.debugStart();
-        Object obj = null;
+
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        Annotation[] declaredAnnotations = method.getDeclaredAnnotations();
+        String debugInfo = null;
+        for (Annotation declaredAnnotation : declaredAnnotations) {
+            if (declaredAnnotation.annotationType() == Debug.class){
+                Debug debug = (Debug)declaredAnnotation;
+                debugInfo = debug.value();
+                break;
+            }
+        }
+        if (StringUtils.isBlank(debugInfo)){
+            debugInfo = method.getDeclaringClass().getName() + "." + method.getName();
+        }
+
+        Method debugStart = DebugHelper.class.getDeclaredMethod("debugStart", String.class);
+        Method debugEnd = DebugHelper.class.getDeclaredMethod("debugEnd", null);
+        debugStart.setAccessible(true);
+        debugEnd.setAccessible(true);
+        debugStart.invoke(null,debugInfo);
+
+        Object obj;
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            DebugHelper.debugEnd();
+            debugEnd.invoke(null, null);
             throw throwable;
         }
-        DebugHelper.debugEnd();
+        debugEnd.invoke(null, null);
         return obj;
     }
 

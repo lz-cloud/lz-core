@@ -1,9 +1,6 @@
 package com.wkclz.core.base.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * Created by wangkc on 2018/06/07.
@@ -11,9 +8,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Inherited
+@Target({ElementType.METHOD})//作用域是类或者接口,或者方法 // 不限制使用位置
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Debug {
 
-    String value();
+    String value() default "";
 
 }

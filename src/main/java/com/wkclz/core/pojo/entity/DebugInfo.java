@@ -5,6 +5,8 @@ public class DebugInfo {
 
     private String debugId;
 
+    private String info;
+
     private Long startTime;
 
     private Long upperTime;
@@ -21,6 +23,14 @@ public class DebugInfo {
 
     public void setDebugId(String debugId) {
         this.debugId = debugId;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public Long getStartTime() {
