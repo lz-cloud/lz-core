@@ -1,10 +1,6 @@
 package com.wkclz.core.aop;
 
-
-import com.netflix.client.ClientException;
-import com.wkclz.core.base.Result;
-import com.wkclz.core.exception.BizException;
-import com.wkclz.core.pojo.enums.ResultStatus;
+import com.wkclz.core.helper.DebugHelper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class FeignAop {
+public class DebugAop {
 
     /**
      * : @Around环绕通知
@@ -30,8 +26,8 @@ public class FeignAop {
      * : @AfterReturning第一个后置返回通知的返回值：18
      */
 
-    private static final Logger logger = LoggerFactory.getLogger(FeignAop.class);
-    private final String POINT_CUT = "@within(org.springframework.cloud.openfeign.FeignClient)";
+    private static final Logger logger = LoggerFactory.getLogger(DebugAop.class);
+    private final String POINT_CUT = "@within(com.wkclz.core.base.annotation.Debug)";
 
 
     @Pointcut(POINT_CUT)
@@ -46,35 +42,16 @@ public class FeignAop {
      * 环绕通知第一个参数必须是org.aspectj.lang.ProceedingJoinPoint类型
      */
     @Around(value = POINT_CUT)
-    public Object doAroundAdvice(ProceedingJoinPoint point) {
-
+    public Object doAroundAdvice(ProceedingJoinPoint point) throws Throwable {
+        DebugHelper.debugStart();
         Object obj = null;
         try {
             obj = point.proceed();
         } catch (Throwable throwable) {
-            logger.error(throwable.getMessage(), throwable);
-            // feign 可判别异常
-            if (throwable instanceof RuntimeException && throwable.getCause() instanceof ClientException){
-                throw BizException.result(ResultStatus.NO_AVAILABLE_SERVER.getCode(), throwable.getMessage());
-            }
-
-            // 其他异常
-            throw BizException.error(ResultStatus.UNKNOWN_RIBBON_ERROR);
+            DebugHelper.debugEnd();
+            throw throwable;
         }
-
-        // 请求成功，解析请求结果
-        if (obj == null){
-            return obj;
-        }
-        if (obj instanceof Result){
-            Result result = (Result) obj;
-            Integer code = result.getCode();
-            if (code != 1 ) {
-                BizException error = BizException.error(result.getMsg());
-                error.setCode(code);
-                throw error;
-            }
-        }
+        DebugHelper.debugEnd();
         return obj;
     }
 

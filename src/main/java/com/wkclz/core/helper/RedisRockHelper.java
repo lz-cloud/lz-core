@@ -1,6 +1,7 @@
 package com.wkclz.core.helper;
 
 import cn.hutool.core.date.DateUtil;
+import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisRockHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisRockHelper.class);
+    private static final String REDIS_LOCK_PREFIS = "lock:";
 
     @Autowired(required = false)
     private RedisTemplate redisTemplate;
@@ -49,6 +51,7 @@ public class RedisRockHelper {
             throw BizException.error("second can not be null");
         }
         long currentTimeMillis = System.currentTimeMillis();
+        key = getKey(key);
         boolean boo = redisTemplate.opsForValue().setIfAbsent(key, currentTimeMillis + "", second, TimeUnit.SECONDS);
         if (!boo){
             Object o = redisTemplate.opsForValue().get(key);
@@ -73,10 +76,17 @@ public class RedisRockHelper {
         if(StringUtils.isBlank(key)){
             throw BizException.error("key can not be null");
         }
+        key = getKey(key);
         boolean boo = redisTemplate.delete(key);
         return boo;
     }
 
+
+    private static String getKey(String key){
+        String finalKey = REDIS_LOCK_PREFIS + Sys.CURRENT_ENV + ":" + Sys.APPLICATION_GROUP + ":" + Sys.APPLICATION_NAME + ":";
+        finalKey = finalKey + key;
+        return finalKey;
+    }
 
 
 }
