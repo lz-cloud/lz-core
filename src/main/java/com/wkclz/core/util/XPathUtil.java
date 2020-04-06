@@ -162,32 +162,53 @@ public class XPathUtil {
         }
 
         // 找到 leaf 了, 没有下一级
-        if (!(object instanceof JSONObject)){
+        if (!(object instanceof JSONObject) && !(object instanceof HashMap) ){
             values.put(basePath, object.toString());
             return values;
         }
 
-        JSONObject jsonObject = (JSONObject) object;
-
-        Set<String> keySet = jsonObject.keySet();
-        for (String key : keySet) {
-            String path = basePath + "/" + key;
-
-            // 空，找到尽头
-            Object o = jsonObject.get(key);
-
-            // 有下一级，还是数组
-            if (o != null && (o instanceof JSONArray)){
-                JSONArray jsonArray = (JSONArray) o;
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    json2Map(jsonArray.get(i), path + "[" + i + "]" , values);
+        //  JSONObject 场景
+        if (object instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject) object;
+            Set<String> keySet = jsonObject.keySet();
+            for (String key : keySet) {
+                String path = basePath + "/" + key;
+                // 空，找到尽头
+                Object o = jsonObject.get(key);
+                // 有下一级，还是数组
+                if (o != null && (o instanceof JSONArray)){
+                    JSONArray jsonArray = (JSONArray) o;
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        json2Map(jsonArray.get(i), path + "[" + i + "]" , values);
+                    }
+                    continue;
                 }
-                continue;
+                // 有下一级，是对象, 或没下一级
+                json2Map(o, path, values);
             }
-
-            // 有下一级，是对象, 或没下一级
-            json2Map(o, path, values);
         }
+
+        //  HashMap 场景
+        if (object instanceof HashMap){
+            Map map = (HashMap) object;
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                String path = basePath + "/" + key;
+                // 空，找到尽头
+                Object o = map.get(key);
+                // 有下一级，还是数组
+                if (o != null && (o instanceof JSONArray)){
+                    JSONArray jsonArray = (JSONArray) o;
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        json2Map(jsonArray.get(i), path + "[" + i + "]" , values);
+                    }
+                    continue;
+                }
+                // 有下一级，是对象, 或没下一级
+                json2Map(o, path, values);
+            }
+        }
+
         return values;
     }
 
