@@ -128,24 +128,24 @@ public class JPathUtil {
     }
 
     /**
-     * 从 JSONObject 内查找 xPath
+     * 从 JSONObject 内查找 jPath
      * @param objectStr
      * @return
      */
-    public static Map<String, String> xPathDiscovery(String objectStr){
-        return xPathDiscovery(objectStr, null, null);
+    public static Map<String, String> jPathDiscovery(String objectStr){
+        return jPathDiscovery(objectStr, null, null);
     }
-    public static Map<String, String> xPathDiscovery(JSONObject jsonObject){
-        return xPathDiscovery(jsonObject, null, null);
+    public static Map<String, String> jPathDiscovery(JSONObject jsonObject){
+        return jPathDiscovery(jsonObject, null, null);
     }
-    public static Map<String, String> xPathDiscovery(String objectStr, String key, String value){
+    public static Map<String, String> jPathDiscovery(String objectStr, String key, String value){
         if (StringUtils.isBlank(objectStr)){
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(objectStr);
-        return xPathDiscovery(jsonObject, key, value);
+        return jPathDiscovery(jsonObject, key, value);
     }
-    public static Map<String, String> xPathDiscovery(JSONObject jsonObject, String key, String value){
+    public static Map<String, String> jPathDiscovery(JSONObject jsonObject, String key, String value){
         if (jsonObject == null){
             return null;
         }
@@ -163,7 +163,7 @@ public class JPathUtil {
     }
 
     /**
-     * 递归还原 xpath
+     * 递归还原 jpath
      * @param object
      * @param basePath
      * @param values
@@ -238,7 +238,7 @@ public class JPathUtil {
         HttpRequest get = HttpUtil.createGet(url);
         HttpResponse execute = get.execute();
         String body = execute.body();
-        Map<String, String> xx = xPathDiscovery(body, "mysql");
+        Map<String, String> xx = jPathDiscovery(body, "mysql");
        System.out.println(xx);
     }
     */
