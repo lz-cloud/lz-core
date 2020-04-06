@@ -10,29 +10,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class XPathUtil {
+public class JPathUtil {
 
     /**
-     * xPpath 找 json
+     * jPpath 找 json
      * @param objectStr
-     * @param xPpath
+     * @param jPpath
      * @return
      */
-    public static String path(String objectStr, String xPpath){
+    public static String path(String objectStr, String jPpath){
         if (StringUtils.isBlank(objectStr)){
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(objectStr);
-        return path(jsonObject, xPpath);
+        return path(jsonObject, jPpath);
     }
-    public static String path(JSONObject jsonObject, String xPpath){
+    public static String path(JSONObject jsonObject, String jPpath){
         if (jsonObject == null){
             return null;
         }
-        if (StringUtils.isBlank(xPpath)){
+        if (StringUtils.isBlank(jPpath)){
             return null;
         }
-        Object result = pathValue(jsonObject, xPpath);
+        Object result = pathValue(jsonObject, jPpath);
         return (result == null) ? null:result.toString();
     }
 
@@ -40,25 +40,25 @@ public class XPathUtil {
 
 
     /**
-     * xPpath 找 json, 递归
+     * jPpath 找 json, 递归
      * @param object
-     * @param xPpath
+     * @param jPpath
      * @return
      */
-    private static Object pathValue(Object object, String xPpath){
-        if (object == null || xPpath == null){
+    private static Object pathValue(Object object, String jPpath){
+        if (object == null || jPpath == null){
             return object;
         }
-        if (xPpath.startsWith("/")){
-            xPpath = xPpath.substring(1);
+        if (jPpath.startsWith("/")){
+            jPpath = jPpath.substring(1);
         }
 
-        boolean isNode = xPpath.contains("/");
-        String path = isNode? (xPpath.substring(0, xPpath.indexOf("/"))):xPpath;
-        String nexPath = isNode? xPpath.substring(xPpath.indexOf("/") +1):null;
+        boolean isNode = jPpath.contains("/");
+        String path = isNode? (jPpath.substring(0, jPpath.indexOf("/"))):jPpath;
+        String nexPath = isNode? jPpath.substring(jPpath.indexOf("/") +1):null;
 
         if (StringUtils.isBlank(path)){
-            throw BizException.error("path {} contain empty element, please check!", xPpath);
+            throw BizException.error("path {} contain empty element, please check!", jPpath);
         }
 
         // 【数组】
