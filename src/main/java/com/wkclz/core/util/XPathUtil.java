@@ -41,6 +41,9 @@ public class XPathUtil {
         if (object == null || xPpath == null){
             return object;
         }
+        if (xPpath.startsWith("/")){
+            xPpath = xPpath.substring(1);
+        }
 
         boolean isNode = xPpath.contains("/");
         String path = isNode? (xPpath.substring(0, xPpath.indexOf("/"))):xPpath;
@@ -99,10 +102,11 @@ public class XPathUtil {
     /**
      * 从 JSONObject 内查找 xPath
      * @param objectStr
-     * @param keyword
+     * @param key
+     * @param value
      * @return
      */
-    public static Map<String, String> xPathDiscovery(String objectStr, String keyword){
+    public static Map<String, String> xPathDiscovery(String objectStr, String key, String value){
         if (StringUtils.isBlank(objectStr)){
             return null;
         }
@@ -110,11 +114,12 @@ public class XPathUtil {
         // 整理成 map
         Map<String, String> json2Map = json2Map(jsonObject, null, null);
 
-        if (keyword == null){
-            return json2Map;
+        if (StringUtils.isNotBlank(key)){
+            json2Map = json2Map.entrySet().stream().filter(entry -> entry.getKey().contains(key)).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
         }
-
-        json2Map = json2Map.entrySet().stream().filter(entry -> entry.getValue().contains(keyword)).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+        if (StringUtils.isNotBlank(value)){
+            json2Map = json2Map.entrySet().stream().filter(entry -> entry.getValue().contains(value)).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+        }
         // 值匹配
         return json2Map;
     }
@@ -126,7 +131,7 @@ public class XPathUtil {
      * @param values
      * @return
      */
-    public static Map<String, String> json2Map(Object object, String basePath, Map<String, String> values){
+    private static Map<String, String> json2Map(Object object, String basePath, Map<String, String> values){
         if (object == null){
             values.put(basePath, "");
             return values;
