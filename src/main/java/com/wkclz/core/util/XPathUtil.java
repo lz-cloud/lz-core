@@ -68,7 +68,7 @@ public class XPathUtil {
             String idx = path.substring(path.indexOf("[")+1, path.length() -1);
             Integer index = Integer.valueOf(idx);
 
-            // 第一步提取出数组
+            // 第一步提取出数组【 HaskMap 数组情况暂未考虑】
             JSONObject tmp = (JSONObject) object;
             Object arrayObject = tmp.get(p);
 
@@ -86,25 +86,45 @@ public class XPathUtil {
             }
         }
 
-        JSONObject jsonObject = (JSONObject) object;
 
-        // 【对象】* 匹配
-        if ("*".equals(path)){
-            Set<String> keys = jsonObject.keySet();
-            for (String key : keys) {
-                Object o = jsonObject.get(key);
-                Object value = pathValue(o, nexPath);
-                if (value != null){
-                    return value;
+        if (object instanceof  JSONObject){
+            JSONObject jsonObject = (JSONObject) object;
+            // 【对象】* 匹配
+            if ("*".equals(path)){
+                Set<String> keys = jsonObject.keySet();
+                for (String key : keys) {
+                    Object o = jsonObject.get(key);
+                    Object value = pathValue(o, nexPath);
+                    if (value != null){
+                        return value;
+                    }
                 }
+                return null;
             }
-            return null;
+            // 【对象】唯一匹配
+            Object o = jsonObject.get(path);
+            return pathValue(o, nexPath);
+        }
+        if (object instanceof  HashMap){
+            Map map = (HashMap) object;
+            // 【对象】* 匹配
+            if ("*".equals(path)){
+                Set<String> keys = map.keySet();
+                for (String key : keys) {
+                    Object o = map.get(key);
+                    Object value = pathValue(o, nexPath);
+                    if (value != null){
+                        return value;
+                    }
+                }
+                return null;
+            }
+            // 【对象】唯一匹配
+            Object o = map.get(path);
+            return pathValue(o, nexPath);
         }
 
-
-        // 【对象】唯一匹配
-        Object o = jsonObject.get(path);
-        return pathValue(o, nexPath);
+        return null;
     }
 
     /**
