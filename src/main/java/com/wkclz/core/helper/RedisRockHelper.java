@@ -56,7 +56,6 @@ public class RedisRockHelper {
         if (!boo){
             Object o = redisTemplate.opsForValue().get(key);
             if (o == null){
-                logger.error("");
                 throw BizException.error("found lock {}, but can not found value!", key);
             }
             Long aLong = Long.valueOf(o.toString());
