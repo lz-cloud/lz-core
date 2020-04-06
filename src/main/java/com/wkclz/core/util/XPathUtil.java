@@ -22,13 +22,21 @@ public class XPathUtil {
         if (StringUtils.isBlank(objectStr)){
             return null;
         }
+        JSONObject jsonObject = JSONObject.parseObject(objectStr);
+        return path(jsonObject, xPpath);
+    }
+    public static String path(JSONObject jsonObject, String xPpath){
+        if (jsonObject == null){
+            return null;
+        }
         if (StringUtils.isBlank(xPpath)){
             return null;
         }
-        JSONObject jsonObject = JSONObject.parseObject(objectStr);
         Object result = pathValue(jsonObject, xPpath);
         return (result == null) ? null:result.toString();
     }
+
+
 
 
     /**
@@ -102,15 +110,25 @@ public class XPathUtil {
     /**
      * 从 JSONObject 内查找 xPath
      * @param objectStr
-     * @param key
-     * @param value
      * @return
      */
+    public static Map<String, String> xPathDiscovery(String objectStr){
+        return xPathDiscovery(objectStr, null, null);
+    }
+    public static Map<String, String> xPathDiscovery(JSONObject jsonObject){
+        return xPathDiscovery(jsonObject, null, null);
+    }
     public static Map<String, String> xPathDiscovery(String objectStr, String key, String value){
         if (StringUtils.isBlank(objectStr)){
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(objectStr);
+        return xPathDiscovery(jsonObject, key, value);
+    }
+    public static Map<String, String> xPathDiscovery(JSONObject jsonObject, String key, String value){
+        if (jsonObject == null){
+            return null;
+        }
         // 整理成 map
         Map<String, String> json2Map = json2Map(jsonObject, null, null);
 
