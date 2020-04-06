@@ -3,8 +3,6 @@ package com.wkclz.core.helper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.pojo.enums.EnvType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +13,6 @@ import java.util.*;
  * Created: wangkaicun @ 2018-03-07 下午10:17
  */
 public class BaseHelper {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(BaseHelper.class);
-
 
     private static final Integer SESSION_LIVE_TIME_DEV = 24 * 60 * 60;
     private static final Integer SESSION_LIVE_TIME_SIT = 24 * 60 * 60;
