@@ -77,7 +77,7 @@ public class AuthHelper extends BaseHelper {
         MDC.put("user", JSONObject.toJSONString(user));
 
         // 设置 redis
-        String redisKey = token.getRedisKey();
+        String redisKey = token.contactRedisKey();
         String userStr = JSONObject.toJSONString(user);
         stringRedisTemplate.opsForValue().set(redisKey, userStr);
         stringRedisTemplate.expire(redisKey, getSessionLiveTime(), TimeUnit.SECONDS);
@@ -148,9 +148,9 @@ public class AuthHelper extends BaseHelper {
         if (StringUtils.isBlank(tokenStr)) {
             return null;
         }
-        Token token = Token.getToken(tokenStr);
+        Token token = Token.decodeToken(tokenStr);
 
-        String redisKey = token.getRedisKey();
+        String redisKey = token.contactRedisKey();
         String userStr = stringRedisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isBlank(userStr)) {
             logger.error("can find anything to get user info, please login at first!");
@@ -177,8 +177,8 @@ public class AuthHelper extends BaseHelper {
             return;
         }
         MDC.remove("user");
-        Token token = Token.getToken(tokenStr);
-        stringRedisTemplate.expireAt(token.getRedisKey(), new Date());
+        Token token = Token.decodeToken(tokenStr);
+        stringRedisTemplate.expireAt(token.contactRedisKey(), new Date());
         expireCookie(req, rep, "token");
     }
 
@@ -304,7 +304,7 @@ public class AuthHelper extends BaseHelper {
             return result;
         }
 
-        Token token = Token.getToken(tokenStr);
+        Token token = Token.decodeToken(tokenStr);
         // token 签名
         String sign = token.makeSign();
         if (!sign.equals(token.getSign())) {

@@ -76,7 +76,7 @@ public class Token {
         return null;
     }
 
-    public String genRedisKey() {
+    public String contactRedisKey() {
         String redisKey = Sys.APPLICATION_GROUP + ":" + this.authId + ":" + this.userId + ":" + this.token;
         return redisKey;
     }
