@@ -15,19 +15,17 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 @Configuration
 public class RedisTopicConfig {
 
+    public final static String CACHE_CONFIG_TOPIC = "cache-config-topic";
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-
     @Bean
     public ConsumerRedisListener consumerRedis() {
         return new ConsumerRedisListener();
     }
-
     @Bean
     public ChannelTopic topic() {
-        return new ChannelTopic("string-topic");
+        return new ChannelTopic(CACHE_CONFIG_TOPIC);
     }
-
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();

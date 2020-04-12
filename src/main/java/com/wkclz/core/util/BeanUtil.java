@@ -33,7 +33,7 @@ public class BeanUtil {
             return null;
         }
         try {
-            List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptor(obj.getClass());
+            List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptors(obj.getClass());
             for (PropertyDescriptor property : propertyDescriptors) {
                 Method getter = property.getReadMethod();
                 Object value = getter.invoke(obj);
@@ -50,7 +50,33 @@ public class BeanUtil {
         return obj;
     }
 
-    private static List<PropertyDescriptor> getPropertyDescriptor(Class clazz){
+
+    // 获取对象中有值的方法
+    public static <T> List<Method> getValuedList(T param){
+        List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptors(param.getClass());
+        List<Method> list = null;
+        for (PropertyDescriptor property : propertyDescriptors) {
+            Method getter = property.getReadMethod();
+            Object value = null;
+            try {
+                value = getter.invoke(param);
+            } catch (IllegalAccessException e) {
+                logger.error(e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                logger.error(e.getMessage(), e);
+            }
+            if (value != null) {
+                if (list == null){
+                    list = new ArrayList<>();
+                }
+                list.add(getter);
+            }
+        }
+        return list;
+    }
+
+
+    public static List<PropertyDescriptor> getPropertyDescriptors(Class clazz){
         List<PropertyDescriptor> propertyDescriptors = PROPERTY_DESCRIPTORS.get(clazz.getName());
         if (propertyDescriptors != null){
             return propertyDescriptors;
@@ -68,7 +94,6 @@ public class BeanUtil {
             logger.error(e.getMessage(), e);
         }
         return null;
-
     }
 
     /**
