@@ -23,7 +23,6 @@ public class Token {
         init();
     }
 
-
     public Token(Long authId, Long userId, String token) {
         this.authId = authId;
         this.userId = userId;
@@ -50,7 +49,6 @@ public class Token {
         this.sign = this.makeSign();
     }
 
-
     /**
      * Base64 编码
      */
@@ -66,7 +64,7 @@ public class Token {
      * @param base64
      * @return
      */
-    public static Token getToken(String base64) {
+    public static Token decodeToken(String base64) {
         try {
             String decode = URLDecoder.decode(base64, "UTF-8");
             byte[] base64Decode = SecretUtil.base64Decode(decode);
@@ -78,7 +76,7 @@ public class Token {
         return null;
     }
 
-    public String getRedisKey() {
+    public String genRedisKey() {
         String redisKey = Sys.APPLICATION_GROUP + ":" + this.authId + ":" + this.userId + ":" + this.token;
         return redisKey;
     }
