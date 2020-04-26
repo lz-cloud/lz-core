@@ -61,16 +61,14 @@ public class AuthHelper extends BaseHelper {
         User session = getUserIfLogin();
         if (session != null) {
             user = session;
-            if (user.getToken() != null) {
-                Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
-                addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
-                tokenMap.put("token", token.base64());
-                return tokenMap;
-            }
+            Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
+            addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
+            tokenMap.put("token", token.base64());
+            return tokenMap;
         }
 
         // session 对象
-        Token token = new Token(user.getAuthId(), user.getUserId());
+        Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
         user.setToken(token.getToken());
 
         // 设置线程变更
