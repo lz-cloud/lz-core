@@ -58,9 +58,9 @@ public class AuthHelper extends BaseHelper {
         Map<String, String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
-        Object session = getUserIfLogin();
+        User session = getUserIfLogin();
         if (session != null) {
-            user = (User) session;
+            user = session;
             if (user.getToken() != null) {
                 Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
                 addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
