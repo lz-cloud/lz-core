@@ -31,16 +31,16 @@ public class Apis {
         List<RestInfo> mappings = RestUtil.getMapping();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("import request from '@/utils/request'");
+        sb.append("import request from '@/utils/request';");
         sb.append(lineSeparator).append(lineSeparator);
         for (RestInfo mapping :mappings) {
             String funTemp;
             if (RequestMethod.GET.name().equals(mapping.getRequestMethod())) {
-                funTemp = "export function {}(params : any) { return request({ url: '{}', method: 'get', params: params }) } // {}";
+                funTemp = "// {}\nexport function {}(params: any) {\n  return request({ url: '{}', method: 'get', params });\n}";
             } else {
-                funTemp = "export function {}(data : any) { return request({ url: '{}', method: 'post', data: data }) } // {}";
+                funTemp = "// {}\nexport function {}(data: any) {\n  return request({ url: '{}', method: 'post', data });\n}";
             }
-            String fun = StrUtil.format(funTemp, mapping.getRestName(), router + mapping.getUri(), mapping.getRestDesc());
+            String fun = StrUtil.format(funTemp, mapping.getRestDesc(), mapping.getRestName(), router + mapping.getUri());
             sb.append(fun).append(lineSeparator);
         }
         return sb.toString();
