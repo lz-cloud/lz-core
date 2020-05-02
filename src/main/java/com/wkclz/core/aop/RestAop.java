@@ -1,6 +1,7 @@
 package com.wkclz.core.aop;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.Result;
@@ -41,11 +42,17 @@ public class RestAop {
      */
 
     private static final Logger logger = LoggerFactory.getLogger(RestAop.class);
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper;
     private final String POINT_CUT = "(" +
         "@within(org.springframework.stereotype.Controller) " +
         "|| @within(org.springframework.web.bind.annotation.RestController)" +
         ") && !execution(* org.springframework..*.*(..))";
+
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+    }
+
 
     @Pointcut(POINT_CUT)
     public void pointCut() {
