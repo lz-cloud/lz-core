@@ -2,6 +2,7 @@ package com.wkclz.core.pojo.dto;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.BaseHelper;
 import com.wkclz.core.util.SecretUtil;
 import org.slf4j.Logger;
@@ -72,8 +73,8 @@ public class Token {
             return token;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw BizException.error("token 解析失败");
         }
-        return null;
     }
 
     public String contactRedisKey() {
