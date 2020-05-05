@@ -73,7 +73,7 @@ public class Token {
             return token;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw BizException.error("token 解析失败");
+            throw BizException.error("token 解析失败:" + e.getMessage());
         }
     }
 
