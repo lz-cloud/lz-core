@@ -31,7 +31,7 @@ public class Result<T> {
      */
     private Integer code = -1;
 
-    private String msg;
+    private String msg = "success";
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date requestTime;
@@ -44,7 +44,7 @@ public class Result<T> {
     /**
      * 详情
      */
-    private T data;
+    private T data = (T)"error";
 
     public Result() {
     }
