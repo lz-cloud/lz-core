@@ -20,6 +20,12 @@ public class Apis {
     }
 
 
+    @GetMapping(Routes.APIS_REQUESTS)
+    public Result apisRequests(String router){
+        String s = apisCode(router);
+        return Result.data(s);
+    }
+
     @GetMapping(Routes.APIS_CODE)
     public String apisCode(String router){
 

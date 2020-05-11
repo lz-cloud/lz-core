@@ -16,8 +16,10 @@ public interface Routes {
 
     @Desc("1. 下载API 信息")
     String APIS_LIST = "/apis/list";
-    @Desc("2. 接口代码")
+    @Desc("2. 接口代码1")
     String APIS_CODE = "/apis/code";
+    @Desc("3. 接口代码2")
+    String APIS_REQUESTS = "/apis/requests";
 
 
     /**
