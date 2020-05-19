@@ -63,7 +63,7 @@ public class AuthHelper extends BaseHelper {
         if (session != null) {
             user = session;
             Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
-            addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
+            // addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
             tokenMap.put("token", token.base64());
             return tokenMap;
         }
@@ -90,7 +90,7 @@ public class AuthHelper extends BaseHelper {
             logger.info("正常登录请求，建立，uri: {}", req.getRequestURI());
         }
 
-        addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
+        // addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
 
         tokenMap.put("token", token.base64());
         return tokenMap;
