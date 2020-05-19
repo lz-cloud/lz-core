@@ -7,6 +7,7 @@ import com.wkclz.core.pojo.dto.Token;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.pojo.enums.SystemConfig;
+import com.wkclz.core.util.RegularUtil;
 import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -199,7 +200,9 @@ public class AuthHelper extends BaseHelper {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         String cookieDomain = getCookieDomain(req);
-        cookie.setDomain(cookieDomain);
+        if (!StringUtils.isBlank(cookieDomain) && !RegularUtil.isIp(cookieDomain) && !"localhost".equals(cookieDomain) ){
+            cookie.setDomain(cookieDomain);
+        }
 
         if (maxAge != null && maxAge > 0) {
             cookie.setMaxAge(maxAge);
