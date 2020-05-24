@@ -354,6 +354,7 @@ public class AuthHelper extends BaseHelper {
         // 管理后台
         String origin = req.getHeader("Origin");
         Long tenantId = getTenantId();
+        /*
         if (StringUtils.isNotBlank(origin) && tenantId != null && origin.contains("admin.")) {
             List<Long> adminIds = user.getAdminIds();
             if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(tenantId)) {
@@ -363,6 +364,7 @@ public class AuthHelper extends BaseHelper {
                 return result;
             }
         }
+        */
 
         // session检测，已经有session的， token 对的，放过
         if (user != null && !StringUtils.isBlank(user.getToken()) && token.getToken().equalsIgnoreCase(user.getToken())) {
