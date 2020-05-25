@@ -7,6 +7,7 @@ import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.PutObjectResult;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.util.DateUtil;
 import com.wkclz.core.util.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,47 +29,34 @@ import java.util.stream.Collectors;
 public class OssHelper {
     private static final Logger logger = LoggerFactory.getLogger(OssHelper.class);
 
+
+    /**
+     * 生成文件的全路径
+     *
+     * @param businessType
+     * @return
+     */
+    public static String genPath(String businessType) {
+
+        String appGroup = Sys.APPLICATION_GROUP.toLowerCase();
+        String env = Sys.CURRENT_ENV.toString().toLowerCase();
+        businessType = businessType.toLowerCase();
+        String yyyyMmDd = DateUtil.getYyyyMmDd(System.currentTimeMillis());
+        String path = "/" + appGroup + "/" + env + "/" + businessType + "/" + yyyyMmDd;
+        return path;
+    }
+
     /**
      * 生产上传文件名
      *
      * @param originalFilename
      * @return
      */
-    public static String genFileName(String originalFilename) {
-        Calendar calendar = Calendar.getInstance();
-        StringBuffer fileName = new StringBuffer();
-        fileName.append(calendar.get(Calendar.DAY_OF_MONTH))
-            .append(calendar.get(Calendar.HOUR_OF_DAY))
-            .append(calendar.get(Calendar.MINUTE))
-            .append(calendar.get(Calendar.SECOND))
-            .append(calendar.get(Calendar.MILLISECOND))
-            .append(UUID.randomUUID().toString())
-            .append(getExtFileName(originalFilename));
-        return fileName.toString();
-    }
-
-    private static String getExtFileName(String originFileName) {
-        return originFileName.substring(originFileName.lastIndexOf("."));
-    }
-
-    /**
-     * 生成文件的全路径
-     *
-     * @param businessType
-     * @param fileName
-     * @return
-     */
-    public static String genAllPath(String businessType, String fileName) {
-        Calendar calendar = Calendar.getInstance();
-        StringBuffer path = new StringBuffer(Sys.CURRENT_ENV.toString().toLowerCase());
-        path.append("/")
-            .append(businessType)
-            .append("/")
-            .append(calendar.get(Calendar.YEAR))
-            .append(calendar.get(Calendar.MONTH) + 1)
-            .append("/")
-            .append(fileName);
-        return path.toString();
+    public static String genName(String originalFilename) {
+        String yyyyMmDdHhMmSs = DateUtil.getYyyyMmDdHhMmSs(System.currentTimeMillis());
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
+        return yyyyMmDdHhMmSs + uuid + substring;
     }
 
 
