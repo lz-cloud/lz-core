@@ -41,8 +41,8 @@ public class OssHelper {
         String appGroup = Sys.APPLICATION_GROUP.toLowerCase();
         String env = Sys.CURRENT_ENV.toString().toLowerCase();
         businessType = businessType.toLowerCase();
-        String yyyyMmDd = DateUtil.getYyyyMmDd(System.currentTimeMillis());
-        String path = "/" + appGroup + "/" + env + "/" + businessType + "/" + yyyyMmDd;
+        String yyyyMmDd = DateUtil.getYyyyMmDd(System.currentTimeMillis()).replace("-", "");
+        String path = appGroup + "/" + env + "/" + businessType + "/" + yyyyMmDd;
         return path;
     }
 
@@ -53,7 +53,7 @@ public class OssHelper {
      * @return
      */
     public static String genName(String originalFilename) {
-        String yyyyMmDdHhMmSs = DateUtil.getYyyyMmDdHhMmSs(System.currentTimeMillis());
+        String yyyyMmDdHhMmSs = DateUtil.getYyyyMmDdHhMmSs(System.currentTimeMillis()).replace("-", "");
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
         return yyyyMmDdHhMmSs + uuid + substring;
