@@ -53,7 +53,10 @@ public class OssHelper {
      * @return
      */
     public static String genName(String originalFilename) {
-        String yyyyMmDdHhMmSs = DateUtil.getYyyyMmDdHhMmSs(System.currentTimeMillis()).replace("-", "");
+        String yyyyMmDdHhMmSs = DateUtil.getYyyyMmDdHhMmSs(System.currentTimeMillis());
+        yyyyMmDdHhMmSs = yyyyMmDdHhMmSs.replace("-", "");
+        yyyyMmDdHhMmSs = yyyyMmDdHhMmSs.replace(":", "");
+        yyyyMmDdHhMmSs = yyyyMmDdHhMmSs.replace(" ", "");
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
         return yyyyMmDdHhMmSs + uuid + substring;
