@@ -1,5 +1,7 @@
 package com.wkclz.core.helper;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.wkclz.core.base.BaseModel;
 import com.wkclz.core.base.PageData;
 import com.wkclz.core.base.PageHandle;
@@ -53,6 +55,32 @@ public class MyBatisHelper {
         List<T> list = sqlSession.selectList(statement, param);
         PageData<T> page = pageHandle.page(list);
         return page;
+    }
+
+    /**
+     * 自定义 sql查询-page
+     * @param sql
+     * @param param
+     * @return
+     */
+    public static PageData<Map> selectPage(String sql, Map param){
+        SqlSession sqlSession = Sys.getBean(SqlSession.class);
+        String statement = reloadSql(sql);
+
+        Object pageNoObj = param.get("pageNo");
+        Object pageSizeObj = param.get("pageSize");
+        Integer pageNo = (pageNoObj == null)?0:Integer.valueOf(pageNoObj.toString());
+        Integer pageSize = (pageSizeObj == null)?10:Integer.valueOf(pageSizeObj.toString());
+
+        PageHelper.startPage(pageNo, pageSize);
+        List<Map> list = sqlSession.selectList(statement, param);
+
+        Page listPage = (Page) list;
+        long total = listPage.getTotal();
+        PageData<Map> pageData = new PageData<>(pageNo, pageSize);
+        pageData.setTotalCount(Long.valueOf(total).intValue());
+        pageData.setRows(list);
+        return pageData;
     }
 
 

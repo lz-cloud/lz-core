@@ -9,7 +9,7 @@ import java.util.List;
  * @author wangkc
  * @date 2018-12-22 17:22:23
  */
-public class InParams {
+public class InParam {
 
     /**
      * 参数

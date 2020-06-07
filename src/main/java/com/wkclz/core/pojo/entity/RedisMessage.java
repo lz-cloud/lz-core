@@ -2,6 +2,7 @@ package com.wkclz.core.pojo.entity;
 
 import java.io.Serializable;
 
+@Deprecated
 public class RedisMessage implements Serializable {
     
     private String id;

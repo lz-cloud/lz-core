@@ -7,7 +7,7 @@ package com.wkclz.core.pojo.entity;
  * @author wangkc
  * @date 2018-12-22 17:22:23
  */
-public class OutParams {
+public class OutParam {
 
     /**
      * 参数
