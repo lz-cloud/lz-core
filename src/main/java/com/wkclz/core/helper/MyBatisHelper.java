@@ -80,7 +80,7 @@ public class MyBatisHelper {
         long total = listPage.getTotal();
         PageData<Map> pageData = new PageData<>(pageNo, pageSize);
         pageData.setTotalCount(Long.valueOf(total).intValue());
-        list.stream().map(MapUtil::toCamelCaseMap).collect(Collectors.toList());
+        list = (List<Map>)list.stream().map(MapUtil::toCamelCaseMap).collect(Collectors.toList());
         pageData.setRows(list);
         return pageData;
     }
