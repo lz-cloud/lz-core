@@ -1,5 +1,6 @@
 package com.wkclz.core.helper;
 
+import cn.hutool.core.map.MapUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wkclz.core.base.BaseModel;
@@ -79,6 +80,7 @@ public class MyBatisHelper {
         long total = listPage.getTotal();
         PageData<Map> pageData = new PageData<>(pageNo, pageSize);
         pageData.setTotalCount(Long.valueOf(total).intValue());
+        list.stream().map(MapUtil::toCamelCaseMap).collect(Collectors.toList());
         pageData.setRows(list);
         return pageData;
     }
