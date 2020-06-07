@@ -15,6 +15,18 @@ public class OutParam {
     private String field;
 
     /**
+     * 参数类型
+     */
+    private String type;
+
+    /**
+     * 宽度
+     */
+    private Integer width;
+
+
+
+    /**
      * 参数显示名称
      */
     private String displayName;
@@ -26,6 +38,22 @@ public class OutParam {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
     public String getDisplayName() {
