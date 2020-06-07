@@ -27,28 +27,28 @@ public class MyBatisHelper {
 
     /**
      * 自定义 sql 查询-List
-     * @param xml
+     * @param sql
      * @param param
      * @param <T>
      * @return
      */
-    public static <T extends BaseModel> List<T> selectList(String xml, T param){
+    public static <T extends BaseModel> List<T> selectList(String sql, T param){
         SqlSession sqlSession = Sys.getBean(SqlSession.class);
-        String statement = reloadXml(xml);
+        String statement = reloadSql(sql);
         List<T> result = sqlSession.selectList(statement, param);
         return result;
     }
 
     /**
      * 自定义 sql查询-page
-     * @param xml
+     * @param sql
      * @param param
      * @param <T>
      * @return
      */
-    public static <T extends BaseModel> PageData<T> selectPage(String xml, T param){
+    public static <T extends BaseModel> PageData<T> selectPage(String sql, T param){
         SqlSession sqlSession = Sys.getBean(SqlSession.class);
-        String statement = reloadXml(xml);
+        String statement = reloadSql(sql);
         PageHandle<T> pageHandle = new PageHandle<>(param);
         List<T> list = sqlSession.selectList(statement, param);
         PageData<T> page = pageHandle.page(list);
@@ -60,8 +60,8 @@ public class MyBatisHelper {
     /**
      * 重新加载资源
      */
-    private synchronized static String reloadXml(String xml) {
-        String md5 = SecretUtil.md5(xml);
+    private synchronized static String reloadSql(String sql) {
+        String md5 = SecretUtil.md5(sql);
         String namespace = "namespace" + md5;
         String selectId = "select" + md5;
         String statement = namespace + "." + selectId;
@@ -78,7 +78,7 @@ public class MyBatisHelper {
         String xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n"
             + "<mapper namespace=\""+ namespace +"\">\n"
             + "<select id=\""+selectId+"\" parameterType=\"java.util.Map\" resultType=\"java.util.Map\">\n"
-            + xml
+            + sql
             + "\n</select>\n</mapper>";
 
         Object o = System.getProperties().get("user.dir");
