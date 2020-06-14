@@ -104,6 +104,7 @@ public class LzCacheImpl implements LzCache {
 
     @Override
     public void cache2Local(){
+        logger.info("正在尝试从远程加载缓存至本地...");
         List<ServiceInstance> instances = client.getInstances(ServiceIdConstant.LZ_SYS);
         if (CollectionUtils.isEmpty(instances)){
             logger.warn("have no {} online, please check, systen will be init again autoly if {} is start!", ServiceIdConstant.LZ_SYS, ServiceIdConstant.LZ_SYS);
@@ -128,6 +129,8 @@ public class LzCacheImpl implements LzCache {
             stringRedisTemplate.opsForList().leftPush(key, System.currentTimeMillis()+"");
             return;
         }
+
+        logger.info("正在从远程服务 {} 拉取缓存...", serviceInstance.getInstanceId());
 
         // 接口方式更新
         URI uriObj = serviceInstance.getUri();
