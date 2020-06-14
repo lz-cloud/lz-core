@@ -1,7 +1,5 @@
 package com.wkclz.core.config.handler;
 
-import com.wkclz.core.helper.AccessHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +11,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 // @Component
 public class AccessLogHandler implements HandlerInterceptor {
-
-    @Autowired
-    private AccessHelper accessHelper;
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {

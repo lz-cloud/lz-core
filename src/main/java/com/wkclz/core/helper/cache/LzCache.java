@@ -6,4 +6,6 @@ public interface LzCache {
 
     void wipe(Class clazz);
 
+    void cache2Local();
+
 }

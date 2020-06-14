@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.helper.redis.bean.RedisMsgBody;
+import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
 import com.wkclz.core.pojo.enums.ResultStatus;
 import com.wkclz.core.util.UrlUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -21,54 +23,61 @@ import java.util.List;
  * Description:
  * Created: wangkaicun @ 2019-02-13 20:55:11
  */
-@Component
 public class ApiDomainHelper extends BaseHelper {
 
     private final static Logger logger = LoggerFactory.getLogger(ApiDomainHelper.class);
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
 
-    private static final String NAME_SPACE = "_API_DOMAINS";
 
     /**
      * redis 的缓存主动更新，java 的缓存被动更新
      */
-    private static Long JAVA_LAST_ACTIVE_TIME = null;
     private static List<String> API_DOMAINS = null;
 
     /**
      * 初始化 API_DOMAINS
-     *
-     * @param apiDomains
      */
-    public synchronized void setApiDomains(List<String> apiDomains) {
+    public static boolean reflash() {
+        return reflash(API_DOMAINS);
+    }
+    public static boolean reflash(List<String> apiDomains) {
         if (CollectionUtils.isEmpty(apiDomains)) {
             throw new BizException("apiDomains can not be null or empty!");
         }
-        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(apiDomains));
-        API_DOMAINS = apiDomains;
+
+        RedisMsgBody body = new RedisMsgBody();
+        body.setTag(ApiDomainHelper.class.getName());
+        body.setMsg(apiDomains);
+
+        String msg = JSONArray.toJSONString(body);
+        StringRedisTemplate stringRedisTemplate = Sys.getBean(StringRedisTemplate.class);
+        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC, msg);
+        return true;
     }
 
-    private synchronized List<String> getApiDomains() {
-        Integer liveTime = getJavaCacheLiveTime();
-        // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && API_DOMAINS != null) {
-            Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
-                return API_DOMAINS;
-            }
+    /**
+     * 初始化 apiDomains 【仅给队列调用，不允许直接调用】
+     */
+    public static boolean setLocal(Object msg) {
+        if (msg == null) {
+            throw new BizException("apiDomains can not be null or empty!");
         }
-        JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
-
-        // redis 拉取
-        String apiDomainsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
-        List<String> apiDomains = JSONArray.parseArray(apiDomainsStr, String.class);
+        List<String> apiDomains = JSONArray.parseArray(msg.toString(), String.class);
+        return setLocal(apiDomains);
+    }
+    public static boolean setLocal(List<String> apiDomains) {
+        if (CollectionUtils.isEmpty(apiDomains)) {
+            throw new BizException("apiDomains can not be null or empty!");
+        }
         API_DOMAINS = apiDomains;
+        return true;
+    }
+
+    public static List<String> getLocal() {
         return API_DOMAINS;
     }
 
-    public Result checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
-        List<String> apiDomains = getApiDomains();
+    public static Result checkApiDomains(HttpServletRequest req, HttpServletResponse rep) {
+        List<String> apiDomains = getLocal();
         if (CollectionUtils.isEmpty(apiDomains)) {
             throw new BizException("apiDomains must be init after system start up!");
         }

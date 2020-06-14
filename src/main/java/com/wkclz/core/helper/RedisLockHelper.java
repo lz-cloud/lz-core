@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
  * @date 2020-04-05 13:22
  */
 @Component
-public class RedisRockHelper {
+public class RedisLockHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisRockHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedisLockHelper.class);
     private static final String REDIS_LOCK_PREFIS = "lock:";
 
     @Autowired(required = false)

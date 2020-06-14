@@ -1,18 +1,28 @@
 package com.wkclz.core.helper.cache.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.wkclz.core.base.Sys;
+import com.wkclz.core.constant.Queue;
+import com.wkclz.core.constant.ServiceIdConstant;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.helper.*;
 import com.wkclz.core.helper.cache.LzCache;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
+import com.wkclz.core.rest.Routes;
 import com.wkclz.core.util.BeanUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +33,8 @@ public class LzCacheImpl implements LzCache {
     private static final Logger logger = LoggerFactory.getLogger(LzCacheImpl.class);
     private static final Map<String, List> CACHE_CONFIG = new HashMap<>();
 
+    @Autowired(required = false)
+    private DiscoveryClient client;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -88,5 +100,72 @@ public class LzCacheImpl implements LzCache {
         CACHE_CONFIG.remove(clazz);
     }
 
+
+
+    @Override
+    public void cache2Local(){
+        List<ServiceInstance> instances = client.getInstances(ServiceIdConstant.LZ_SYS);
+        if (CollectionUtils.isEmpty(instances)){
+            logger.warn("have no {} online, please check, systen will be init again autoly if {} is start!", ServiceIdConstant.LZ_SYS, ServiceIdConstant.LZ_SYS);
+            return;
+        }
+
+        ServiceInstance serviceInstance = null;
+        for (ServiceInstance instance : instances) {
+            // 是否在同一网段
+            String host = instance.getHost();
+            String serverIp = IpHelper.getServerIp();
+            host = host.substring(0, host.lastIndexOf("."));
+            host = host.substring(0, host.lastIndexOf("."));
+            if (serverIp.contains(host)){
+                serviceInstance = instance;
+                break;
+            }
+        }
+        if (serviceInstance == null){
+            logger.warn("{} 服务可能不是同一网段，将使用消息通知更新", instances.get(0).getInstanceId());
+            String key = Queue.LOGGER_QUEUE_PREFIX + Sys.APPLICATION_GROUP;
+            stringRedisTemplate.opsForList().leftPush(key, System.currentTimeMillis()+"");
+            return;
+        }
+
+        // 接口方式更新
+        URI uriObj = serviceInstance.getUri();
+        String uri = uriObj.toASCIIString();
+
+        Map cacheSysConfig = request(uri + Routes.CACHE_SYS_CONFIG, Map.class);
+        List cacheAccessUri = request(uri + Routes.CACHE_ACCESS_URI, List.class);
+        List cacheApiDomain = request(uri + Routes.CACHE_API_DOMAIN, List.class);
+        Map cacheTenantDomain = request(uri + Routes.CACHE_TENANT_DOMAIN, Map.class);
+
+        SystemConfigHelper.setLocal(cacheSysConfig);
+        AccessHelper.setLocal(cacheAccessUri);
+        ApiDomainHelper.setLocal(cacheApiDomain);
+        TenantDomainHelper.setLocal(cacheTenantDomain);
+    }
+
+    private static <T> T request(String url, Class<T> clazz){
+        RestTemplate restTemplate = RestTemplateHelper.getRestTemplate();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = restTemplate.getForObject(url, JSONObject.class);
+        } catch (Exception e) {
+            logger.warn("can not request: {}, with error: {}", url, e.getMessage());
+            throw e;
+        }
+        Object code = jsonObject.get("code");
+        Object msg = jsonObject.get("msg");
+        Object data = jsonObject.get("data");
+        if (code == null || !"1".equals(code.toString())){
+            throw BizException.error("请求异常: {}", msg);
+        }
+
+        if (data == null){
+            throw BizException.error("请求正常但无数据返回: {}", jsonObject);
+        }
+
+        T object = JSONObject.parseObject(JSONObject.toJSONString(data), clazz);
+        return object;
+    }
 
 }

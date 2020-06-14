@@ -35,13 +35,7 @@ public class AuthHelper extends BaseHelper {
 
     private final static Logger logger = LoggerFactory.getLogger(AuthHelper.class);
     @Autowired
-    private TenantDomainHelper tenantDomainHelper;
-    @Autowired
-    private SystemConfigHelper systemConfigHelper;
-    @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private AccessHelper accessHelper;
 
 
     /**
@@ -128,7 +122,7 @@ public class AuthHelper extends BaseHelper {
             return user;
         }
         // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户
-        boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
+        boolean checkAccessUriResult = AccessHelper.checkAccessUri(req);
         if (checkAccessUriResult){
             return null;
         }
@@ -183,7 +177,7 @@ public class AuthHelper extends BaseHelper {
 
 
     public Long getTenantId() {
-        return tenantDomainHelper.getTenantId();
+        return TenantDomainHelper.getTenantId();
     }
 
 
@@ -414,7 +408,7 @@ public class AuthHelper extends BaseHelper {
         }
 
         // db 配置其二
-        cookieDomain = systemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
+        cookieDomain = SystemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
 
         if (StringUtils.isBlank(cookieDomain)) {
             cookieDomain = UrlUtil.getDomain(req);

@@ -19,15 +19,11 @@ public class AuthHandler {
 
     @Autowired
     private AuthHelper authHelper;
-    @Autowired
-    private AccessHelper accessHelper;
-    @Autowired
-    private ApiDomainHelper apiDomainHelper;
 
     public Result preHandle(HttpServletRequest req, HttpServletResponse rep) {
 
         // API 安全检测
-        Result apiDomainCheckResult = apiDomainHelper.checkApiDomains(req, rep);
+        Result apiDomainCheckResult = ApiDomainHelper.checkApiDomains(req, rep);
         if (apiDomainCheckResult != null) {
             return apiDomainCheckResult;
         }
@@ -37,7 +33,7 @@ public class AuthHandler {
          */
 
         // uri 拦截检测【如果检查通过，无需再检查token】
-        boolean checkAccessUriResult = accessHelper.checkAccessUri(req);
+        boolean checkAccessUriResult = AccessHelper.checkAccessUri(req);
         if (checkAccessUriResult) {
             return null;
         }

@@ -3,9 +3,12 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.helper.redis.bean.RedisMsgBody;
+import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
@@ -13,56 +16,58 @@ import java.util.Map;
  * Description:
  * Created: wangkaicun @ 2019-02-13 20:55:11
  */
-@Component
 public class SystemConfigHelper extends BaseHelper {
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    private static final String NAME_SPACE = "_SYSTEM_CONFIG";
 
     /**
      * redis 的缓存主动更新，java 的缓存被动更新
      */
-    private static Long JAVA_LAST_ACTIVE_TIME = null;
     private static Map<String, String> SYSTEM_CONFIG = null;
 
     /**
      * 初始化 SYSTEM_CONFIG
-     *
-     * @param systemConfigs
      */
-    public void setSystemConfig(Map<String, String> systemConfigs) {
-        if (systemConfigs == null || systemConfigs.size() == 0) {
+    public static boolean reflash() {
+        return reflash(SYSTEM_CONFIG);
+    }
+    public static boolean reflash(Map<String, String> systemConfigs) {
+        if (CollectionUtils.isEmpty(systemConfigs)) {
             throw BizException.error("systemConfigs can not be null or empty!");
         }
-        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONObject.toJSONString(systemConfigs));
-        SYSTEM_CONFIG = systemConfigs;
+        RedisMsgBody body = new RedisMsgBody();
+        body.setTag(SystemConfigHelper.class.getName());
+        body.setMsg(systemConfigs);
+
+        String msg = JSONObject.toJSONString(body);
+        StringRedisTemplate stringRedisTemplate = Sys.getBean(StringRedisTemplate.class);
+        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC, msg);
+        return true;
     }
 
-    private synchronized Map<String, String> getSystemConfigs() {
-        Integer liveTime = getJavaCacheLiveTime();
-        // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && SYSTEM_CONFIG != null) {
-            Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
-                return SYSTEM_CONFIG;
-            }
+    public static boolean setLocal(Object msg) {
+        if (msg == null) {
+            throw BizException.error("systemConfigs can not be null or empty!");
         }
-        JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
-
-        // redis 拉取
-        String systemConfigsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
-        Map systemConfigs = JSONObject.parseObject(systemConfigsStr, Map.class);
+        Map<String, String> systemConfigs = JSONObject.parseObject(msg.toString(), Map.class);
+        return setLocal(systemConfigs);
+    }
+    public static boolean setLocal(Map<String, String> systemConfigs) {
+        if (CollectionUtils.isEmpty(systemConfigs)) {
+            throw BizException.error("systemConfigs can not be null or empty!");
+        }
         SYSTEM_CONFIG = systemConfigs;
+        return true;
+    }
+
+    public static Map<String, String> getLocal() {
         return SYSTEM_CONFIG;
     }
 
-    public String getSystemConfig(String key) {
+    public static String getSystemConfig(String key) {
         if (key == null || key.trim().length() == 0) {
             throw BizException.error("key must not be null ot empty!");
         }
-        Map<String, String> systemConfigs = getSystemConfigs();
+        Map<String, String> systemConfigs = getLocal();
         if (systemConfigs == null || systemConfigs.size() == 0) {
             throw BizException.error("systemConfigs must be init after system start up!");
         }

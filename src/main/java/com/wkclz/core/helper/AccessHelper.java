@@ -5,12 +5,12 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
+import com.wkclz.core.helper.redis.bean.RedisMsgBody;
+import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.entity.AccessLog;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
@@ -22,62 +22,64 @@ import java.util.List;
  * Description:
  * Created: wangkaicun @ 2019-02-13 20:55:11
  */
-@Component
 public class AccessHelper extends BaseHelper {
 
-    @Autowired
-    private AuthHelper authHelper;
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
     private static final PathMatcher MATCHER = new AntPathMatcher();
-    private static final String NAME_SPACE = "_ACCESS_URI";
-
-    /**
-     * redis 的缓存主动更新，java 的缓存被动更新
-     */
-    private static Long JAVA_LAST_ACTIVE_TIME = null;
     private static List<String> ACCESS_URI = null;
 
     /**
-     * 初始化 accessUris
-     *
-     * @param accessUris
+     * 更新全部缓存
      */
-    public void setAccessUris(List<String> accessUris) {
+    public static boolean reflash() {
+        return reflash(ACCESS_URI);
+    }
+    public static boolean reflash(List<String> accessUris) {
         if (CollectionUtils.isEmpty(accessUris)) {
             throw BizException.error("accessUris can not be null or empty!");
         }
-        stringRedisTemplate.opsForValue().set(Sys.APPLICATION_GROUP + NAME_SPACE, JSONArray.toJSONString(accessUris));
-        ACCESS_URI = accessUris;
+        RedisMsgBody body = new RedisMsgBody();
+        body.setTag(AccessHelper.class.getName());
+        body.setMsg(accessUris);
+
+        String msg = JSONArray.toJSONString(body);
+        StringRedisTemplate stringRedisTemplate = Sys.getBean(StringRedisTemplate.class);
+        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC, msg);
+        return true;
     }
 
-    private synchronized List<String> getAccessUri() {
-        Integer liveTime = getJavaCacheLiveTime();
-        // java 缓存
-        if (JAVA_LAST_ACTIVE_TIME != null && ACCESS_URI != null) {
-            Long ttl = Long.valueOf(System.currentTimeMillis() - JAVA_LAST_ACTIVE_TIME);
-            if (ttl.compareTo(Long.valueOf(liveTime) * 1000) < 0) {
-                return ACCESS_URI;
-            }
-        }
-        JAVA_LAST_ACTIVE_TIME = System.currentTimeMillis();
 
-        // redis 拉取
-        String accessUrisStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
-        List<String> accessUris = JSONArray.parseArray(accessUrisStr, String.class);
+    /**
+     * 初始化 accessUris 【仅给队列调用，不允许直接调用】
+     */
+    public static boolean setLocal(Object msg) {
+        if (msg == null) {
+            throw BizException.error("accessUris can not be null or empty!");
+        }
+        List<String> accessUris = JSONArray.parseArray(msg.toString(), String.class);
+        return setLocal(accessUris);
+    }
+
+    public static boolean setLocal(List<String> accessUris) {
+        if (CollectionUtils.isEmpty(accessUris)) {
+            throw BizException.error("accessUris can not be null or empty!");
+        }
         ACCESS_URI = accessUris;
+        return true;
+    }
+
+
+    public static List<String> getLocal() {
         return ACCESS_URI;
     }
 
-    public boolean checkAccessUri(HttpServletRequest req) {
+    public static boolean checkAccessUri(HttpServletRequest req) {
         // 防止重复检测
         boolean access = isAccess(req);
         if (access){
             return true;
         }
 
-        List<String> accessUris = getAccessUri();
+        List<String> accessUris = getLocal();
 
         if (CollectionUtils.isEmpty(accessUris)) {
             throw BizException.error("accessUris must be init after system start up!");
@@ -118,7 +120,7 @@ public class AccessHelper extends BaseHelper {
         return false;
     }
 
-    public AccessLog getAccessLog(HttpServletRequest req) {
+    public static  AccessLog getAccessLog(HttpServletRequest req) {
 
         // 此处为全部检测跳过标识。
         String uri = req.getRequestURI();
@@ -169,6 +171,7 @@ public class AccessHelper extends BaseHelper {
         log.setServerName(req.getServerName());
         log.setToken(BaseHelper.getToken(req));
 
+        AuthHelper authHelper = Sys.getBean(AuthHelper.class);
         if (!StringUtils.isBlank(log.getToken())) {
             User user = authHelper.getUserIfLogin();
             if (user != null) {
@@ -181,7 +184,6 @@ public class AccessHelper extends BaseHelper {
         // 访问的租户
         Long tenantId = authHelper.getTenantId();
         log.setTenantId(tenantId);
-
 
         // 防止太长
         if (log.getUserAgent() != null && log.getUserAgent().length() > 1000) {

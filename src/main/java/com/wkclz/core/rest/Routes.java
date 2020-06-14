@@ -33,4 +33,18 @@ public interface Routes {
     String MONITOR_PROPERTIES = "/monitor/properties";
 
 
+    /**
+     * 获取Cache
+     */
+    @Desc("1. 缓存-sysConfig")
+    String CACHE_SYS_CONFIG = "/cache/sys/consig";
+    @Desc("2. 缓存-apiDomain")
+    String CACHE_API_DOMAIN = "/cache/api/domain";
+    @Desc("3. 缓存-tenantDomain")
+    String CACHE_TENANT_DOMAIN = "/cache/tenant/domain";
+    @Desc("4. 缓存-accessUri")
+    String CACHE_ACCESS_URI = "/cache/access/uri";
+
+
+
 }
