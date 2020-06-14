@@ -145,6 +145,8 @@ public class LzCacheImpl implements LzCache {
         AccessHelper.setLocal(cacheAccessUri);
         ApiDomainHelper.setLocal(cacheApiDomain);
         TenantDomainHelper.setLocal(cacheTenantDomain);
+
+        logger.info("完成从远程服务 {} 拉取缓存！", serviceInstance.getInstanceId());
     }
 
     private static <T> T request(String url, Class<T> clazz){
