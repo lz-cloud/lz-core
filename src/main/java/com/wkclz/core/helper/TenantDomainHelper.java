@@ -30,14 +30,14 @@ public class TenantDomainHelper extends BaseHelper {
      * redis 的缓存主动更新，java 的缓存被动更新
      */
     private static Long JAVA_LAST_ACTIVE_TIME = null;
-    private static Map<String, Long> tenant_DOMAINS = null;
+    private static Map<String, Object> tenant_DOMAINS = null;
 
     /**
      * 初始化 TENANT_DOMAINS
      *
      * @param tenantDomains
      */
-    public synchronized void setTenantDomains(Map<String, Long> tenantDomains) {
+    public synchronized void setTenantDomains(Map<String, Object> tenantDomains) {
         if (tenantDomains == null || tenantDomains.size() == 0) {
             throw new BizException("tenantDomains can not be null or empty!");
         }
@@ -45,7 +45,7 @@ public class TenantDomainHelper extends BaseHelper {
         tenant_DOMAINS = tenantDomains;
     }
 
-    private synchronized Map<String, Long> getTenantDomains() {
+    private synchronized Map<String, Object> getTenantDomains() {
         Integer liveTime = getJavaCacheLiveTime();
         // java 缓存
         if (JAVA_LAST_ACTIVE_TIME != null && tenant_DOMAINS != null) {
@@ -58,7 +58,7 @@ public class TenantDomainHelper extends BaseHelper {
 
         // redis 拉取
         String tenantDomainsStr = stringRedisTemplate.opsForValue().get(Sys.APPLICATION_GROUP + NAME_SPACE);
-        Map tenantDomains = JSONObject.parseObject(tenantDomainsStr, Map.class);
+        Map<String, Object> tenantDomains = JSONObject.parseObject(tenantDomainsStr, Map.class);
         tenant_DOMAINS = tenantDomains;
         return tenant_DOMAINS;
     }
@@ -93,15 +93,15 @@ public class TenantDomainHelper extends BaseHelper {
             throw BizException.error("can not get domain from the request: {}", RequestHelper.getRequestUrl());
         }
 
-        Map<String, Long> tenantDomains = getTenantDomains();
+        Map<String, Object> tenantDomains = getTenantDomains();
         if (tenantDomains == null || tenantDomains.size() == 0) {
             throw BizException.error("tenantDomains must be init after system start up: {}", RequestHelper.getRequestUrl());
         }
 
-        Long tenantId = tenantDomains.get(domain);
+        Object tenantId = tenantDomains.get(domain);
         if (tenantId != null) {
-            MDC.put(LogTraceHelper.TENANT_ID, tenantId + "");
-            return tenantId;
+            MDC.put(LogTraceHelper.TENANT_ID, tenantId.toString() + "");
+            return Long.valueOf(tenantId.toString());
         }
 
         if (RegularUtil.isIp(domain)){
