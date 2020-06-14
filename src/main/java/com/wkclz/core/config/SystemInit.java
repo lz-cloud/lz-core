@@ -41,6 +41,7 @@ public class SystemInit implements ApplicationRunner {
 
         ThreadUtil.execAsync(() -> {
             ThreadUtil.sleep(1, TimeUnit.SECONDS);
+            // Sys.initEnv();
             lzCache.cache2Local();;
         },false);
 

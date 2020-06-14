@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class Sys {
 
+
     private static final Logger logger = LoggerFactory.getLogger(Sys.class);
 
     /**
@@ -67,8 +68,15 @@ public class Sys {
     public static boolean SYSTEM_ENUM_CHECT_CONFIRM = false;
 
 
+
+    @Deprecated
     public static void setEnv(ApplicationContext applicationContext) {
         setApplicationContext(applicationContext);
+        initEnv();
+    }
+
+
+    public static void initEnv() {
 
         Environment env = applicationContext.getEnvironment();
         String[] activeProfiles = env.getActiveProfiles();
@@ -108,8 +116,8 @@ public class Sys {
 
         Sys.STARTUP_DATE = startupDate;
         logger.info("===================>  System is start up as {} @ {}", CURRENT_ENV, DateUtil.getYyyyMmDdHhMmSs(startupDate));
-    }
 
+    }
 
     private static void setApplicationContext(ApplicationContext context) {
         applicationContext = context;
