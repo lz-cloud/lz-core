@@ -125,7 +125,7 @@ public class LzCacheImpl implements LzCache {
         }
         if (serviceInstance == null){
             logger.warn("{} 服务可能不是同一网段，将使用消息通知更新", instances.get(0).getInstanceId());
-            String key = Queue.LOGGER_QUEUE_PREFIX + Sys.APPLICATION_GROUP;
+            String key = Queue.CACHE_QUEUE_PREFIX + Sys.APPLICATION_GROUP;
             stringRedisTemplate.opsForList().leftPush(key, System.currentTimeMillis()+"");
             return;
         }
