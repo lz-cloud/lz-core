@@ -13,8 +13,8 @@ import java.util.Map;
 @Configuration
 public class MybatisConfiguration {
 
-    protected static final String CHECH_ID = "chech_id";
-    protected static final String CHECH_VERSION = "chech_version";
+    protected static final String CHECK_ID = "check_id";
+    protected static final String CHECK_VERSION = "check_version";
 
     // Mapper 操作缓存，减少反射
     private static Map<String, SqlCommandType> SQL_COMMAND_TYPE_MAPT = null;
@@ -51,6 +51,8 @@ public class MybatisConfiguration {
      * @return
      */
     public static SqlCommandType getCommandType(String mappedStatementId, SqlCommandType type) {
+
+        // 初次访问，只会是缓存
         if (SQL_COMMAND_TYPE_MAPT == null) {
             SQL_COMMAND_TYPE_MAPT = new HashMap<>();
             Class<BaseMapper> baseMapperClass = BaseMapper.class;
@@ -63,14 +65,10 @@ public class MybatisConfiguration {
                 }
                 if ("updateAll".equals(methodName) || "updateSelective".equals(methodName)) {
                     SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.UPDATE);
-                    // 需要检查乐观锁, 使用完后要去除，保证线程安全
-                    MDC.put(CHECH_VERSION, "1");
-                    MDC.put(CHECH_ID, "1");
                     continue;
                 }
                 if ("updateBatch".equals(methodName)) {
                     SQL_COMMAND_TYPE_MAPT.put(methodName, SqlCommandType.UPDATE);
-                    MDC.put(CHECH_ID, "1");
                     continue;
                 }
                 if ("delete".equals(methodName)) {
@@ -87,6 +85,17 @@ public class MybatisConfiguration {
         }
         mappedStatementId = mappedStatementId.substring(lastIndex +1);
         SqlCommandType sqlCommandType = SQL_COMMAND_TYPE_MAPT.get(mappedStatementId);
+        // SQL_COMMAND_TYPE_MAPT 额缓存，才是自己生成的，也才应该走检查流程
+        if (sqlCommandType != null && sqlCommandType != SqlCommandType.SELECT){
+            if ("updateAll".equals(mappedStatementId) || "updateSelective".equals(mappedStatementId)) {
+                // 需要检查乐观锁, 使用完后要去除，保证线程安全
+                MDC.put(CHECK_VERSION, "1");
+                MDC.put(CHECK_ID, "1");
+            }
+            if ("updateBatch".equals(mappedStatementId)) {
+                MDC.put(CHECK_ID, "1");
+            }
+        }
         return sqlCommandType == null ? type : sqlCommandType;
     }
 

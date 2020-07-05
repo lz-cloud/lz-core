@@ -5,7 +5,7 @@ import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.AuthHelper;
 import com.wkclz.core.pojo.dto.User;
 import com.wkclz.core.pojo.enums.ResultStatus;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -44,14 +44,14 @@ public class MybatisUpdateInterceptor implements Interceptor {
         SqlCommandType commandType = MybatisConfiguration.getCommandType(id, sqlCommandType);
 
         // 需要检查乐观锁, 使用完后要去除，保证线程安全
-        boolean chechVersion = MDC.get(MybatisConfiguration.CHECH_VERSION) != null;
-        boolean chechId = MDC.get(MybatisConfiguration.CHECH_ID) != null;
-        MDC.remove(MybatisConfiguration.CHECH_VERSION);
-        MDC.remove(MybatisConfiguration.CHECH_ID);
+        boolean chechVersion = MDC.get(MybatisConfiguration.CHECK_VERSION) != null;
+        boolean checkId = MDC.get(MybatisConfiguration.CHECK_ID) != null;
+        MDC.remove(MybatisConfiguration.CHECK_VERSION);
+        MDC.remove(MybatisConfiguration.CHECK_ID);
 
         // 参数为对象
         if (parameter != null && parameter instanceof BaseModel) {
-            checkModel(parameter, commandType, userId, chechVersion, chechId);
+            checkModel(parameter, commandType, userId, chechVersion, checkId);
         }
 
         // 参数为 List 【在 Map 里面】
@@ -62,7 +62,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
                 if (parameterObj != null && parameterObj instanceof Collection){
                     Collection parameters = (Collection)parameterObj;
                     for (Object p:parameters) {
-                        boolean isBaseModel = checkModel(p, commandType, userId, chechVersion, chechId);
+                        boolean isBaseModel = checkModel(p, commandType, userId, chechVersion, checkId);
                         if (!isBaseModel) {
                             break;
                         }
@@ -85,7 +85,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
     public void setProperties(Properties properties) {
     }
 
-    private static boolean checkModel(Object paramter, SqlCommandType commandType, Long userId, boolean chechVersion, boolean chechId){
+    private static boolean checkModel(Object paramter, SqlCommandType commandType, Long userId, boolean chechVersion, boolean checkId){
         if (!(paramter instanceof BaseModel)) {
             return false;
         }
@@ -104,7 +104,7 @@ public class MybatisUpdateInterceptor implements Interceptor {
         }
         // update 时 id 不能为空
         if (commandType == SqlCommandType.UPDATE) {
-            if (chechId && clearPatameter.getId() == null) {
+            if (checkId && clearPatameter.getId() == null) {
                 throw BizException.error(ResultStatus.UPDATE_NO_ID);
             }
             // 批量更新不处理 version
