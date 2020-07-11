@@ -21,7 +21,7 @@ public class AppHelper {
     // 应用名称
     private String name = "APP";
 
-    public Map<String, String> getAppInfo(){
+    public Map<String, String> appInfo(){
 
         logger.info("===================>  System startup init begin...");
 

@@ -109,7 +109,7 @@ public class Sys {
         Long startupDate = applicationContext.getStartupDate();
 
         AppHelper bean = applicationContext.getBean(AppHelper.class);
-        Map<String, String> appInfo = bean.getAppInfo();
+        Map<String, String> appInfo = bean.appInfo();
 
         Sys.APPLICATION_GROUP = appInfo.get("group");
         Sys.APPLICATION_NAME = appInfo.get("name");
