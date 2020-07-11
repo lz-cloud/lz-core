@@ -86,7 +86,7 @@ public class TenantDomainHelper extends BaseHelper {
             return Long.valueOf(tenantIdStr);
         }
 
-        String domain = UrlUtil.getDomain(req);
+        String domain = UrlUtil.getFrontDomain(req);
 
         if (StringUtils.isBlank(domain)) {
             throw BizException.error("can not get domain from the request: {}", RequestHelper.getRequestUrl());

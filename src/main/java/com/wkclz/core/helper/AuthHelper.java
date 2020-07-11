@@ -399,7 +399,7 @@ public class AuthHelper extends BaseHelper {
 
     private String getCookieDomain(HttpServletRequest req) {
 
-        String cookieDomain = UrlUtil.getDomain(req);
+        String cookieDomain = UrlUtil.getFrontDomain(req);
 
         // 测试环境优先
         if ("127.0.0.1".equals(cookieDomain) || "localhost".equals(cookieDomain)) {
@@ -411,7 +411,7 @@ public class AuthHelper extends BaseHelper {
         cookieDomain = SystemConfigHelper.getSystemConfig(SystemConfig.COOKIE_DOMAIN.getKey());
 
         if (StringUtils.isBlank(cookieDomain)) {
-            cookieDomain = UrlUtil.getDomain(req);
+            cookieDomain = UrlUtil.getFrontDomain(req);
             logger.info("=========> 无cookie域，domain 截取 cookie: {}", cookieDomain);
         }
 
