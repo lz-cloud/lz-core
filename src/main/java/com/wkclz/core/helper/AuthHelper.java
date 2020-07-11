@@ -146,7 +146,7 @@ public class AuthHelper extends BaseHelper {
         String redisKey = token.contactRedisKey();
         String userStr = stringRedisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isBlank(userStr)) {
-            logger.error("can find anything to get user info, please login at first!");
+            logger.error("can find nothing to get user info, please login at first!");
             return null;
         }
         MDC.put("user", userStr);
