@@ -84,7 +84,7 @@ public class DictHelper extends BaseHelper {
                 return type.getDicts();
             }
         }
-        throw BizException.error("dictType is not exist!");
+        return null;
     }
 
     /**
@@ -103,7 +103,7 @@ public class DictHelper extends BaseHelper {
                 return dict;
             }
         }
-        throw BizException.error("dictKey is not exist!");
+        return null;
     }
 
     /**
@@ -114,6 +114,9 @@ public class DictHelper extends BaseHelper {
      */
     public static String getValue(String dictType, String dictKey){
         Dict dict = get(dictType, dictKey);
+        if (dict == null){
+            return null;
+        }
         return dict.getDictValue();
     }
 }
