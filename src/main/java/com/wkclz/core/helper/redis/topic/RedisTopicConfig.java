@@ -2,6 +2,7 @@ package com.wkclz.core.helper.redis.topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -10,8 +11,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 // 消息发布：stringRedisTemplate.convertAndSend("string-topic", msg);
 // 所有订阅者均会消费一次
 
-
-//@Configuration 只能在 sys 模块消费，已迁移至 sys
+@Configuration
 public class RedisTopicConfig {
 
     public final static String CACHE_CONFIG_TOPIC = "cache-config-topic";
