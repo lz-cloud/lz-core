@@ -1,5 +1,6 @@
 package com.wkclz.core.helper.cache.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.constant.Queue;
@@ -8,6 +9,7 @@ import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.*;
 import com.wkclz.core.helper.cache.LzCache;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
+import com.wkclz.core.pojo.entity.DictType;
 import com.wkclz.core.rest.Routes;
 import com.wkclz.core.util.BeanUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -136,11 +138,11 @@ public class LzCacheImpl implements LzCache {
         URI uriObj = serviceInstance.getUri();
         String uri = uriObj.toASCIIString();
 
-        Map cacheSysConfig = request(uri + Routes.CACHE_SYS_CONFIG, Map.class);
-        List cacheAccessUri = request(uri + Routes.CACHE_ACCESS_URI, List.class);
-        List cacheApiDomain = request(uri + Routes.CACHE_API_DOMAIN, List.class);
-        Map cacheTenantDomain = request(uri + Routes.CACHE_TENANT_DOMAIN, Map.class);
-        List cacheSysDict = request(uri + Routes.CACHE_SYS_DICT, List.class);
+        Map<String, String> cacheSysConfig = requestMap(uri + Routes.CACHE_SYS_CONFIG);
+        List<String> cacheAccessUri = requestList(uri + Routes.CACHE_ACCESS_URI, String.class);
+        List<String> cacheApiDomain = requestList(uri + Routes.CACHE_API_DOMAIN, String.class);
+        Map<String, String> cacheTenantDomain = requestMap(uri + Routes.CACHE_TENANT_DOMAIN);
+        List<DictType> cacheSysDict = requestList(uri + Routes.CACHE_SYS_DICT, DictType.class);
 
         SystemConfigHelper.setLocal(cacheSysConfig);
         AccessHelper.setLocal(cacheAccessUri);
@@ -151,7 +153,8 @@ public class LzCacheImpl implements LzCache {
         logger.info("完成从远程服务 {} 拉取缓存！", serviceInstance.getInstanceId());
     }
 
-    private static <T> T request(String url, Class<T> clazz){
+
+    private static String request(String url){
         RestTemplate restTemplate = RestTemplateHelper.getRestTemplate();
         JSONObject jsonObject = null;
         try {
@@ -166,13 +169,20 @@ public class LzCacheImpl implements LzCache {
         if (code == null || !"1".equals(code.toString())){
             throw BizException.error("请求异常: {}", msg);
         }
-
         if (data == null){
             throw BizException.error("请求正常但无数据返回: {}", jsonObject);
         }
+        return JSONObject.toJSONString(data);
+    }
 
-        T object = JSONObject.parseObject(JSONObject.toJSONString(data), clazz);
-        return object;
+    private static Map requestMap(String url){
+        String respone = request(url);
+        return JSONObject.parseObject(respone, Map.class);
+    }
+    private static <T> List<T> requestList(String url, Class<T> clazz){
+        String respone = request(url);
+        List<T> arrray = JSONArray.parseArray(respone, clazz);
+        return arrray;
     }
 
 }

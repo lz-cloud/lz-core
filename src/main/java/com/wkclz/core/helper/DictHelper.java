@@ -43,7 +43,7 @@ public class DictHelper extends BaseHelper {
 
 
     /**
-     * 初始化 accessUris 【仅给队列调用，不允许直接调用】
+     * 初始化 dictTypes 【仅给队列调用，不允许直接调用】
      */
     public static boolean setLocal(Object msg) {
         if (msg == null) {
