@@ -48,7 +48,7 @@ public class TenantDomainHelper extends BaseHelper {
         if (msg == null) {
             throw BizException.error("tenantDomains can not be null or empty!");
         }
-        Map<String, Object> tenantDomains = JSONObject.parseObject(msg.toString(), Map.class);
+        Map<String, Object> tenantDomains = JSONObject.parseObject(JSONObject.toJSONString(msg), Map.class);
         return setLocal(tenantDomains);
     }
     public static boolean setLocal(Map<String, Object> tenantDomains) {

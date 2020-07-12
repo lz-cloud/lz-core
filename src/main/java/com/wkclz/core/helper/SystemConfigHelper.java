@@ -48,7 +48,7 @@ public class SystemConfigHelper extends BaseHelper {
         if (msg == null) {
             throw BizException.error("systemConfigs can not be null or empty!");
         }
-        Map<String, String> systemConfigs = JSONObject.parseObject(msg.toString(), Map.class);
+        Map<String, String> systemConfigs = JSONObject.parseObject(JSONObject.toJSONString(msg), Map.class);
         return setLocal(systemConfigs);
     }
     public static boolean setLocal(Map<String, String> systemConfigs) {
