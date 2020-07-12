@@ -140,11 +140,13 @@ public class LzCacheImpl implements LzCache {
         List cacheAccessUri = request(uri + Routes.CACHE_ACCESS_URI, List.class);
         List cacheApiDomain = request(uri + Routes.CACHE_API_DOMAIN, List.class);
         Map cacheTenantDomain = request(uri + Routes.CACHE_TENANT_DOMAIN, Map.class);
+        List cacheSysDict = request(uri + Routes.CACHE_SYS_DICT, List.class);
 
         SystemConfigHelper.setLocal(cacheSysConfig);
         AccessHelper.setLocal(cacheAccessUri);
         ApiDomainHelper.setLocal(cacheApiDomain);
         TenantDomainHelper.setLocal(cacheTenantDomain);
+        DictHelper.setLocal(cacheSysDict);
 
         logger.info("完成从远程服务 {} 拉取缓存！", serviceInstance.getInstanceId());
     }

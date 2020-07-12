@@ -44,6 +44,8 @@ public interface Routes {
     String CACHE_TENANT_DOMAIN = "/cache/tenant/domain";
     @Desc("4. 缓存-accessUri")
     String CACHE_ACCESS_URI = "/cache/access/uri";
+    @Desc("1. 缓存-Dict")
+    String CACHE_SYS_DICT = "/cache/sys/dict";
 
 
 

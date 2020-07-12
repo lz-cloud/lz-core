@@ -3,10 +3,7 @@ package com.wkclz.core.helper.redis.topic;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.exception.BizException;
-import com.wkclz.core.helper.AccessHelper;
-import com.wkclz.core.helper.ApiDomainHelper;
-import com.wkclz.core.helper.SystemConfigHelper;
-import com.wkclz.core.helper.TenantDomainHelper;
+import com.wkclz.core.helper.*;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +54,9 @@ public class ConsumerRedisListener implements MessageListener {
         }
         if (TenantDomainHelper.class.getName().equals(tag)){
             result = TenantDomainHelper.setLocal(msg);
+        }
+        if (DictHelper.class.getName().equals(tag)){
+            result = DictHelper.setLocal(msg);
         }
 
         if (!result){
