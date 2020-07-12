@@ -73,7 +73,7 @@ public class DictHelper extends BaseHelper {
      */
     public static List<Dict> get(String dictType){
         if (StringUtils.isBlank(dictType)){
-            throw BizException.error("dictType can not be null!");
+            return null;
         }
         if (DICT_TYPES == null){
             throw BizException.error("do not init dict yet, please wait!");
@@ -94,7 +94,7 @@ public class DictHelper extends BaseHelper {
      */
     public static Dict get(String dictType, String dictKey){
         if (StringUtils.isBlank(dictKey)){
-            throw BizException.error("dictKey can not be null!");
+            return null;
         }
         List<Dict> dicts = get(dictType);
 
