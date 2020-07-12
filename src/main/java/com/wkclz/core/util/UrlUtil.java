@@ -66,16 +66,20 @@ public class UrlUtil {
     }
 
     public static Integer getPortFronUrl(String url) {
-        if (url == null || url.trim().length() == 0) {
-            return 0;
+        if (StringUtils.isBlank(url)) {
+            return null;
         }
         try {
             URL url1 = new URL(url);
-            return url1.getPort();
+            int port = url1.getPort();
+            if (port < 1){
+                return null;
+            }
+            return port;
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
         }
-        return 0;
+        return null;
     }
 
     public static String getFrontPortalDomainPort(HttpServletRequest req) {
@@ -83,7 +87,7 @@ public class UrlUtil {
         Integer port = getFrontPort(req);
         String protocol = req.getProtocol();
         String portalDomainPort = protocol + "://" + domain;
-        if (!("http".equalsIgnoreCase(protocol) && port == 80) && !("https".equalsIgnoreCase(protocol) && port == 443)){
+        if (port != null && !("http".equalsIgnoreCase(protocol) && port == 80) && !("https".equalsIgnoreCase(protocol) && port == 443)){
             portalDomainPort += ":" + port;
         }
         return portalDomainPort;
