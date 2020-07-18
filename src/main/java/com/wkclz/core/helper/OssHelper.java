@@ -75,8 +75,7 @@ public class OssHelper {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-        String outerEndpoint = helper.getSystemConfig("oss_outer_endpoint");
+        String outerEndpoint = SystemConfigHelper.getSystemConfig("oss_outer_endpoint");
 
         // 此处返回外网地址
         outerEndpoint = outerEndpoint == null ? "" : outerEndpoint;
@@ -93,11 +92,10 @@ public class OssHelper {
      */
     public static void uploadFiles(InputStream ins, String fileFullPath) {
 
-        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-        String innerEndpoint = helper.getSystemConfig("oss_inner_endpoint");
-        String accessKeyId = helper.getSystemConfig("oss_access_key_id");
-        String accessKeySecret = helper.getSystemConfig("oss_access_key_secret");
-        String bucketName = helper.getSystemConfig("oss_bucket_name");
+        String innerEndpoint = SystemConfigHelper.getSystemConfig("oss_inner_endpoint");
+        String accessKeyId = SystemConfigHelper.getSystemConfig("oss_access_key_id");
+        String accessKeySecret = SystemConfigHelper.getSystemConfig("oss_access_key_secret");
+        String bucketName = SystemConfigHelper.getSystemConfig("oss_bucket_name");
 
         // 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建
 
@@ -134,11 +132,10 @@ public class OssHelper {
      */
     public static Integer deleteFiles(List<String> objectNames) {
 
-        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-        String innerEndpoint = helper.getSystemConfig("oss_inner_endpoint");
-        String accessKeyId = helper.getSystemConfig("oss_access_key_id");
-        String accessKeySecret = helper.getSystemConfig("oss_access_key_secret");
-        String bucketName = helper.getSystemConfig("oss_bucket_name");
+        String innerEndpoint = SystemConfigHelper.getSystemConfig("oss_inner_endpoint");
+        String accessKeyId = SystemConfigHelper.getSystemConfig("oss_access_key_id");
+        String accessKeySecret = SystemConfigHelper.getSystemConfig("oss_access_key_secret");
+        String bucketName = SystemConfigHelper.getSystemConfig("oss_bucket_name");
 
         objectNames = removeProAndEnCode(objectNames);
         OSS client = new OSSClientBuilder().build(innerEndpoint, accessKeyId, accessKeySecret);

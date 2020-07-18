@@ -7,10 +7,8 @@ import com.aliyuncs.IAcsClient;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.wkclz.core.base.Sys;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +50,8 @@ public class SmsHelper {
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 
-        SystemConfigHelper helper = Sys.getBean(SystemConfigHelper.class);
-        String smsAccessKeyId = helper.getSystemConfig("sms_access_key_id");
-        String smsAccessKeySecret = helper.getSystemConfig("sms_access_key_secret");
+        String smsAccessKeyId = SystemConfigHelper.getSystemConfig("sms_access_key_id");
+        String smsAccessKeySecret = SystemConfigHelper.getSystemConfig("sms_access_key_secret");
 
         try {
             //初始化ascClient,暂时不支持多region（请勿修改）
