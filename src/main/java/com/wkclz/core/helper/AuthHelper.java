@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -121,12 +120,13 @@ public class AuthHelper extends BaseHelper {
             User user = JSONObject.parseObject(userStr, User.class);
             return user;
         }
-        // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户
+        // 在使用 token 之前，校验是否要登录, 若无需登录，不取用户， 【也要去尝试取用户，能取到就要】
+        /*
         boolean checkAccessUriResult = AccessHelper.checkAccessUri(req);
         if (checkAccessUriResult){
             return null;
         }
-
+        */
         String tokenStr = BaseHelper.getToken(req);
         return getUser(tokenStr);
     }
