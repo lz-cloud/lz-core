@@ -19,7 +19,8 @@ public enum ResultStatus {
     USERNAME_PASSWORD_ERROR(30001, "登录名或密码错误"),
     CAPTCHA_ERROR(30002, "图片验证码错误"),
     CAPTCHA_NEED(30003, "需要图片验证码"),
-    MOBILE_CAPTCHA_ERROR(30004, "短信验证码错误"),
+    MOBILE_CAPTCHA_ERROR(30004, "验证码错误"),
+    EMAIL_CAPTCHA_ERROR(30004, "验证码错误"),
 
     UPDATE_NO_VERSION(40001, "操作需要带数据版本号！"),
     RECORD_NOT_EXIST_OR_OUT_OF_DATE(40002, "数据不存在或已不是最新的！"),
