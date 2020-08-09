@@ -36,6 +36,8 @@ public interface Routes {
     /**
      * 获取Cache
      */
+    @Desc("0. 缓存-刷新全局缓存")
+    String CACHE_REFRESH = "/cache/refresh";
     @Desc("1. 缓存-sysConfig")
     String CACHE_SYS_CONFIG = "/cache/sys/config";
     @Desc("2. 缓存-apiDomain")
