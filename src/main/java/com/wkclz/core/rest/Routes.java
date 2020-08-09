@@ -37,7 +37,7 @@ public interface Routes {
      * 获取Cache
      */
     @Desc("1. 缓存-sysConfig")
-    String CACHE_SYS_CONFIG = "/cache/sys/consig";
+    String CACHE_SYS_CONFIG = "/cache/sys/config";
     @Desc("2. 缓存-apiDomain")
     String CACHE_API_DOMAIN = "/cache/api/domain";
     @Desc("3. 缓存-tenantDomain")
