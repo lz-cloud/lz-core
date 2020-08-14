@@ -39,10 +39,11 @@ public class AuthHelper extends BaseHelper {
 
     /**
      * 设置session
-     *
-     * @param req
      * @return
      */
+    public Map<String, String> setUser(User user) {
+        return setUser(null,null, user);
+    }
     public Map<String, String> setUser(HttpServletRequest req, HttpServletResponse rep, User user) {
 
         if (user.getAuthId() == null) {
