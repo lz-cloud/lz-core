@@ -75,12 +75,14 @@ public class AuthHelper extends BaseHelper {
         stringRedisTemplate.expire(redisKey, getSessionLiveTime(), TimeUnit.SECONDS);
 
         // 登录成功日志【仅在登录的时候需要，漫游时不需要】
-        if (session == null) {
-            // 登录请求，漫游
-            logger.info("漫游请求，重建，uri: {}", req.getRequestURI());
-        } else {
-            // 登录请求，漫游
-            logger.info("正常登录请求，建立，uri: {}", req.getRequestURI());
+        if (req != null){
+            if (session == null) {
+                // 登录请求，漫游
+                logger.info("漫游请求，重建，uri: {}", req.getRequestURI());
+            } else {
+                // 登录请求，漫游
+                logger.info("正常登录请求，建立，uri: {}", req.getRequestURI());
+            }
         }
 
         // addCookie(req, rep, "token", token.base64(), getSessionLiveTime());
