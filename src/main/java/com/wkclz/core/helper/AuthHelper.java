@@ -53,7 +53,7 @@ public class AuthHelper extends BaseHelper {
         Map<String, String> tokenMap = new HashMap<>();
 
         // 已经登录的情况
-        User session = getUserIfLogin();
+        /*
         if (session != null) {
             user = session;
             Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
@@ -61,7 +61,7 @@ public class AuthHelper extends BaseHelper {
             tokenMap.put("token", token.base64());
             return tokenMap;
         }
-
+        */
         // session 对象
         Token token = new Token(user.getAuthId(), user.getUserId(), user.getToken());
         user.setToken(token.getToken());
@@ -77,6 +77,7 @@ public class AuthHelper extends BaseHelper {
 
         // 登录成功日志【仅在登录的时候需要，漫游时不需要】
         if (req != null){
+            User session = getUserIfLogin();
             if (session == null) {
                 // 登录请求，漫游
                 logger.info("漫游请求，重建，uri: {}", req.getRequestURI());
