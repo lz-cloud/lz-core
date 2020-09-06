@@ -20,6 +20,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Result httpRequestMethodHandler(HttpRequestMethodNotSupportedException e){
+        logger.error(e.getMessage(), e);
         Result result = new Result();
         result.setError(e.getMessage());
         result.setCode(405);
@@ -29,6 +30,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(value = Exception.class)
     public Result errorHandler(Exception e) {
+        logger.error(e.getMessage(), e);
 
         BizException bizException = getBizException(e);
         if (bizException != null){
