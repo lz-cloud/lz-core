@@ -10,7 +10,7 @@ import java.util.Map;
  * Created: wangkaicun @ 2017-10-20 上午2:29
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User<CmsUser, CmsUserAuth> {
+public class User {
 
     /**
      * token
@@ -60,12 +60,12 @@ public class User<CmsUser, CmsUserAuth> {
     /**
      * 用户
      */
-    private CmsUser user;
+    private CasUser user;
 
     /**
      * 账号
      */
-    private CmsUserAuth userAuth;
+    private CasUserAuth userAuth;
 
     /**
      * 用户扩展属性
@@ -155,19 +155,19 @@ public class User<CmsUser, CmsUserAuth> {
         this.point = point;
     }
 
-    public CmsUser getUser() {
+    public CasUser getUser() {
         return user;
     }
 
-    public void setUser(CmsUser user) {
+    public void setUser(CasUser user) {
         this.user = user;
     }
 
-    public CmsUserAuth getUserAuth() {
+    public CasUserAuth getUserAuth() {
         return userAuth;
     }
 
-    public void setUserAuth(CmsUserAuth userAuth) {
+    public void setUserAuth(CasUserAuth userAuth) {
         this.userAuth = userAuth;
     }
 
