@@ -11,7 +11,7 @@ import java.util.Date;
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CasUser {
+public class UserInfo {
 
     /**
      * 用户编码

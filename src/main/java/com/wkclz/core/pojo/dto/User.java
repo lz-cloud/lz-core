@@ -60,12 +60,12 @@ public class User {
     /**
      * 用户
      */
-    private CasUser user;
+    private UserInfo userInfo;
 
     /**
      * 账号
      */
-    private CasUserAuth userAuth;
+    private UserAuth userAuth;
 
     /**
      * 用户扩展属性
@@ -155,19 +155,19 @@ public class User {
         this.point = point;
     }
 
-    public CasUser getUser() {
-        return user;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUser(CasUser user) {
-        this.user = user;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
-    public CasUserAuth getUserAuth() {
+    public UserAuth getUserAuth() {
         return userAuth;
     }
 
-    public void setUserAuth(CasUserAuth userAuth) {
+    public void setUserAuth(UserAuth userAuth) {
         this.userAuth = userAuth;
     }
 

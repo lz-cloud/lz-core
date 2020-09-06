@@ -8,7 +8,7 @@ import java.util.Date;
  * @table: cas_user_auth (认证表，存储用户的认证信息) 重新生成代码会覆盖
  */
 
-public class CasUserAuth {
+public class UserAuth {
 
     /**
      * 用户名
