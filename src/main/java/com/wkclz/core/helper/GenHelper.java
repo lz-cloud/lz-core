@@ -8,7 +8,7 @@ import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.entity.GenTaskInfo;
 import com.wkclz.core.util.CompressUtil;
 import com.wkclz.core.util.FileUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
