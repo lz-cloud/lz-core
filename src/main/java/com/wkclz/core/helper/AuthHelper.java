@@ -315,7 +315,7 @@ public class AuthHelper extends BaseHelper {
         }
 
         // 到 redis 去查找，找不到，不放过
-        User user = getUser();
+        User user = getUserIfLogin();
         if (user == null) {
             Result result = new Result();
             invalidateSession(req, rep);
@@ -350,9 +350,9 @@ public class AuthHelper extends BaseHelper {
         */
 
         // 管理后台
+        /*
         String origin = req.getHeader("Origin");
         Long tenantId = getTenantId();
-        /*
         if (StringUtils.isNotBlank(origin) && tenantId != null && origin.contains("admin.")) {
             List<Long> adminIds = user.getAdminIds();
             if (adminIds == null || adminIds.size() == 0 || !adminIds.contains(tenantId)) {

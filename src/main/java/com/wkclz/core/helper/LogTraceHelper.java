@@ -109,7 +109,7 @@ public class LogTraceHelper {
         String spanId = MDC.get(SPAN_ID);
         if (spanId == null) { spanId = req.getHeader(SPAN_ID); }
         if (spanId == null) { spanId = "0"; }
-        Integer newSpanId = Integer.valueOf(spanId) + 1;
+        Integer newSpanId = Integer.parseInt(spanId) + 1;
         traceInfo.setSpanId(newSpanId);
 
         traceInfo.setOriginIp(IpHelper.getOriginIp(req));

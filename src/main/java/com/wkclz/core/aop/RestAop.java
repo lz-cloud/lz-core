@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.exception.BizException;
 import com.wkclz.core.pojo.enums.EnvType;
+import com.wkclz.core.pojo.enums.ResultStatus;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -85,6 +87,17 @@ public class RestAop {
         Object obj = null;
         Throwable tb = null;
         try {
+
+            // 非微服务场景，使用 module 标记模块
+            Object module = req.getAttribute("module");
+            if (module != null){
+                String typeName = point.getSignature().getDeclaringTypeName();
+                if (!typeName.startsWith("com.wkclz." + module.toString())){
+                    throw BizException.error(ResultStatus.ERROR_ROUTER);
+                }
+            }
+
+
             obj = point.proceed();
         } catch (Throwable throwable) {
             tb = throwable;

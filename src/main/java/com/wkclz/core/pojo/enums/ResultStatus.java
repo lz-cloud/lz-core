@@ -15,6 +15,7 @@ public enum ResultStatus {
     CLIENT_CHANGE(20001, "用户登录环境改变！"),
     API_CORS(20002, "api url can not be cors"),
     ORIGIN_CORS(20003, "origin url can not be cors"),
+    ERROR_ROUTER(20004, "err routers, check the uri!"),
 
     USERNAME_PASSWORD_ERROR(30001, "登录名或密码错误"),
     CAPTCHA_ERROR(30002, "图片验证码错误"),

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * Description: 仅用于创建 session
  * Created: wangkaicun @ 2017-10-18 下午11:41
  */
-@Component
+// @Component
 public class LogTraceHandler implements HandlerInterceptor {
 
     @Autowired
@@ -24,7 +24,6 @@ public class LogTraceHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse rep, Object handler) {
         try {
-            MDC.clear();
             logTraceHelper.checkTraceInfo(req, rep);
         } catch (Exception e){
             Result error;
