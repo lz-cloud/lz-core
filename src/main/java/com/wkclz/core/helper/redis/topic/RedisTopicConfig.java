@@ -1,5 +1,6 @@
 package com.wkclz.core.helper.redis.topic;
 
+import com.wkclz.core.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,16 +15,22 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 @Configuration
 public class RedisTopicConfig {
 
-    public final static String CACHE_CONFIG_TOPIC = "cache-config-topic";
+    private final static String CACHE_CONFIG_TOPIC_SUB = "cache-config-topic";
+    private static String CACHE_CONFIG_TOPIC = null;
+
+
+    @Autowired
+    private SystemConfig systemConfig;
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+
     @Bean
     public ConsumerRedisListener consumerRedis() {
         return new ConsumerRedisListener();
     }
     @Bean
     public ChannelTopic topic() {
-        return new ChannelTopic(CACHE_CONFIG_TOPIC);
+        return new ChannelTopic(getCacheTopic());
     }
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer() {
@@ -31,6 +38,18 @@ public class RedisTopicConfig {
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(consumerRedis(), topic());
         return container;
+    }
+
+    public String getCacheTopic(){
+        if (CACHE_CONFIG_TOPIC != null){
+            return CACHE_CONFIG_TOPIC;
+        }
+        synchronized (this){
+            String profiles = systemConfig.getProfiles().toUpperCase();
+            String group = systemConfig.getApplicationGroup().toUpperCase();
+            CACHE_CONFIG_TOPIC = profiles + ":" + group + ":" + CACHE_CONFIG_TOPIC_SUB;
+        }
+        return CACHE_CONFIG_TOPIC;
     }
 
 }

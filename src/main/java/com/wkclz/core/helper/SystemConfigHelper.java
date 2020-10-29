@@ -40,7 +40,7 @@ public class SystemConfigHelper extends BaseHelper {
 
         String msg = JSONObject.toJSONString(body);
         StringRedisTemplate stringRedisTemplate = Sys.getBean(StringRedisTemplate.class);
-        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC, msg);
+        stringRedisTemplate.convertAndSend(Sys.getBean(RedisTopicConfig.class).getCacheTopic(), msg);
         return true;
     }
 

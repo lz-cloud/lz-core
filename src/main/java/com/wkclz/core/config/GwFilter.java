@@ -3,7 +3,6 @@ package com.wkclz.core.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Result;
-import com.wkclz.core.base.Sys;
 import com.wkclz.core.config.handler.AuthHandler;
 import com.wkclz.core.constant.Queue;
 import com.wkclz.core.helper.AccessHelper;
@@ -31,6 +30,8 @@ public class GwFilter implements Filter {
 
     @Value("${eureka.client.serviceUrl.defaultZone:null}")
     private String defaultZone;
+    @Autowired
+    private SystemConfig systemConfig;
 
     private static Logger logger = LoggerFactory.getLogger(GwFilter.class);
 
@@ -85,7 +86,7 @@ public class GwFilter implements Filter {
         // 记录日志
         AccessLog accessLog = AccessHelper.getAccessLog(httpRequest);
         if (accessLog!=null){
-            String key = Queue.LOGGER_QUEUE_PREFIX + Sys.APPLICATION_GROUP;
+            String key = Queue.LOGGER_QUEUE_PREFIX + ":" + systemConfig.getProfiles() + ":" +systemConfig.getApplicationGroup();
             String jsonString = JSONObject.toJSONString(accessLog);
             //消息入队列
             logger.info("access: {}, UA: {}", accessLog.getRequestUri(), accessLog.getUserAgent());

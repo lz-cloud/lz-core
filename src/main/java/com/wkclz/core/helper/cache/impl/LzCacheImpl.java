@@ -83,7 +83,7 @@ public class LzCacheImpl implements LzCache {
     @Override
     public void wipe(Class clazz){
         String name = clazz.getName();
-        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC,name);
+        stringRedisTemplate.convertAndSend(Sys.getBean(RedisTopicConfig.class).getCacheTopic(),name);
     }
 
     // 加载缓存

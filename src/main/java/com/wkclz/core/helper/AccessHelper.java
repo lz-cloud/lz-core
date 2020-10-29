@@ -43,7 +43,7 @@ public class AccessHelper extends BaseHelper {
 
         String msg = JSONArray.toJSONString(body);
         StringRedisTemplate stringRedisTemplate = Sys.getBean(StringRedisTemplate.class);
-        stringRedisTemplate.convertAndSend(RedisTopicConfig.CACHE_CONFIG_TOPIC, msg);
+        stringRedisTemplate.convertAndSend(Sys.getBean(RedisTopicConfig.class).getCacheTopic(), msg);
         return true;
     }
 
