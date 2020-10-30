@@ -93,7 +93,9 @@ public class RestAop {
             if (module != null){
                 String typeName = point.getSignature().getDeclaringTypeName();
                 if (!typeName.startsWith("com.wkclz." + module.toString())){
-                    throw BizException.error(ResultStatus.ERROR_ROUTER);
+                    if (!typeName.startsWith("com.wkclz.core") && !typeName.startsWith("com.wkclz.starter")){
+                        throw BizException.error(ResultStatus.ERROR_ROUTER);
+                    }
                 }
             }
 
