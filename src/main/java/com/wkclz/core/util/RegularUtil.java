@@ -85,7 +85,7 @@ public class RegularUtil {
      * @param str
      * @return
      */
-    public static boolean isdomain(String str) {
+    public static boolean isDomain(String str) {
         return reg(str, IS_DOMAIN);
     }
 
@@ -150,7 +150,7 @@ public class RegularUtil {
     public static void main(String[] args) {
         /*
         System.out.println(isIp("127.0.0.1"));
-        System.out.println(isdomain("www.www.wklz.com"));
+        System.out.println(isDomain("www.www.wklz.com"));
         System.out.println(isDate("2019-02-29"));
         System.out.println(isLetter("dDD"));
         */
