@@ -72,7 +72,7 @@ public class GwFilter implements Filter {
 
 
         // 不走微服务才需要此过程
-        if (!systemConfig.isCloud()){
+        if (systemConfig.isCloud()){
             chain.doFilter(request,response);
             return;
         }
