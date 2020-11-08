@@ -3,6 +3,7 @@ package com.wkclz.core.helper.cache.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.constant.Queue;
 import com.wkclz.core.constant.ServiceIdConstant;
 import com.wkclz.core.exception.BizException;
@@ -37,6 +38,8 @@ public class LzCacheImpl implements LzCache {
 
     @Autowired(required = false)
     private DiscoveryClient client;
+    @Autowired
+    private SystemConfig systemConfig;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -106,6 +109,7 @@ public class LzCacheImpl implements LzCache {
 
     @Override
     public void cache2Local(){
+
         logger.info("正在尝试从远程加载缓存至本地...");
         List<ServiceInstance> instances = client.getInstances(ServiceIdConstant.LZ_SYS);
         if (CollectionUtils.isEmpty(instances)){

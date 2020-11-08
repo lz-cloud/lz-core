@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SystemConfig {
 
+    @Value("${eureka.client.serviceUrl.defaultZone:null}")
+    private String defaultZone;
     @Value("${spring.application.name:APP}")
     private String applicationName;
     @Value("${spring.application.group:CMS}")
@@ -41,5 +43,9 @@ public class SystemConfig {
 
     public void setProfiles(String profiles) {
         this.profiles = profiles;
+    }
+
+    public boolean isCloud(){
+        return !"null".equals(this.defaultZone);
     }
 }

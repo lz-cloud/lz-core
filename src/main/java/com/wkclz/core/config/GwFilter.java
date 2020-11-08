@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StreamUtils;
 
@@ -28,13 +27,10 @@ import java.nio.charset.StandardCharsets;
 @WebFilter(filterName = "gwFilter"  ,urlPatterns = "/*")
 public class GwFilter implements Filter {
 
-    @Value("${eureka.client.serviceUrl.defaultZone:null}")
-    private String defaultZone;
-    @Autowired
-    private SystemConfig systemConfig;
-
     private static Logger logger = LoggerFactory.getLogger(GwFilter.class);
 
+    @Autowired
+    private SystemConfig systemConfig;
     @Autowired
     private AuthHandler authHandler;
     @Autowired
@@ -76,7 +72,7 @@ public class GwFilter implements Filter {
 
 
         // 不走微服务才需要此过程
-        if (!"null".equals(defaultZone)){
+        if (!systemConfig.isCloud()){
             chain.doFilter(request,response);
             return;
         }
