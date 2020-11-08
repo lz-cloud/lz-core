@@ -4,6 +4,7 @@ import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
@@ -37,6 +38,12 @@ public class AccessHelper extends BaseHelper {
         if (CollectionUtils.isEmpty(accessUris)) {
             throw BizException.error("accessUris can not be null or empty!");
         }
+
+        if (!Sys.getBean(SystemConfig.class).isCloud()){
+            ACCESS_URI = accessUris;
+            return true;
+        }
+
         RedisMsgBody body = new RedisMsgBody();
         body.setTag(AccessHelper.class.getName());
         body.setMsg(accessUris);

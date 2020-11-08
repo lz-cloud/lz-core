@@ -2,6 +2,7 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
@@ -34,6 +35,12 @@ public class SystemConfigHelper extends BaseHelper {
         if (CollectionUtils.isEmpty(systemConfigs)) {
             throw BizException.error("systemConfigs can not be null or empty!");
         }
+
+        if (!Sys.getBean(SystemConfig.class).isCloud()){
+            SYSTEM_CONFIG = systemConfigs;
+            return true;
+        }
+
         RedisMsgBody body = new RedisMsgBody();
         body.setTag(SystemConfigHelper.class.getName());
         body.setMsg(systemConfigs);

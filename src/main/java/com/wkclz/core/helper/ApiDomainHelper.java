@@ -3,6 +3,7 @@ package com.wkclz.core.helper;
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
@@ -42,6 +43,11 @@ public class ApiDomainHelper extends BaseHelper {
     public static boolean reflash(List<String> apiDomains) {
         if (CollectionUtils.isEmpty(apiDomains)) {
             throw new BizException("apiDomains can not be null or empty!");
+        }
+
+        if (!Sys.getBean(SystemConfig.class).isCloud()){
+            API_DOMAINS = apiDomains;
+            return true;
         }
 
         RedisMsgBody body = new RedisMsgBody();

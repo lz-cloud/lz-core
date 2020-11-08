@@ -2,6 +2,7 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONArray;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
@@ -30,6 +31,11 @@ public class DictHelper extends BaseHelper {
     public static boolean reflash(List<DictType> dictTypes) {
         if (CollectionUtils.isEmpty(dictTypes)) {
             throw BizException.error("dictTypes can not be null or empty!");
+        }
+
+        if (!Sys.getBean(SystemConfig.class).isCloud()){
+            DICT_TYPES = dictTypes;
+            return true;
         }
         RedisMsgBody body = new RedisMsgBody();
         body.setTag(DictHelper.class.getName());

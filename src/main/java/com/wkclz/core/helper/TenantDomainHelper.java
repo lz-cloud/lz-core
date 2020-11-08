@@ -2,6 +2,7 @@ package com.wkclz.core.helper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wkclz.core.base.Sys;
+import com.wkclz.core.config.SystemConfig;
 import com.wkclz.core.exception.BizException;
 import com.wkclz.core.helper.redis.bean.RedisMsgBody;
 import com.wkclz.core.helper.redis.topic.RedisTopicConfig;
@@ -32,6 +33,11 @@ public class TenantDomainHelper extends BaseHelper {
     public static boolean reflash(Map<String, Object> tenantDomains) {
         if (tenantDomains == null || tenantDomains.size() == 0) {
             throw new BizException("tenantDomains can not be null or empty!");
+        }
+
+        if (!Sys.getBean(SystemConfig.class).isCloud()){
+            TENANT_DOMAINS = tenantDomains;
+            return true;
         }
 
         RedisMsgBody body = new RedisMsgBody();
