@@ -103,6 +103,9 @@ public class DictHelper extends BaseHelper {
             return null;
         }
         List<Dict> dicts = get(dictType);
+        if (CollectionUtils.isEmpty(dicts)) {
+            return null;
+        }
 
         for (Dict dict : dicts) {
             if (dictKey.equals(dict.getDictKey())){
