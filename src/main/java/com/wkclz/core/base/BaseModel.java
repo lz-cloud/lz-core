@@ -25,7 +25,6 @@ public class BaseModel {
 
     private Long userId;
     private Long tenantId;
-    private String secretKey;
 
     /**
      * 查询辅助
@@ -51,8 +50,10 @@ public class BaseModel {
     private Integer sort;
     private Date createTime;
     private Long createBy;
+    private String createByName;
     private Date updateTime;
     private Long updateBy;
+    private String updateByName;
     private String comments;
     private Integer version;
     private Integer status;
@@ -92,14 +93,6 @@ public class BaseModel {
 
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
     }
 
     public Integer getPageNo() {
@@ -206,6 +199,14 @@ public class BaseModel {
         this.createBy = createBy;
     }
 
+    public String getCreateByName() {
+        return createByName;
+    }
+
+    public void setCreateByName(String createByName) {
+        this.createByName = createByName;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -220,6 +221,14 @@ public class BaseModel {
 
     public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public String getUpdateByName() {
+        return updateByName;
+    }
+
+    public void setUpdateByName(String updateByName) {
+        this.updateByName = updateByName;
     }
 
     public String getComments() {
