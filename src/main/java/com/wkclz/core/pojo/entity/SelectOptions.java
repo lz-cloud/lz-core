@@ -6,6 +6,7 @@ package com.wkclz.core.pojo.entity;
  * @author wangkc
  * @date 2018-12-23 11:51:46
  */
+@Deprecated
 public class SelectOptions {
 
     /**
