@@ -8,9 +8,15 @@ import java.util.List;
  */
 public class Option {
 
+    @Deprecated
     private Long id;
 
+    @Deprecated
     private Long pid;
+
+    private String code;
+
+    private String pcode;
 
     private String label;
 
@@ -32,6 +38,22 @@ public class Option {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getPcode() {
+        return pcode;
+    }
+
+    public void setPcode(String pcode) {
+        this.pcode = pcode;
     }
 
     public String getLabel() {
