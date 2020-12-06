@@ -20,7 +20,7 @@ public class Option {
 
     private String label;
 
-    private Long value;
+    private String value;
 
     private List<Option> children;
 
@@ -64,11 +64,11 @@ public class Option {
         this.label = label;
     }
 
-    public Long getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Long value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
