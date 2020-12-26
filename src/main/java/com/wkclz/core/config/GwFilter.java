@@ -48,7 +48,7 @@ public class GwFilter implements Filter {
         "/pms/",
         "/cms/",
         "/order/",
-        "/temp51/",
+        "/tmp/",
         "/yg/",
         "/demo/",
     };
