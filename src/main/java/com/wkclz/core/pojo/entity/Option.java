@@ -22,6 +22,8 @@ public class Option {
 
     private String value;
 
+    private String icon;
+
     private List<Option> children;
 
     public Long getId() {
@@ -70,6 +72,14 @@ public class Option {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public List<Option> getChildren() {
