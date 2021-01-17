@@ -53,6 +53,7 @@ public class MyBatisHelper {
         SqlSession sqlSession = Sys.getBean(SqlSession.class);
         String statement = reloadSql(sql);
         PageHandle<T> pageHandle = new PageHandle<>(param);
+        assert sqlSession != null;
         List<T> list = sqlSession.selectList(statement, param);
         PageData<T> page = pageHandle.page(list);
         return page;
@@ -70,10 +71,11 @@ public class MyBatisHelper {
 
         Object pageNoObj = param.get("pageNo");
         Object pageSizeObj = param.get("pageSize");
-        Integer pageNo = (pageNoObj == null)?0:Integer.valueOf(pageNoObj.toString());
-        Integer pageSize = (pageSizeObj == null)?10:Integer.valueOf(pageSizeObj.toString());
+        Integer pageNo = (pageNoObj == null)?0:Integer.parseInt(pageNoObj.toString());
+        Integer pageSize = (pageSizeObj == null)?10:Integer.parseInt(pageSizeObj.toString());
 
         PageHelper.startPage(pageNo, pageSize);
+        assert sqlSession != null;
         List<Map> list = sqlSession.selectList(statement, param);
 
         Page listPage = (Page) list;
@@ -102,6 +104,7 @@ public class MyBatisHelper {
         STATEMENTS.add(statement);
 
         SqlSession sqlSession = Sys.getBean(SqlSession.class);
+        assert sqlSession != null;
         Configuration configuration = sqlSession.getConfiguration();
 
 
