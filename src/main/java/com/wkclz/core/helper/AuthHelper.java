@@ -183,6 +183,16 @@ public class AuthHelper extends BaseHelper {
     public Long getTenantId() {
         return TenantDomainHelper.getTenantId();
     }
+    public Long forceGetTenantId() {
+        Long tenantId = TenantDomainHelper.getTenantId();
+        if (tenantId > 0) {
+            return tenantId;
+        }
+        HttpServletRequest req = RequestHelper.getRequest();
+        String domain = UrlUtil.getFrontDomain(req);
+        throw BizException.error("can not map tenamtId with domain: {}", domain);
+    }
+
 
 
     /**
