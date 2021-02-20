@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Model>> {
 
+    private final static int INSERT_SIZE = 1000;
+
     @Autowired
     protected Mapper mapper;
 
@@ -63,7 +65,22 @@ public class BaseService<Model extends BaseModel, Mapper extends BaseMapper<Mode
 
     @Desc("全量批量插入")
     public Integer insert(@NotNull List<Model> models){
-        return mapper.insertBatch(models);
+        if (CollectionUtils.isEmpty(models)) {
+            return 0;
+        }
+        int size = models.size();
+        int counter = 0;
+        int success = 0;
+        List<Model> tmpList = new ArrayList<>();
+        for (Model model : models) {
+            counter++;
+            tmpList.add(model);
+            if (counter % INSERT_SIZE == 0 || counter == size) {
+                success += mapper.insertBatch(tmpList);
+                tmpList = new ArrayList<>();
+            }
+        }
+        return success;
     }
 
     @Desc("更新(带乐观锁)")
