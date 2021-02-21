@@ -134,10 +134,6 @@ public class GenHelper {
             System.out.println(StrFormatter.format("=======> 完成代码生成, 耗时 {}ms <=========", (end - start)));
 
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
