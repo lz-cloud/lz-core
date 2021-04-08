@@ -3,6 +3,8 @@ package com.wkclz.core.rest;
 import com.wkclz.core.base.Result;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.helper.IpHelper;
+import com.wkclz.core.pojo.dto.JvmInfo;
+import com.wkclz.core.util.JvmUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +55,16 @@ public class Monitor {
     public Result properties(){
         Properties properties = System.getProperties();
         return Result.data(properties);
+    }
+
+    /**
+     * 获取服务器属性
+     * @return
+     */
+    @GetMapping(Routes.MONITOR_JVM)
+    public Result jvm(){
+        JvmInfo info = JvmUtil.getJvmStatus();
+        return Result.data(info);
     }
 
 }
