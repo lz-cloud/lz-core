@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -53,17 +54,25 @@ public class GenHelper {
 
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setConnectTimeout(3*1000);
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+            conn.setRequestProperty("User-Agent", "lz-gen client");
 
             //得到输入流
             InputStream inputStream = conn.getInputStream();
             int responseCode = conn.getResponseCode();
             if (responseCode != 200){
-                throw BizException.error("网络请求错误：" + conn.getResponseMessage());
+                System.out.println("网络请求错误: " + conn.getResponseMessage());
+                return false;
             }
-
             //获取文件信息
             byte[] getData = readInputStream(inputStream);
+            String contentType = conn.getHeaderField("Content-Type");
+            if (StringUtils.isNotBlank(contentType) || contentType.contains("application/json")) {
+                JSONObject obj = JSONObject.parseObject(new String(getData));
+                Object msg = obj.get("msg");
+                System.out.println("代码生成异常: " + msg);
+                return false;
+            }
+
             String savePath = getSavePath(conn).replace("\\","/");
 
             // 保存文件
@@ -96,7 +105,7 @@ public class GenHelper {
                     continue;
                 }
 
-                boolean deleteFlag = (taskInfo.getNeedDelete()!=null && taskInfo.getNeedDelete() == 1)? true:false;
+                boolean deleteFlag = taskInfo.getNeedDelete() != null && taskInfo.getNeedDelete() == 1;
                 String relativePath = ""
                     + "/" + taskInfo.getProjectBasePath()
                     + "/" + taskInfo.getPackagePath().replaceAll("\\.", "/");
@@ -224,17 +233,13 @@ public class GenHelper {
             }
 
             is = roleConn.getInputStream();
-            isr = new InputStreamReader(is,"utf-8");
+            isr = new InputStreamReader(is, StandardCharsets.UTF_8);
             br = new BufferedReader(isr);
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while((str = br.readLine()) != null){
                 buffer.append(str);
             }
             str = buffer.toString();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
