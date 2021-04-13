@@ -66,7 +66,7 @@ public class GenHelper {
             //获取文件信息
             byte[] getData = readInputStream(inputStream);
             String contentType = conn.getHeaderField("Content-Type");
-            if (StringUtils.isNotBlank(contentType) || contentType.contains("application/json")) {
+            if (StringUtils.isNotBlank(contentType) && contentType.contains("application/json")) {
                 JSONObject obj = JSONObject.parseObject(new String(getData));
                 Object msg = obj.get("msg");
                 System.out.println("代码生成异常: " + msg);
