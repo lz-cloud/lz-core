@@ -39,9 +39,9 @@ public class RestUtil {
         // Rest 服务类
         List<Class> restClassList = classes.stream().filter(clazz -> clazz.isAnnotationPresent(RestController.class) || clazz.isAnnotationPresent(Controller.class)).collect(Collectors.toList());
         for (Class clazz : restClassList) {
+
             // 大 Rest 上的 RequestMapping
-            /* 规范不允许这么写，不然分析很容易出错
-            String prefix = "";
+            String prefix = null;
             boolean hasPreFix = clazz.isAnnotationPresent(RequestMapping.class);
             if (hasPreFix) {
                 Annotation annotation = clazz.getAnnotation(RequestMapping.class);
@@ -51,8 +51,19 @@ public class RestUtil {
                     prefix = values[0];
                 }
             }
-            */
+            if (prefix != null && !prefix.startsWith("/")) {
+                prefix = "/" + prefix;
+            }
+            if (prefix != null && prefix.endsWith("/")) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+            }
 
+            // module
+            String module = "NaN";
+            int moduleStart = clazzName.indexOf(".", clazzName.indexOf(".") + 1) + 1;
+            if (moduleStart > 1 && clazzName.indexOf(".", moduleStart) > moduleStart) {
+                module = clazzName.substring(moduleStart, clazzName.indexOf(".", moduleStart));
+            }
 
             // 获取类上的方法
             Method[] methods = clazz.getDeclaredMethods();
@@ -115,23 +126,28 @@ public class RestUtil {
                 if (uri == null){
                     continue;
                 }
+
                 if (!uri.startsWith("/")){
                     uri = "/" + uri;
+                }
+                if (prefix != null) {
+                    uri = prefix + uri;
                 }
 
                 // 确定是 rest 接口，提取信息
                 if (requestMethod != null) {
                     RestInfo restInfo = new RestInfo();
-                    restInfo.setRequestMethod(requestMethod.name());
+                    restInfo.setMethod(requestMethod.name());
                     restInfo.setUri(uri);
-                    restInfo.setFunctionPath(clazz.getName() + "." + method.getName());
-                    restInfo.setRestDesc(desc);
+                    restInfo.setPath(clazz.getName() + "." + method.getName());
+                    restInfo.setDesc(desc);
+                    restInfo.setModule(module);
 
                     // 方法名
                     String restName = uri.substring(1);
                     restName = restName.replaceAll("/", "_");
                     restName = StringUtil.underlineToCamel(restName);
-                    restInfo.setRestName(restName);
+                    restInfo.setName(restName);
                     rests.add(restInfo);
                 }
             }
@@ -164,7 +180,7 @@ public class RestUtil {
         for (RestInfo rest : rests) {
             String desc = uriDescs.get(rest.getUri());
             if (StringUtils.isNotBlank(desc)){
-                rest.setRestDesc(desc);
+                rest.setDesc(desc);
             }
         }
 

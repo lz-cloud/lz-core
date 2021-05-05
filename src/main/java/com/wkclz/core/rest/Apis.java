@@ -41,12 +41,12 @@ public class Apis {
         sb.append(lineSeparator).append(lineSeparator);
         for (RestInfo mapping :mappings) {
             String funTemp;
-            if (RequestMethod.GET.name().equals(mapping.getRequestMethod())) {
+            if (RequestMethod.GET.name().equals(mapping.getMethod())) {
                 funTemp = "// {}\nexport function {}(params: any) {\n  return request({ url: '{}', method: 'get', params });\n}";
             } else {
                 funTemp = "// {}\nexport function {}(data: any) {\n  return request({ url: '{}', method: 'post', data });\n}";
             }
-            String fun = StrUtil.format(funTemp, mapping.getRestDesc(), mapping.getRestName(), router + mapping.getUri());
+            String fun = StrUtil.format(funTemp, mapping.getDesc(), mapping.getName(), router + mapping.getUri());
             sb.append(fun).append(lineSeparator);
         }
         return sb.toString();

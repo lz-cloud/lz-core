@@ -4,22 +4,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public class RestInfo {
 
-    private String requestMethod;
+    private String method;
 
     private String uri;
 
-    private String restName;
+    private String name;
 
-    private String functionPath;
+    private String path;
 
-    private String restDesc;
+    private String desc;
 
-    public String getRequestMethod() {
-        return requestMethod;
+    private String module;
+
+    public String getMethod() {
+        return method;
     }
 
-    public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod;
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public String getUri() {
@@ -30,27 +32,35 @@ public class RestInfo {
         this.uri = uri;
     }
 
-    public String getRestName() {
-        return restName;
+    public String getName() {
+        return name;
     }
 
-    public void setRestName(String restName) {
-        this.restName = restName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFunctionPath() {
-        return functionPath;
+    public String getPath() {
+        return path;
     }
 
-    public void setFunctionPath(String functionPath) {
-        this.functionPath = functionPath;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public String getRestDesc() {
-        return restDesc;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setRestDesc(String restDesc) {
-        this.restDesc = restDesc;
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 }
