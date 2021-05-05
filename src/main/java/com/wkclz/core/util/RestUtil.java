@@ -60,9 +60,10 @@ public class RestUtil {
 
             // module
             String module = "NaN";
-            int moduleStart = clazzName.indexOf(".", clazzName.indexOf(".") + 1) + 1;
-            if (moduleStart > 1 && clazzName.indexOf(".", moduleStart) > moduleStart) {
-                module = clazzName.substring(moduleStart, clazzName.indexOf(".", moduleStart));
+            String restClassName = clazz.getName();
+            int moduleStart = restClassName.indexOf(".", restClassName.indexOf(".") + 1) + 1;
+            if (moduleStart > 1 && restClassName.indexOf(".", moduleStart) > moduleStart) {
+                module = restClassName.substring(moduleStart, restClassName.indexOf(".", moduleStart));
             }
 
             // 获取类上的方法
