@@ -50,7 +50,7 @@ public class JdbcUtil {
         DruidPooledConnection conn = getConn(dataSource);
 
         // SQL 解析，检测
-        String dbType = JdbcConstants.MYSQL;
+        String dbType = JdbcConstants.MYSQL.name();
         String sqlFormat = SQLUtils.format(sql, dbType);
         logger.info("sql to excute: \n {}",sqlFormat);
 
