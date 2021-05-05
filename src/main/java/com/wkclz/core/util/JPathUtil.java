@@ -2,6 +2,7 @@ package com.wkclz.core.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import com.wkclz.core.exception.BizException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @see JSONPath
+ */
+
+@Deprecated
 public class JPathUtil {
 
     /**
