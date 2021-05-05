@@ -16,13 +16,13 @@ import java.util.Date;
 public class DebugHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DebugHelper.class);
-    private final static ThreadLocal<DebugInfo> threadLocal = new ThreadLocal();
+    private final static ThreadLocal<DebugInfo> THREAD_LOCAL = new ThreadLocal();
 
     public static void debug(){
         debug(null);
     }
     public static void debug(CharSequence msg, Object... args){
-        DebugInfo debugInfo = threadLocal.get();
+        DebugInfo debugInfo = THREAD_LOCAL.get();
 
         long currentTimeMillis = System.currentTimeMillis();
         if (debugInfo == null){
@@ -52,7 +52,7 @@ public class DebugHelper {
 
 
     private static void debugStart(String info){
-        DebugInfo debugInfo = threadLocal.get();
+        DebugInfo debugInfo = THREAD_LOCAL.get();
         long currentTimeMillis = System.currentTimeMillis();
 
         String debugId = MDC.get(LogTraceHelper.TRACE_ID);
@@ -68,7 +68,7 @@ public class DebugHelper {
             debugInfo.setCurrentTime(currentTimeMillis);
             debugInfo.setDebugId(debugId);
             debugInfo.setStep(0);
-            threadLocal.set(debugInfo);
+            THREAD_LOCAL.set(debugInfo);
             logger.info("debug {} start @ {} with {}",
                 debugInfo.getDebugId(),
                 DateUtil.format(new Date(currentTimeMillis), "yyyy-MM-dd HH:mm:ss.SSS"),
@@ -80,7 +80,7 @@ public class DebugHelper {
 
 
     private static void debugEnd(){
-        DebugInfo debugInfo = threadLocal.get();
+        DebugInfo debugInfo = THREAD_LOCAL.get();
         long currentTimeMillis = System.currentTimeMillis();
         if (debugInfo == null){
             return;
@@ -99,7 +99,7 @@ public class DebugHelper {
             setpCost,
             allCost
         );
-        threadLocal.remove();
+        THREAD_LOCAL.remove();
     }
 
 }
