@@ -167,6 +167,12 @@ public class AccessHelper extends BaseHelper {
         log.setOrigin(req.getHeader("Origin"));
         log.setReferer(req.getHeader("Referer"));
 
+        // 在前端使用了 hash 模式的情况下，Referer 只会是主机名，此时增加了参数 path 来重新找回 Referer 应该有的样子
+        String path = req.getHeader("path");
+        if (log.getOrigin() != null && StringUtils.isNotBlank(path) && (log.getOrigin() + "/").equals(log.getReferer())) {
+            log.setReferer(log.getOrigin() + path);
+        }
+
         log.setRequestUrl(req.getRequestURL().toString());
         log.setRequestUri(req.getRequestURI());
         log.setQueryString(req.getQueryString());
