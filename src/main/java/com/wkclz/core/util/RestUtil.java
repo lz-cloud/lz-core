@@ -73,6 +73,10 @@ public class RestUtil {
                 String uri = null;
                 String desc = null;
                 RequestMethod requestMethod = null;
+
+                Class<?> returnType = method.getReturnType();
+                Class<?>[] parameterTypes = method.getParameterTypes();
+
                 for (Annotation annotation : annotations) {
                     if (RequestMapping.class == annotation.annotationType()) {
                         RequestMapping request = (RequestMapping) annotation;
@@ -143,6 +147,8 @@ public class RestUtil {
                     restInfo.setPath(clazz.getName() + "." + method.getName());
                     restInfo.setDesc(desc);
                     restInfo.setModule(module);
+                    restInfo.setParameterTypes(method.getParameterTypes());
+                    restInfo.setReturnType(method.getReturnType());
 
                     // 方法名
                     String restName = uri.substring(1);

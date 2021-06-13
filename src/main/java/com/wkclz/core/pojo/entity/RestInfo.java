@@ -16,6 +16,12 @@ public class RestInfo {
 
     private String module;
 
+
+    private Class<?> returnType;
+
+    private Class<?>[] parameterTypes;
+
+
     public String getMethod() {
         return method;
     }
@@ -62,5 +68,21 @@ public class RestInfo {
 
     public void setModule(String module) {
         this.module = module;
+    }
+
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Class<?> returnType) {
+        this.returnType = returnType;
+    }
+
+    public Class<?>[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public void setParameterTypes(Class<?>[] parameterTypes) {
+        this.parameterTypes = parameterTypes;
     }
 }
