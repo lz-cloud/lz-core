@@ -2,6 +2,8 @@ package com.wkclz.core.pojo.entity;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 public class RestInfo {
 
     private String method;
@@ -19,7 +21,7 @@ public class RestInfo {
 
     private Class<?> returnType;
 
-    private Class<?>[] parameterTypes;
+    private List<Class<?>> parameterTypes;
 
 
     public String getMethod() {
@@ -78,11 +80,11 @@ public class RestInfo {
         this.returnType = returnType;
     }
 
-    public Class<?>[] getParameterTypes() {
+    public List<Class<?>> getParameterTypes() {
         return parameterTypes;
     }
 
-    public void setParameterTypes(Class<?>[] parameterTypes) {
+    public void setParameterTypes(List<Class<?>> parameterTypes) {
         this.parameterTypes = parameterTypes;
     }
 }
