@@ -34,6 +34,7 @@ public class BeanUtil {
         }
         try {
             List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptors(obj.getClass());
+            assert propertyDescriptors != null;
             for (PropertyDescriptor property : propertyDescriptors) {
                 Method getter = property.getReadMethod();
                 Object value = getter.invoke(obj);
@@ -42,9 +43,7 @@ public class BeanUtil {
                     setter.invoke(obj, new Object[]{null});
                 }
             }
-        } catch (IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
         return obj;
@@ -55,14 +54,13 @@ public class BeanUtil {
     public static <T> List<Method> getValuedList(T param){
         List<PropertyDescriptor> propertyDescriptors = getPropertyDescriptors(param.getClass());
         List<Method> list = null;
+        assert propertyDescriptors != null;
         for (PropertyDescriptor property : propertyDescriptors) {
             Method getter = property.getReadMethod();
             Object value = null;
             try {
                 value = getter.invoke(param);
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 logger.error(e.getMessage(), e);
             }
             if (value != null) {
@@ -131,13 +129,7 @@ public class BeanUtil {
                 cp(s, t);
                 list.add(t);
             }
-        } catch (InstantiationException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        } catch (NoSuchMethodException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
         return list;
