@@ -68,7 +68,13 @@ public class GwFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest)request;
         HttpServletResponse httpResponse = (HttpServletResponse)response;
-        logTraceHelper.checkTraceInfo(httpRequest, httpResponse);
+        try {
+            logTraceHelper.checkTraceInfo(httpRequest, httpResponse);
+        } catch (Exception e) {
+            Result error = Result.error(e.getMessage());
+            Result.responseError(httpResponse, error);
+            return;
+        }
 
 
         // 不走微服务才需要此过程
