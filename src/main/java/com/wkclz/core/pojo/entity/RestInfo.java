@@ -2,6 +2,8 @@ package com.wkclz.core.pojo.entity;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 public class RestInfo {
 
     private String method;
@@ -15,6 +17,12 @@ public class RestInfo {
     private String desc;
 
     private String module;
+
+
+    private Class<?> returnType;
+
+    private List<Class<?>> parameterTypes;
+
 
     public String getMethod() {
         return method;
@@ -62,5 +70,21 @@ public class RestInfo {
 
     public void setModule(String module) {
         this.module = module;
+    }
+
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Class<?> returnType) {
+        this.returnType = returnType;
+    }
+
+    public List<Class<?>> getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public void setParameterTypes(List<Class<?>> parameterTypes) {
+        this.parameterTypes = parameterTypes;
     }
 }

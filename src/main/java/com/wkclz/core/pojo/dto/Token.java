@@ -92,7 +92,6 @@ public class Token {
         StringBuffer sb = new StringBuffer();
         sb.append("authId-").append(authId);
         sb.append("token-").append(token);
-        sb.append("token-").append(token);
         sb.append("expireTime-").append(expireTime.getTime());
         String sign = SecretUtil.md5(sb.toString());
         return sign;

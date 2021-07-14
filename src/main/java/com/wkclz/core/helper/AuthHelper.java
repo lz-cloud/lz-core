@@ -324,6 +324,16 @@ public class AuthHelper extends BaseHelper {
             return result;
         }
 
+        // token 三天超时强制过期
+        if (token.getExpireTime().getTime() < System.currentTimeMillis()) {
+            Result result = new Result();
+            invalidateSession(req, rep);
+            logger.warn("token is force timeout, uri : {}, ip: {}", uri, IpHelper.getOriginIp(req));
+            result.setMoreError(ResultStatus.LOGIN_FORCE_TIMEOUT);
+            return result;
+        }
+
+
         // 到 redis 去查找，找不到，不放过
         User user = getUserIfLogin();
         if (user == null) {

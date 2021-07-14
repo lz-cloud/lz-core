@@ -8,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,7 +27,6 @@ public class RestUtil {
      * 读取 controller
      * @return
      */
-    @Desc("使用此方法，不要在Rest 类的上方加 RequestMapping")
     public static List<RestInfo> getMapping() {
         List<RestInfo> rests = new ArrayList<>();
 
@@ -73,6 +75,7 @@ public class RestUtil {
                 String uri = null;
                 String desc = null;
                 RequestMethod requestMethod = null;
+
                 for (Annotation annotation : annotations) {
                     if (RequestMapping.class == annotation.annotationType()) {
                         RequestMapping request = (RequestMapping) annotation;
@@ -143,6 +146,23 @@ public class RestUtil {
                     restInfo.setPath(clazz.getName() + "." + method.getName());
                     restInfo.setDesc(desc);
                     restInfo.setModule(module);
+                    restInfo.setReturnType(method.getReturnType());
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes.length > 0) {
+                        List<Class<?>> list = Arrays.stream(parameterTypes).filter(parameterType -> {
+                            if (parameterType == HttpServletRequest.class) {
+                                return false;
+                            }
+                            if (parameterType == HttpServletResponse.class) {
+                                return false;
+                            }
+                            if (parameterType == MultipartFile.class) {
+                                return false;
+                            }
+                            return true;
+                        }).collect(Collectors.toList());
+                        restInfo.setParameterTypes(list);
+                    }
 
                     // 方法名
                     String restName = uri.substring(1);

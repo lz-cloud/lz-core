@@ -14,7 +14,7 @@ public class UrlUtil {
 
     private static String getFrontUrl(HttpServletRequest req) {
         String domain = req.getHeader("Origin");
-        if (StringUtils.isBlank(domain)) {
+        if (StringUtils.isBlank(domain) || "null".equals(domain)) {
             domain = req.getHeader("Referer");
         }
         if (StringUtils.isBlank(domain)) {

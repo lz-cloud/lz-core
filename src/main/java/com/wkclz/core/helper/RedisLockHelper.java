@@ -1,6 +1,7 @@
 package com.wkclz.core.helper;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.wkclz.core.base.Sys;
 import com.wkclz.core.exception.BizException;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,8 @@ public class RedisLockHelper {
      * @return true, 加锁成功，可以继续， false, 加锁失败，需要等待
      */
     public boolean lock(String key){
-       return lock(key, 60);
+        int randomInt = RandomUtil.randomInt(1, 10);
+        return lock(key, 60 - randomInt);
     }
 
 

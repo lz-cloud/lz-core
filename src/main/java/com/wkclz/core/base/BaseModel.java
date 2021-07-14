@@ -1,6 +1,7 @@
 package com.wkclz.core.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wkclz.core.base.annotation.Desc;
 import com.wkclz.core.pojo.enums.DateRangeType;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ public class BaseModel {
 
     public static final String DEFAULE_ORDER_BY = "sort, id desc";
 
+    @Desc("主键ID")
     private Long id;
     /*
     private String mobile;
@@ -23,39 +25,59 @@ public class BaseModel {
     private String messageId;
     */
 
+    @Desc("用户ID")
     private Long userId;
+    @Desc("租户ID")
     private Long tenantId;
 
     /**
      * 查询辅助
      */
+    @Desc("分页页码")
     private Integer pageNo;
+    @Desc("分页大小")
     private Integer pageSize;
     private Integer offset;
+    @Desc("查询排序规则")
     private String orderBy;
+    @Desc("统计数")
     private Integer count;
 
     /**
      * 查询辅助
      */
+    @Desc("主键ID数组")
     private List<Long> ids;
     private String keyword;
+    @Desc("创建时间从")
     private Date timeFrom;
+    @Desc("创建时间到")
     private Date timeTo;
+    @Desc("创建时间范围:HOUR(时),YESTERDAY(天),WEEK(周),MONTH(月),QUATER(季),YEAR(年)")
     private DateRangeType dateRangeType;
 
     /**
      * 数据库规范字段
      */
+    @Desc("排序号，越大越往后")
     private Integer sort;
+    @Desc("创建时间")
     private Date createTime;
+    @Desc("创建人ID")
     private Long createBy;
+    @Desc("创建人昵称")
     private String createByName;
+    @Desc("更新时间")
     private Date updateTime;
+    @Desc("更新人ID")
     private Long updateBy;
+    @Desc("更新人昵称")
     private String updateByName;
+    @Desc("备注")
     private String comments;
+    @Desc("数据版本")
     private Integer version;
+    @Desc("数据状态:0(已删除),1(有效)")
     private Integer status;
 
     private Integer debug;
